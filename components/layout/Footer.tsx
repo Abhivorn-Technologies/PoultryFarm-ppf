@@ -126,7 +126,7 @@ export function Footer() {
           <div>© 2026 PoultryFarm Showcase Catalogue. Official Product Sourcing.</div>
           <div className="flex items-center gap-4">
             <Link className="hover:text-white transition" href="/products">
-              90 Official Items
+              Official Catalogue
             </Link>
             <span>•</span>
             <Link className="hover:text-white transition" href="/categories">

@@ -120,7 +120,7 @@ function ProductsCatalogContent() {
                     Full Catalogue
                   </div>
                   <div className="text-sm font-black text-brand-freshGreen">
-                    {PRODUCTS.length} Official Products
+                    Official Product Range
                   </div>
                 </div>
               </div>
@@ -157,7 +157,7 @@ function ProductsCatalogContent() {
               <div className="md:col-span-2 text-center md:text-left">
                 <span className="text-xs font-bold text-brand-darkGray">
                   {selectedCategory === "all" && !searchQuery.trim() ? (
-                    <span>Showing All <strong className="text-brand-darkGreen">{PRODUCTS.length}</strong> Products</span>
+                    <span>Showing <strong className="text-brand-darkGreen">All Available</strong> Products</span>
                   ) : (
                     <span>
                       Showing{" "}
@@ -180,7 +180,7 @@ function ProductsCatalogContent() {
                     }
                     className="w-full px-4 py-2.5 text-xs font-bold rounded-xl bg-white border border-brand-softGreen/80 text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen shadow-xs cursor-pointer"
                   >
-                    <option value="featured">Featured (Item Number 1–90)</option>
+                    <option value="featured">Featured Collection</option>
                     <option value="name-asc">Product Name: A to Z</option>
                     <option value="name-desc">Product Name: Z to A</option>
                   </select>
@@ -199,15 +199,6 @@ function ProductsCatalogContent() {
                 }`}
               >
                 <span>All Products</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                    selectedCategory === "all"
-                      ? "bg-white/20 text-white"
-                      : "bg-brand-cream text-brand-gray"
-                  }`}
-                >
-                  {PRODUCTS.length}
-                </span>
               </button>
 
               {CATEGORIES.map((cat) => (

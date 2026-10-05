@@ -1,100 +1,340 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
 
-export function QuickCategories({ onSelectCategory }: { onSelectCategory?: (key: string) => void }) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+export function QuickCategories({
+  onSelectCategory,
+}: {
+  onSelectCategory?: (key: string) => void;
+}) {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const sequenceARef = useRef<HTMLDivElement>(null);
+  const sequenceBRef = useRef<HTMLDivElement>(null);
 
-  const handleScroll = (direction: "left" | "right") => {
-    if (scrollContainerRef.current) {
-      const offset = direction === "left" ? -280 : 280;
-      scrollContainerRef.current.scrollBy({ left: offset, behavior: "smooth" });
+  const currentXRef = useRef<number>(0);
+  const isPausedRef = useRef<boolean>(false);
+  const isDraggingRef = useRef<boolean>(false);
+  const touchStartXRef = useRef<number>(0);
+  const touchLastXRef = useRef<number>(0);
+  const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number | null>(null);
+  const sequenceWidthRef = useRef<number>(0);
+
+  const [, setRerenderState] = useState<number>(0);
+
+  // Measure sequence width dynamically with ResizeObserver
+  const updateSequenceWidth = useCallback(() => {
+    if (sequenceARef.current && sequenceBRef.current) {
+      const width =
+        sequenceBRef.current.offsetLeft - sequenceARef.current.offsetLeft;
+      if (width > 0) {
+        sequenceWidthRef.current = width;
+      }
+    }
+  }, []);
+
+  const pauseAutoScroll = useCallback((durationMs?: number) => {
+    isPausedRef.current = true;
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current);
+      resumeTimeoutRef.current = null;
+    }
+    if (durationMs) {
+      resumeTimeoutRef.current = setTimeout(() => {
+        isPausedRef.current = false;
+        lastTimeRef.current = null;
+      }, durationMs);
+    }
+  }, []);
+
+  const resumeAutoScroll = useCallback(() => {
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current);
+    }
+    resumeTimeoutRef.current = setTimeout(() => {
+      isPausedRef.current = false;
+      lastTimeRef.current = null;
+    }, 400);
+  }, []);
+
+  // Arrow button navigation
+  const handleArrowNavigation = (direction: "left" | "right") => {
+    pauseAutoScroll(2000);
+    const cardStep = 240; // Step by approximately 1 card width + gap
+    const shift = direction === "left" ? cardStep : -cardStep;
+
+    const targetX = currentXRef.current + shift;
+    const startX = currentXRef.current;
+    const startTime = performance.now();
+    const duration = 350; // Smooth 350ms transition
+
+    const animateStep = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const ease = 1 - Math.pow(1 - progress, 3);
+
+      let newX = startX + (targetX - startX) * ease;
+      const seqWidth = sequenceWidthRef.current;
+
+      if (seqWidth > 0) {
+        if (newX <= -seqWidth) newX += seqWidth;
+        if (newX > 0) newX -= seqWidth;
+      }
+
+      currentXRef.current = newX;
+
+      if (trackRef.current) {
+        trackRef.current.style.transform = `translate3d(${newX}px, 0, 0)`;
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(animateStep);
+      } else {
+        lastTimeRef.current = null;
+      }
+    };
+
+    requestAnimationFrame(animateStep);
+  };
+
+  // Touch handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    pauseAutoScroll();
+    isDraggingRef.current = true;
+    touchStartXRef.current = e.touches[0].clientX;
+    touchLastXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current) return;
+    const currentTouchX = e.touches[0].clientX;
+    const delta = currentTouchX - touchLastXRef.current;
+    touchLastXRef.current = currentTouchX;
+
+    let newX = currentXRef.current + delta;
+    const seqWidth = sequenceWidthRef.current;
+
+    if (seqWidth > 0) {
+      if (newX <= -seqWidth) newX += seqWidth;
+      if (newX > 0) newX -= seqWidth;
+    }
+
+    currentXRef.current = newX;
+
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translate3d(${newX}px, 0, 0)`;
     }
   };
 
-  return (
-    <section className="py-8 bg-white border-y border-brand-softGreen/50" id="categories">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-4">
+  const handleTouchEnd = () => {
+    isDraggingRef.current = false;
+    resumeAutoScroll();
+  };
+
+  useEffect(() => {
+    updateSequenceWidth();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateSequenceWidth();
+    });
+
+    if (sequenceARef.current) resizeObserver.observe(sequenceARef.current);
+    if (sequenceBRef.current) resizeObserver.observe(sequenceBRef.current);
+    if (viewportRef.current) resizeObserver.observe(viewportRef.current);
+
+    // Check prefers-reduced-motion
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mediaQuery.matches) {
+      return () => resizeObserver.disconnect();
+    }
+
+    // Speed: ~40px per second (0.040px per ms)
+    const SPEED_PX_PER_MS = 0.04;
+
+    const animate = (currentTime: number) => {
+      if (lastTimeRef.current !== null && !isPausedRef.current && !isDraggingRef.current) {
+        const deltaTime = Math.min(currentTime - lastTimeRef.current, 64);
+        const deltaMove = deltaTime * SPEED_PX_PER_MS;
+
+        let newX = currentXRef.current - deltaMove;
+        const seqWidth = sequenceWidthRef.current;
+
+        if (seqWidth > 0) {
+          if (newX <= -seqWidth) {
+            newX += seqWidth;
+          } else if (newX > 0) {
+            newX -= seqWidth;
+          }
+        }
+
+        currentXRef.current = newX;
+
+        if (trackRef.current) {
+          trackRef.current.style.transform = `translate3d(${newX}px, 0, 0)`;
+        }
+      }
+
+      lastTimeRef.current = currentTime;
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      resizeObserver.disconnect();
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (resumeTimeoutRef.current) {
+        clearTimeout(resumeTimeoutRef.current);
+      }
+    };
+  }, [updateSequenceWidth]);
+
+  const renderCategoryCard = (
+    cat: (typeof CATEGORIES)[0],
+    idx: number,
+    sequenceKey: string
+  ) => {
+    const categoryNumber = String(idx + 1).padStart(2, "0");
+
+    return (
+      <Link
+        key={`${cat.id}-${sequenceKey}-${idx}`}
+        href={`/category/${cat.slug}`}
+        onClick={() => onSelectCategory && onSelectCategory(cat.slug)}
+        className="flex-shrink-0 w-48 sm:w-56 md:w-60 bg-white rounded-2xl overflow-hidden border border-brand-softGreen/60 text-left hover:border-brand-darkGreen hover:shadow-card transition-all duration-300 group flex flex-col justify-between select-none"
+      >
+        {/* Full Category Image Area */}
+        <div className="relative w-full aspect-[4/3] overflow-hidden bg-brand-cardCream">
+          <img
+            alt={cat.name}
+            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            src={cat.image}
+            loading="lazy"
+            draggable={false}
+          />
+        </div>
+
+        {/* Category Info Content */}
+        <div className="p-3.5 sm:p-4 flex flex-col flex-grow justify-between">
           <div>
-            <h2 className="text-xl font-black text-brand-darkGray">Explore by Category</h2>
-            <p className="text-xs text-brand-gray">
-              All 12 specialized sectors with dedicated 2-column catalogue listings
+            <div className="text-[10px] font-black uppercase text-brand-freshGreen tracking-wider">
+              Category {categoryNumber}
+            </div>
+            <div className="text-xs sm:text-sm font-bold text-brand-darkGray group-hover:text-brand-darkGreen transition-colors line-clamp-1 mt-0.5">
+              {cat.name}
+            </div>
+            <div className="text-[11px] text-brand-gray mt-0.5 font-medium">
+              {cat.itemCount} Products
+            </div>
+          </div>
+          <div className="pt-2.5 mt-2.5 border-t border-brand-softGreen/40 flex items-center justify-between">
+            <span className="text-brand-darkGreen text-[11px] sm:text-xs group-hover:translate-x-1 inline-flex items-center gap-1 transition-transform font-bold">
+              Explore Sector →
+            </span>
+          </div>
+        </div>
+      </Link>
+    );
+  };
+
+  return (
+    <section
+      className="py-8 sm:py-10 bg-white border-y border-brand-softGreen/50 overflow-hidden"
+      id="categories"
+    >
+      {/* 1. Header Aligned with Global Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black text-brand-darkGray">
+              Explore by Category
+            </h2>
+            <p className="text-xs sm:text-sm text-brand-gray mt-0.5">
+              All 12 specialized poultry sectors with dedicated catalogue listings
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Link
               href="/categories"
-              className="text-xs font-bold text-brand-darkGreen hover:underline hidden sm:inline-block mr-2"
+              className="text-xs sm:text-sm font-bold text-brand-darkGreen hover:underline hidden sm:inline-flex items-center gap-1 mr-2"
             >
-              View All 12 Categories →
+              <span>View All 12 Categories</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <button
-              onClick={() => handleScroll("left")}
+              onClick={() => handleArrowNavigation("left")}
               aria-label="Previous categories"
-              className="w-8 h-8 rounded-full border border-brand-softGreen flex items-center justify-center text-brand-darkGreen hover:bg-brand-softGreen transition active:scale-95"
+              className="w-9 h-9 rounded-full border border-brand-softGreen flex items-center justify-center text-brand-darkGreen hover:bg-brand-softGreen hover:border-brand-darkGreen/40 transition active:scale-95 shadow-2xs cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
-              onClick={() => handleScroll("right")}
+              onClick={() => handleArrowNavigation("right")}
               aria-label="Next categories"
-              className="w-8 h-8 rounded-full border border-brand-softGreen flex items-center justify-center text-brand-darkGreen hover:bg-brand-softGreen transition active:scale-95"
+              className="w-9 h-9 rounded-full border border-brand-softGreen flex items-center justify-center text-brand-darkGreen hover:bg-brand-softGreen hover:border-brand-darkGreen/40 transition active:scale-95 shadow-2xs cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Horizontal Scrollable Category Rail */}
+      {/* 2. Seamless Infinite Carousel Viewport */}
+      <div className="relative w-full overflow-hidden">
+        {/* Subtle Edge Fade Masks for Smooth Conveyor Effect */}
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-16 md:w-24 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-16 md:w-24 bg-gradient-to-l from-white via-white/80 to-transparent z-10" />
+
         <div
-          ref={scrollContainerRef}
-          className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth py-2"
-          id="category-rail"
+          ref={viewportRef}
+          onMouseEnter={() => pauseAutoScroll()}
+          onMouseLeave={resumeAutoScroll}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="w-full overflow-hidden py-2 select-none"
         >
-          {CATEGORIES.map((cat, idx) => (
-            <Link
-              key={cat.id}
-              href={`/category/${cat.slug}`}
-              className="flex-shrink-0 flex flex-col items-center p-3 rounded-2xl bg-brand-cardCream hover:bg-brand-softGreen/40 border border-brand-softGreen/60 w-32 text-center transition group shadow-xs hover:shadow"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-white p-1 shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center overflow-hidden border border-brand-softGreen/40">
-                <img
-                  alt={cat.name}
-                  className="w-full h-full object-cover rounded-xl"
-                  src={cat.image}
-                />
-              </div>
-              <span className="text-[10px] font-black uppercase text-brand-freshGreen mt-2 tracking-wider">
-                Cat {String(idx + 1).padStart(2, "0")}
-              </span>
-              <span className="text-xs font-bold text-brand-darkGray mt-0.5 group-hover:text-brand-darkGreen leading-tight line-clamp-2">
-                {cat.name}
-              </span>
-              <span className="text-[10px] font-semibold text-brand-gray mt-1">
-                {cat.itemCount} Items
-              </span>
-            </Link>
-          ))}
-
-          {/* All Categories Link Pill */}
-          <Link
-            className="flex-shrink-0 flex flex-col items-center justify-center p-3 rounded-2xl bg-brand-softGreen hover:bg-brand-green/20 border border-brand-freshGreen/40 w-32 text-center transition group"
-            href="/categories"
+          {/* Animated Track */}
+          <div
+            ref={trackRef}
+            className="flex gap-4 sm:gap-5 w-max will-change-transform"
+            style={{ transform: "translate3d(0px, 0, 0)" }}
           >
-            <div className="w-14 h-14 rounded-2xl bg-brand-darkGreen text-white shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center font-bold text-xl">
-              <ArrowRight className="w-5 h-5" />
+            {/* Sequence A (12 Categories) */}
+            <div
+              ref={sequenceARef}
+              className="flex gap-4 sm:gap-5 flex-shrink-0"
+            >
+              {CATEGORIES.map((cat, idx) =>
+                renderCategoryCard(cat, idx, "seqA")
+              )}
             </div>
-            <span className="text-xs font-black text-brand-darkGreen mt-2 leading-tight">
-              All 12 Sectors
-            </span>
-            <span className="text-[10px] font-bold text-brand-gray mt-0.5">
-              Browse Hub
-            </span>
-          </Link>
+
+            {/* Sequence B (12 Duplicate Categories - Exact Loop Match) */}
+            <div
+              ref={sequenceBRef}
+              className="flex gap-4 sm:gap-5 flex-shrink-0"
+            >
+              {CATEGORIES.map((cat, idx) =>
+                renderCategoryCard(cat, idx, "seqB")
+              )}
+            </div>
+
+            {/* Sequence C (12 Duplicate Categories for Wide Screens) */}
+            <div className="flex gap-4 sm:gap-5 flex-shrink-0">
+              {CATEGORIES.map((cat, idx) =>
+                renderCategoryCard(cat, idx, "seqC")
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -23,33 +23,41 @@ export function ProductRange({ onSelectCategory }: ProductRangeProps) {
         </div>
 
         {/* 12 Categories Grid Matching Spec */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {CATEGORIES.map((cat, idx) => (
             <Link
               key={cat.id}
-              className="bg-white rounded-2xl p-4 border border-brand-softGreen/60 text-center hover:border-brand-darkGreen hover:shadow-card transition group flex flex-col justify-between"
+              className="bg-white rounded-2xl overflow-hidden border border-brand-softGreen/60 text-left hover:border-brand-darkGreen hover:shadow-card transition-all duration-300 group flex flex-col justify-between"
               href={`/category/${cat.slug}`}
               onClick={() => onSelectCategory && onSelectCategory(cat.slug)}
             >
-              <div className="w-14 h-14 mx-auto rounded-xl bg-brand-cardCream p-1 overflow-hidden border border-brand-softGreen/40">
+              {/* Full Category Image Area */}
+              <div className="relative w-full aspect-[4/3] overflow-hidden bg-brand-cardCream">
                 <img
                   alt={cat.name}
-                  className="w-full h-full object-cover rounded-lg group-hover:scale-110 transition-transform duration-300"
+                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                   src={cat.image}
+                  loading="lazy"
                 />
               </div>
-              <div className="mt-3">
-                <div className="text-[10px] font-black uppercase text-brand-freshGreen">
-                  Category {String(idx + 1).padStart(2, "0")}
+
+              {/* Category Info Content */}
+              <div className="p-4 sm:p-5 flex flex-col flex-grow justify-between">
+                <div>
+                  <div className="text-[10px] font-black uppercase text-brand-freshGreen tracking-wider">
+                    Category {String(idx + 1).padStart(2, "0")}
+                  </div>
+                  <div className="text-sm sm:text-base font-bold text-brand-darkGray group-hover:text-brand-darkGreen transition-colors line-clamp-1 mt-1">
+                    {cat.name}
+                  </div>
+                  <div className="text-xs text-brand-gray mt-1 font-medium">{cat.itemCount} Products</div>
                 </div>
-                <div className="text-xs font-bold text-brand-darkGray group-hover:text-brand-darkGreen transition-colors line-clamp-2 mt-0.5">
-                  {cat.name}
+                <div className="pt-3 mt-3 border-t border-brand-softGreen/40 flex items-center justify-between">
+                  <span className="text-brand-darkGreen text-xs group-hover:translate-x-1 inline-flex items-center gap-1 transition-transform font-bold">
+                    Explore Category →
+                  </span>
                 </div>
-                <div className="text-[10px] text-brand-gray mt-0.5">{cat.itemCount} Products</div>
               </div>
-              <span className="text-brand-darkGreen text-xs mt-2 group-hover:translate-x-1 inline-block transition-transform font-bold">
-                Explore Category →
-              </span>
             </Link>
           ))}
         </div>
