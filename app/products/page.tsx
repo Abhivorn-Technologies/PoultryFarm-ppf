@@ -106,7 +106,7 @@ function ProductsCatalogContent() {
                   All Poultry Products
                 </h1>
                 <p className="text-sm sm:text-base text-brand-gray mt-2 leading-relaxed">
-                  Browse our complete 90-product catalogue featuring day-old chicks, live birds, hatching & table eggs, commercial equipment, incubators, cages, and feeds.
+                  Browse our complete product catalogue featuring day-old chicks, live birds, hatching & table eggs, commercial equipment, incubators, cages, and feeds.
                 </p>
               </div>
 
@@ -253,7 +253,7 @@ function ProductsCatalogContent() {
           </div>
         </section>
 
-        {/* 5. 4-COLUMN PRODUCT GRID ON DESKTOP */}
+        {/* 5. PRODUCT SHOWCASE GRID */}
         <div className="py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimatePresence mode="wait">
@@ -294,7 +294,7 @@ function ProductsCatalogContent() {
                   exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
                   transition={{ duration: 0.25, ease: "easeInOut" }}
                 >
-                  {/* Strict 4-column product grid on desktop */}
+                  {/* Responsive product catalogue grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {sortedProducts.map((product) => (
                       <ProductCard key={product.id} product={product} />

@@ -15,10 +15,10 @@ export default function CategoriesDirectoryPage() {
     <div className="flex flex-col min-h-screen bg-brand-cream text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
       <Header />
 
-      <main className="flex-grow py-10">
+      <main className="flex-grow py-6 sm:py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
-          <div className="flex items-center justify-between gap-4 mb-6">
+          <div className="flex items-center justify-between gap-4 mb-4 sm:mb-5">
             <div className="flex items-center gap-2 text-xs text-brand-gray">
               <Link href="/" className="hover:text-brand-darkGreen transition">
                 Home
@@ -29,7 +29,7 @@ export default function CategoriesDirectoryPage() {
           </div>
 
           {/* Hero Header */}
-          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-brand-softGreen shadow-card mb-12">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-brand-softGreen shadow-card mb-6 sm:mb-8">
             <div className="max-w-3xl">
               <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full border border-brand-freshGreen/30 mb-3">
                 <Sparkles className="w-3.5 h-3.5 text-brand-freshGreen" />

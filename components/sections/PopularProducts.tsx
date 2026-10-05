@@ -113,8 +113,8 @@ export function PopularProducts({ activeTab: externalTab, onTabChange }: Popular
             className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-white hover:bg-brand-darkGreen text-brand-darkGreen hover:text-white border-2 border-brand-darkGreen font-bold text-sm transition-all shadow-sm hover:shadow-md active:scale-95"
             href="/products"
           >
-            <span>Explore All {PRODUCTS.length} Catalogue Products</span>
-            <span>→</span>
+            <span>View All Products</span>
+            <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>

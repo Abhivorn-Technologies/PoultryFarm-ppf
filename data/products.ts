@@ -1,5 +1,5 @@
 // Centralized product catalog generated strictly from the client document: public/product and breed details.docx
-// Contains all 90 numbered entries from 1 to 90.
+// Contains all 89 unique numbered entries from 1 to 89.
 
 export interface ProductSubType {
   title: string;
@@ -2493,7 +2493,7 @@ export const PRODUCTS: Product[] = [
     "id": 71,
     "itemNumber": 71,
     "name": "Sonali Eating Eggs",
-    "slug": "sonali-eating-eggs-71",
+    "slug": "sonali-eating-eggs",
     "category": "Eating Eggs",
     "categorySlug": "eating-eggs",
     "shortDescription": "Fresh Sonali chicken eggs suitable for everyday consumption.",
@@ -2512,7 +2512,6 @@ export const PRODUCTS: Product[] = [
     "available": true,
     "isPopular": false,
     "featured": false,
-    "dataReviewRequired": "DATA REVIEW REQUIRED: Duplicate title in source document",
     "tags": [
       "Eating Eggs",
       "Sonali",
@@ -2523,37 +2522,6 @@ export const PRODUCTS: Product[] = [
   {
     "id": 72,
     "itemNumber": 72,
-    "name": "Sonali Eating Eggs",
-    "slug": "sonali-eating-eggs-72",
-    "category": "Eating Eggs",
-    "categorySlug": "eating-eggs",
-    "shortDescription": "Fresh Sonali chicken eggs suitable for everyday consumption.",
-    "description": "Fresh Sonali chicken eggs suitable for everyday consumption. Generally, have a brown to light-brown shell and a nutritious yolk. Rich source of high-quality protein and essential nutrients. Suitable for boiling, frying, cooking, baking, and other food preparations. Collected from healthy and well-managed Sonali layer birds. Suitable for households, hotels, restaurants, and food businesses.",
-    "details": [
-      "Fresh Sonali chicken eggs suitable for everyday consumption.",
-      "Generally, have a brown to light-brown shell and a nutritious yolk.",
-      "Rich source of high-quality protein and essential nutrients.",
-      "Suitable for boiling, frying, cooking, baking, and other food preparations.",
-      "Collected from healthy and well-managed Sonali layer birds.",
-      "Suitable for households, hotels, restaurants, and food businesses."
-    ],
-    "image": "/assets/products/eggs/eating-eggs.jpg",
-    "price": null,
-    "priceDisplay": "Price on Request",
-    "available": true,
-    "isPopular": false,
-    "featured": false,
-    "dataReviewRequired": "DATA REVIEW REQUIRED: Duplicate title in source document",
-    "tags": [
-      "Eating Eggs",
-      "Sonali",
-      "Eating",
-      "Eggs"
-    ]
-  },
-  {
-    "id": 73,
-    "itemNumber": 73,
     "name": "Desi Eating Eggs",
     "slug": "desi-eating-eggs",
     "category": "Eating Eggs",
@@ -2582,8 +2550,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 74,
-    "itemNumber": 74,
+    "id": 73,
+    "itemNumber": 73,
     "name": "Broiler Poultry Feed",
     "slug": "broiler-poultry-feed",
     "category": "Poultry Feed & Ingredients",
@@ -2624,8 +2592,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 75,
-    "itemNumber": 75,
+    "id": 74,
+    "itemNumber": 74,
     "name": "Layer Poultry Feed",
     "slug": "layer-poultry-feed",
     "category": "Poultry Feed & Ingredients",
@@ -2673,8 +2641,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 76,
-    "itemNumber": 76,
+    "id": 75,
+    "itemNumber": 75,
     "name": "Poultry Dry Fish",
     "slug": "poultry-dry-fish",
     "category": "Poultry Feed & Ingredients",
@@ -2688,7 +2656,7 @@ export const PRODUCTS: Product[] = [
       "It is commonly used in feed formulations for broilers, layers, chicks, and breeder birds.",
       "Farmers should use clean, properly dried, good-quality dry fish without mold, excess salt, or spoilage."
     ],
-    "image": "/assets/products/feeds/fish-feed.jpg",
+    "image": "/assets/products/meat/dry-fish.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2702,8 +2670,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 77,
-    "itemNumber": 77,
+    "id": 76,
+    "itemNumber": 76,
     "name": "Poultry Fish Feed",
     "slug": "poultry-fish-feed",
     "category": "Poultry Feed & Ingredients",
@@ -2732,8 +2700,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 78,
-    "itemNumber": 78,
+    "id": 77,
+    "itemNumber": 77,
     "name": "Poultry Soya DOC",
     "slug": "poultry-soya-doc",
     "category": "Poultry Feed & Ingredients",
@@ -2762,8 +2730,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 79,
-    "itemNumber": 79,
+    "id": 78,
+    "itemNumber": 78,
     "name": "Poultry Maize",
     "slug": "poultry-maize",
     "category": "Poultry Feed & Ingredients",
@@ -2791,8 +2759,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 80,
-    "itemNumber": 80,
+    "id": 79,
+    "itemNumber": 79,
     "name": "Poultry Soya Oil",
     "slug": "poultry-soya-oil",
     "category": "Poultry Feed & Ingredients",
@@ -2821,8 +2789,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 81,
-    "itemNumber": 81,
+    "id": 80,
+    "itemNumber": 80,
     "name": "Poultry Stone Grade",
     "slug": "poultry-stone-grade",
     "category": "Poultry Feed & Ingredients",
@@ -2851,8 +2819,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 82,
-    "itemNumber": 82,
+    "id": 81,
+    "itemNumber": 81,
     "name": "Poultry Country Birds",
     "slug": "poultry-country-birds",
     "category": "Live Birds",
@@ -2881,8 +2849,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 83,
-    "itemNumber": 83,
+    "id": 82,
+    "itemNumber": 82,
     "name": "Poultry Frozen Meat",
     "slug": "poultry-frozen-meat",
     "category": "Poultry Meat",
@@ -2911,8 +2879,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 84,
-    "itemNumber": 84,
+    "id": 83,
+    "itemNumber": 83,
     "name": "White Peking Duck Meat",
     "slug": "white-peking-duck-meat",
     "category": "Poultry Meat",
@@ -2941,8 +2909,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 85,
-    "itemNumber": 85,
+    "id": 84,
+    "itemNumber": 84,
     "name": "Indian Runner Duck Meat",
     "slug": "indian-runner-duck-meat",
     "category": "Poultry Meat",
@@ -2971,8 +2939,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 86,
-    "itemNumber": 86,
+    "id": 85,
+    "itemNumber": 85,
     "name": "Quail Birds Meat",
     "slug": "quail-birds-meat",
     "category": "Poultry Meat",
@@ -3001,8 +2969,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 87,
-    "itemNumber": 87,
+    "id": 86,
+    "itemNumber": 86,
     "name": "Electric Brooding System",
     "slug": "electric-brooding-system",
     "category": "Brooding Systems",
@@ -3034,8 +3002,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 88,
-    "itemNumber": 88,
+    "id": 87,
+    "itemNumber": 87,
     "name": "Poultry Digestive Support Medicines",
     "slug": "poultry-digestive-support-medicines",
     "category": "Medicines & Vaccines",
@@ -3092,8 +3060,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 89,
-    "itemNumber": 89,
+    "id": 88,
+    "itemNumber": 88,
     "name": "Poultry Respiratory Support Medicines",
     "slug": "poultry-respiratory-support-medicines",
     "category": "Medicines & Vaccines",
@@ -3146,8 +3114,8 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    "id": 90,
-    "itemNumber": 90,
+    "id": 89,
+    "itemNumber": 89,
     "name": "Poultry Mineral Mixture",
     "slug": "poultry-mineral-mixture",
     "category": "Poultry Feed & Ingredients",

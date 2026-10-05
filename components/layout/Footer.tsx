@@ -12,13 +12,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-brand-freshGreen/30">
           {/* Brand Info Col (2 cols on lg) */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5 inline-flex">
-              <div className="w-10 h-10 rounded-xl bg-white text-brand-darkGreen flex items-center justify-center font-bold text-xl shadow-md">
-                🐓
-              </div>
-              <span className="text-2xl font-black tracking-tight text-white">
-                Poultry<span className="text-brand-yellow">Farm</span>
-              </span>
+            <Link href="/" className="inline-flex items-center group">
+              <img
+                src="/assets/logo/LOGO.png"
+                alt="PoultryFarm"
+                className="h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+              />
             </Link>
             <p className="text-xs text-brand-softGreen leading-relaxed max-w-sm">
               Professional Poultry Product Showcase & Catalogue. Verified bio-secure stock, pure breeds, commercial incubators, cages, and high-performance feed solutions.
