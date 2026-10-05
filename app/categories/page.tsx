@@ -1,0 +1,119 @@
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { ArrowRight, Sparkles, Send } from "lucide-react";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { CATEGORIES } from "@/data/categories";
+import { useCart } from "@/context/CartContext";
+
+export default function CategoriesDirectoryPage() {
+  const { openEnquiryModal } = useCart();
+
+  return (
+    <div className="flex flex-col min-h-screen bg-brand-cream text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
+      <Header />
+
+      <main className="flex-grow py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumbs */}
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-2 text-xs text-brand-gray">
+              <Link href="/" className="hover:text-brand-darkGreen transition">
+                Home
+              </Link>
+              <span>/</span>
+              <span className="text-brand-darkGreen font-bold">Categories Directory</span>
+            </div>
+          </div>
+
+          {/* Hero Header */}
+          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-brand-softGreen shadow-card mb-12">
+            <div className="max-w-3xl">
+              <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full border border-brand-freshGreen/30 mb-3">
+                <Sparkles className="w-3.5 h-3.5 text-brand-freshGreen" />
+                12 SPECIALIZED SECTORS
+              </span>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-brand-darkGray tracking-tight leading-tight">
+                Poultry Product Categories
+              </h1>
+              <p className="text-sm sm:text-base text-brand-gray mt-2 leading-relaxed">
+                Explore our specialized poultry sectors. Click on any category to view its dedicated product showcase, specifications, and direct enquiry options.
+              </p>
+            </div>
+          </div>
+
+          {/* Categories Grid (12 Categories) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {CATEGORIES.map((category, index) => {
+              const catNumber = String(index + 1).padStart(2, "0");
+              const totalCatStr = String(CATEGORIES.length).padStart(2, "0");
+
+              return (
+                <div
+                  key={category.id}
+                  className="group bg-white rounded-3xl p-6 border border-brand-softGreen/80 shadow-card hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Media Frame */}
+                    <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-brand-cardCream mb-4">
+                      <img
+                        src={category.image}
+                        alt={category.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                      
+                      <div className="absolute top-3 left-3 bg-brand-darkGreen text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-xs">
+                        Category {catNumber} of {totalCatStr}
+                      </div>
+
+                      <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-xs text-brand-darkGreen text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
+                        {category.itemCount} Products
+                      </div>
+                    </div>
+
+                    {/* Title & Description */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-black text-brand-darkGray group-hover:text-brand-darkGreen transition-colors">
+                          {category.name}
+                        </h2>
+                      </div>
+
+                      <p className="text-xs text-brand-gray leading-relaxed line-clamp-3">
+                        {category.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="pt-5 border-t border-brand-softGreen/60 mt-5 flex items-center gap-3">
+                    <Link
+                      href={`/category/${category.slug}`}
+                      className="flex-1 py-2.5 rounded-2xl bg-brand-darkGreen hover:bg-brand-green text-white text-xs font-black transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-98"
+                    >
+                      <span>View Products</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+
+                    <button
+                      onClick={() => openEnquiryModal(null)}
+                      className="p-2.5 rounded-2xl bg-brand-cream hover:bg-brand-softGreen text-brand-darkGreen border border-brand-softGreen text-xs font-bold transition active:scale-98"
+                      title="Enquire about this category"
+                    >
+                      <Send className="w-4 h-4 text-brand-freshGreen" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

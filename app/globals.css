@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-darkGreen: #1F6B45;
+    --brand-green: #2E7D32;
+    --brand-freshGreen: #5E9F62;
+    --brand-softGreen: #DCEEDC;
+    --brand-lightGreen: #EAF5EC;
+    --brand-gray: #5F6368;
+    --brand-darkGray: #242826;
+    --brand-yellow: #F4C542;
+    --brand-softYellow: #FFF0B8;
+    --brand-pink: #E889A5;
+    --brand-softPink: #F8DCE5;
+    --brand-cream: #FFF8EA;
+    --brand-cardCream: #FCFBF7;
+  }
+
+  body {
+    background-color: #FFF8EA;
+    color: #242826;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    overflow-x: hidden;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #FFF8EA;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #5E9F62;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1F6B45;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for category horizontal scroller while keeping scroll functionality */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .bg-glass {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .bg-glass-dark {
+    background: rgba(31, 107, 69, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .text-gradient-green {
+    background: linear-gradient(135deg, #1F6B45 0%, #5E9F62 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #d97706 0%, #F4C542 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .shadow-soft-green {
+    box-shadow: 0 10px 30px -10px rgba(31, 107, 69, 0.3);
+  }
+}
