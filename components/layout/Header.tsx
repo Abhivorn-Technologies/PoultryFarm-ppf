@@ -134,6 +134,10 @@ export function Header({ variant = "auto" }: HeaderProps) {
               }`}
               placeholder="Search chicks, feeds..."
               type="text"
+              autoComplete="off"
+              data-lpignore="true"
+              data-1p-ignore="true"
+              suppressHydrationWarning
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => searchQuery.trim().length > 1 && setIsSearchOpen(true)}

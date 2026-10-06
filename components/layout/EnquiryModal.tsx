@@ -18,6 +18,8 @@ export function EnquiryModal() {
     message: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     if (selectedEnquiryProduct) {
       setFormData((prev) => ({
@@ -33,14 +35,42 @@ export function EnquiryModal() {
       }));
     }
     setIsSubmitted(false);
+    setIsSubmitting(false);
   }, [selectedEnquiryProduct, isEnquiryOpen]);
 
   if (!isEnquiryOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    showToast("Enquiry submitted successfully! Our team will contact you shortly.");
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          productName: formData.productName || "General Catalogue Enquiry",
+          message: formData.message,
+        }),
+      });
+
+      if (res.ok) {
+        setIsSubmitted(true);
+        showToast("Enquiry submitted successfully! Our team will contact you shortly.");
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        showToast(errorData.error || "Failed to submit enquiry. Please try again.");
+      }
+    } catch (err) {
+      console.error("Failed to post enquiry to database:", err);
+      showToast("Network error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -203,10 +233,17 @@ export function EnquiryModal() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-2xl bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 rounded-2xl bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <Send className="w-4 h-4 text-brand-yellow" />
-                  <span>Send Enquiry</span>
+                  {isSubmitting ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 text-brand-yellow" />
+                      <span>Send Enquiry</span>
+                    </>
+                  )}
                 </button>
               </div>
 

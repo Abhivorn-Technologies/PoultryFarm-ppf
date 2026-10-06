@@ -72,8 +72,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${outfit.variable} scroll-smooth`}>
-      <body className="bg-brand-cream text-brand-gray-900 font-sans antialiased selection:bg-brand-green-500 selection:text-white min-h-screen flex flex-col">
+    <html lang="en" className={`${plusJakarta.variable} ${outfit.variable} scroll-smooth`} suppressHydrationWarning>
+      <body className="bg-brand-cream text-brand-gray-900 font-sans antialiased selection:bg-brand-green-500 selection:text-white min-h-screen flex flex-col" suppressHydrationWarning>
         <CartProvider>
           {children}
           <CartDrawer />

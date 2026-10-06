@@ -12,6 +12,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.4.10",
     "lucide-react": "^0.477.0",
+    "mongoose": "^9.11.0",
     "next": "^15.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -23,10 +24,16 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "autoprefixer": "^10.4.20",
-    "eslint": "^10.12.0",
-    "eslint-config-next": "^16.3.8",
-    "postcss": "^8.5.3",
+    "eslint": "^9.21.0",
+    "eslint-config-next": "15.2.1",
+    "postcss": "^8.5.29",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.2"
+  },
+  "overrides": {
+    "braces": "3.0.3",
+    "micromatch": "4.0.8",
+    "postcss": "$postcss",
+    "postcss-selector-parser": "7.1.6"
   }
 }

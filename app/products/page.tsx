@@ -19,15 +19,28 @@ import { CATEGORIES } from "@/data/categories";
 import { ProductCard } from "@/components/products/ProductCard";
 import { Product } from "@/types/product";
 
-function ProductsCatalogContent() {
+export function ProductsCatalogContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("cat") || "all";
 
+  const [productsList, setProductsList] = useState<Product[]>(PRODUCTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState<"featured" | "name-asc" | "name-desc">("featured");
 
   const shouldReduceMotion = useReducedMotion();
+
+  // Fetch live products from MongoDB Atlas
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setProductsList(data.data);
+        }
+      })
+      .catch((err) => console.log("Using static catalogue fallback:", err));
+  }, []);
 
   useEffect(() => {
     const cat = searchParams.get("cat");
@@ -38,7 +51,7 @@ function ProductsCatalogContent() {
 
   // Filter products by search and category
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((product) => {
+    return productsList.filter((product) => {
       const matchesCategory =
         selectedCategory === "all" || product.categorySlug === selectedCategory;
 

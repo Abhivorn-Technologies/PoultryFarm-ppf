@@ -378,7 +378,7 @@ export function FloatingFeathersAndLeaves({
     }
 
     let animFrameId: number;
-    let startTime = performance.now();
+    const startTime = performance.now();
 
     const renderLoop = (now: number) => {
       // Pause updates if document is hidden

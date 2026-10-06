@@ -62,9 +62,6 @@ export function PhotographicHero() {
       {/* 1. CINEMATIC FULLSCREEN HERO BACKGROUND PHOTOGRAPHY                       */}
       {/* ========================================================================= */}
       <motion.div
-        initial={{ opacity: 0, scale: 1.03 }}
-        animate={{ opacity: 1, scale: 1.0 }}
-        transition={{ duration: 1.2, ease: customEase }}
         style={{
           ...(shouldReduceMotion
             ? {}
@@ -95,7 +92,7 @@ export function PhotographicHero() {
       {/* 4. ORGANIC FEATHERED TEXT MASK LAYER (NO RECTANGULAR BOX, INVISIBLE EDGES)*/}
       {/* ========================================================================= */}
       <div
-        className="absolute inset-0 pointer-events-none z-15"
+        className="absolute inset-0 pointer-events-none z-10"
         style={{
           background: `
             radial-gradient(
@@ -128,23 +125,13 @@ export function PhotographicHero() {
             className="space-y-6 text-left"
           >
             {/* Top Eyebrow Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1, ease: customEase }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-brand-darkGreen text-xs sm:text-sm font-black uppercase tracking-wider border border-brand-softGreen/80 shadow-2xs"
-            >
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-brand-darkGreen text-xs sm:text-sm font-black uppercase tracking-wider border border-brand-softGreen/80 shadow-2xs">
               <Leaf className="w-3.5 h-3.5 text-brand-freshGreen" />
               <span>POULTRY FARM ECOSYSTEM</span>
-            </motion.div>
+            </div>
 
             {/* Main Editorial Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.2, ease: customEase }}
-              className="text-4xl sm:text-5xl lg:text-[56px] xl:text-[66px] font-black tracking-tight leading-[1.03] text-[#111827]"
-            >
+            <h1 className="text-4xl sm:text-5xl lg:text-[56px] xl:text-[66px] font-black tracking-tight leading-[1.03] text-[#111827]">
               HEALTHY BIRDS, <br />
               <span className="text-brand-darkGreen">BETTER</span>{" "}
               <span className="relative inline-block text-[#C96F28]">
@@ -164,25 +151,15 @@ export function PhotographicHero() {
                   />
                 </svg>
               </span>
-            </motion.h1>
+            </h1>
 
             {/* Supporting Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.0, delay: 0.3, ease: customEase }}
-              className="text-base sm:text-lg lg:text-xl text-[#374151] max-w-[540px] leading-relaxed font-medium"
-            >
+            <p className="text-base sm:text-lg lg:text-xl text-[#374151] max-w-[540px] leading-relaxed font-medium">
               Premium poultry products, equipment and solutions for a healthier, more productive and sustainable poultry ecosystem.
-            </motion.p>
+            </p>
 
             {/* CTA Buttons Row */}
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, delay: 0.4, ease: customEase }}
-              className="flex flex-wrap items-center gap-3.5 pt-2"
-            >
+            <div className="flex flex-wrap items-center gap-3.5 pt-2">
               {/* Primary CTA: Explore Products */}
               <Link
                 href="/products"
@@ -208,15 +185,10 @@ export function PhotographicHero() {
                 <Send className="w-3.5 h-3.5 text-brand-darkGreen" />
                 <span>Contact Us</span>
               </button>
-            </motion.div>
+            </div>
 
             {/* Quality Feature Badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, delay: 0.5, ease: customEase }}
-              className="pt-4 border-t border-brand-darkGreen/15 flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm font-bold text-[#1F2937]"
-            >
+            <div className="pt-4 border-t border-brand-darkGreen/15 flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm font-bold text-[#1F2937]">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-brand-freshGreen" />
                 <span>100% Disease-Free Verified</span>
@@ -229,7 +201,7 @@ export function PhotographicHero() {
                 <span className="w-2 h-2 rounded-full bg-brand-freshGreen" />
                 <span>Bio-Secure Transit</span>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>

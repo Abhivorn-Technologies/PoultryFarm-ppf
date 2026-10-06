@@ -15,8 +15,6 @@ import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Reviews } from "@/components/sections/Reviews";
 import { Gallery } from "@/components/sections/Gallery";
 import { Newsletter } from "@/components/sections/Newsletter";
-import { CartDrawer } from "@/components/layout/CartDrawer";
-import { QuickViewModal } from "@/components/layout/QuickViewModal";
 
 export default function Home() {
   const [activeCategoryFilter, setActiveCategoryFilter] = useState("all");
@@ -73,10 +71,6 @@ export default function Home() {
 
       {/* 14. Dark Green Footer */}
       <Footer />
-
-      {/* Cart Drawer & Modals */}
-      <CartDrawer />
-      <QuickViewModal />
     </div>
   );
 }

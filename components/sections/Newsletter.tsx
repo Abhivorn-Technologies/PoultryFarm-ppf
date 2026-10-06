@@ -34,12 +34,16 @@ export function Newsletter() {
                 placeholder="Enter your email address..."
                 required
                 type="email"
+                autoComplete="email"
+                data-lpignore="true"
+                suppressHydrationWarning
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <button
                 className="px-7 py-3 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs uppercase tracking-wider transition shadow-sm active:scale-95"
                 type="submit"
+                suppressHydrationWarning
               >
                 Subscribe
               </button>

@@ -30,9 +30,37 @@ export default function ProductDetailPage({
 }) {
   const resolvedParams = use(params);
   const slug = resolvedParams.slug;
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  const initialProduct = PRODUCTS.find((p) => p.slug === slug);
+  const [product, setProduct] = React.useState<any>(initialProduct);
+  const [loading, setLoading] = React.useState(!initialProduct);
+
+  React.useEffect(() => {
+    if (!product) {
+      fetch("/api/products")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && Array.isArray(data.data)) {
+            const found = data.data.find((p: any) => p.slug === slug);
+            if (found) setProduct(found);
+          }
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [slug, product]);
 
   const { openEnquiryModal } = useCart();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-brand-cream">
+        <Header />
+        <main className="flex-grow flex items-center justify-center py-20 text-center">
+          <div className="w-10 h-10 border-4 border-brand-green border-t-transparent rounded-full animate-spin"></div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!product) {
     return (

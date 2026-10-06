@@ -34,6 +34,27 @@ export default function CategoryDetailPage({
   const [searchQuery, setSearchQuery] = useState("");
   const { openEnquiryModal } = useCart();
 
+  // Products belonging strictly to this category
+  const categoryProducts = useMemo(() => {
+    if (!category) return [];
+    return PRODUCTS.filter((p) => p.categorySlug === category.slug);
+  }, [category]);
+
+  // Search filtered products within category
+  const filteredProducts = useMemo(() => {
+    if (!category) return [];
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return categoryProducts;
+
+    return categoryProducts.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.shortDescription && p.shortDescription.toLowerCase().includes(q)) ||
+        (p.description && p.description.toLowerCase().includes(q)) ||
+        p.tags.some((t) => t.toLowerCase().includes(q))
+    );
+  }, [category, categoryProducts, searchQuery]);
+
   if (!category) {
     return (
       <div className="min-h-screen flex flex-col bg-brand-cream text-brand-darkGray">
@@ -66,25 +87,6 @@ export default function CategoryDetailPage({
   // Previous and Next category navigation
   const prevCategory = categoryIndex > 0 ? CATEGORIES[categoryIndex - 1] : CATEGORIES[CATEGORIES.length - 1];
   const nextCategory = categoryIndex < CATEGORIES.length - 1 ? CATEGORIES[categoryIndex + 1] : CATEGORIES[0];
-
-  // Products belonging strictly to this category
-  const categoryProducts = useMemo(() => {
-    return PRODUCTS.filter((p) => p.categorySlug === category.slug);
-  }, [category.slug]);
-
-  // Search filtered products within category
-  const filteredProducts = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
-    if (!q) return categoryProducts;
-
-    return categoryProducts.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        (p.shortDescription && p.shortDescription.toLowerCase().includes(q)) ||
-        (p.description && p.description.toLowerCase().includes(q)) ||
-        p.tags.some((t) => t.toLowerCase().includes(q))
-    );
-  }, [categoryProducts, searchQuery]);
 
   return (
     <div className="flex flex-col min-h-screen bg-brand-cream text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">

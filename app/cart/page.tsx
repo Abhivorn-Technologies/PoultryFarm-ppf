@@ -36,7 +36,7 @@ export default function CartPage() {
             </h1>
 
             <p className="text-sm sm:text-base text-brand-gray leading-relaxed max-w-xl mx-auto">
-              PoultryFarm is a certified product showcase and commercial supply catalogue. We don't operate a public shopping cart — instead, our poultry specialists provide personalized quotations, bio-secure delivery schedules, and technical consultation for all chicks, breeds, equipment, feeds, and hatching eggs.
+              PoultryFarm is a certified product showcase and commercial supply catalogue. We don&apos;t operate a public shopping cart — instead, our poultry specialists provide personalized quotations, bio-secure delivery schedules, and technical consultation for all chicks, breeds, equipment, feeds, and hatching eggs.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-left">
