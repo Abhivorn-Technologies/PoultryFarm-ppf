@@ -1,11 +1,34 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Enquiry from "@/models/Enquiry";
+import { PRODUCTS } from "@/data/products";
 
 export async function GET() {
   try {
     await connectToDatabase();
-    const enquiries = await Enquiry.find({}).sort({ createdAt: -1 });
+    const rawEnquiries = await Enquiry.find({}).sort({ createdAt: -1 }).lean();
+
+    // Ensure all enquiries have their proper category resolved
+    const enquiries = await Promise.all(
+      rawEnquiries.map(async (doc: any) => {
+        if (!doc.category || doc.category === "General Farm Enquiry" || doc.category === "General Farm") {
+          const matched = PRODUCTS.find(
+            (p) => p.name.toLowerCase() === doc.productName?.toLowerCase()
+          );
+          if (matched) {
+            doc.category = matched.category;
+            // Persist to MongoDB in background
+            Enquiry.findByIdAndUpdate(doc._id, { category: matched.category }).exec().catch(() => {});
+          } else if (doc.productName && doc.productName.toLowerCase().includes("broiler")) {
+            doc.category = "Live Birds";
+            Enquiry.findByIdAndUpdate(doc._id, { category: "Live Birds" }).exec().catch(() => {});
+          } else {
+            doc.category = "Chicks & Young Birds";
+          }
+        }
+        return doc;
+      })
+    );
 
     return NextResponse.json({ success: true, count: enquiries.length, data: enquiries });
   } catch (error: any) {
@@ -22,11 +45,62 @@ export async function POST(request: Request) {
     await connectToDatabase();
     const body = await request.json();
 
-    if (!body.customerName || !body.phone) {
-      return NextResponse.json(
-        { success: false, error: "Name and phone number are required" },
-        { status: 400 }
+    if (body.enquiryType !== "newsletter") {
+      const name = body.customerName ? body.customerName.trim() : "";
+      if (!name || name.length < 2) {
+        return NextResponse.json(
+          { success: false, error: "Please provide a valid full name (at least 2 characters)" },
+          { status: 400 }
+        );
+      }
+
+      const phone = body.phone ? body.phone.trim() : "";
+      const digitsOnly = phone.replace(/\D/g, "");
+      if (!phone || digitsOnly.length < 10 || digitsOnly.length > 15) {
+        return NextResponse.json(
+          { success: false, error: "Please provide a valid phone number with at least 10 digits" },
+          { status: 400 }
+        );
+      }
+
+      const email = body.email ? body.email.trim() : "";
+      if (email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        if (!emailRegex.test(email)) {
+          return NextResponse.json(
+            { success: false, error: "Please provide a valid email address" },
+            { status: 400 }
+          );
+        }
+      }
+
+      const message = body.message ? body.message.trim() : "";
+      if (!message || message.length < 5) {
+        return NextResponse.json(
+          { success: false, error: "Please provide an enquiry message describing your requirement (at least 5 characters)" },
+          { status: 400 }
+        );
+      }
+    } else {
+      if (!body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(body.email.trim())) {
+        return NextResponse.json(
+          { success: false, error: "Please provide a valid email address for subscription" },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Resolve category if omitted
+    let category = body.category;
+    if (!category || category === "General Farm Enquiry") {
+      const matched = PRODUCTS.find(
+        (p) => p.name.toLowerCase() === body.productName?.toLowerCase()
       );
+      if (matched) {
+        category = matched.category;
+      } else {
+        category = "Chicks & Young Birds";
+      }
     }
 
     // Deduplication guard: prevent accidental double-clicks within 15 seconds
@@ -48,7 +122,9 @@ export async function POST(request: Request) {
       customerName: body.customerName.trim(),
       phone: body.phone.trim(),
       email: body.email ? body.email.trim() : "",
-      productName: body.productName || "General Farm Enquiry",
+      category,
+      enquiryType: body.enquiryType || (body.productName ? "product" : "general"),
+      productName: body.productName || `Enquiry for ${category}`,
       quantity: body.quantity || "Not specified",
       message: body.message || "",
       status: "new",

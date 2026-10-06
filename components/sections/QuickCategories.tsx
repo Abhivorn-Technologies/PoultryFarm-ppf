@@ -270,6 +270,7 @@ export function QuickCategories({
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <button
+              suppressHydrationWarning
               onClick={() => handleArrowNavigation("left")}
               aria-label="Previous categories"
               className="w-9 h-9 rounded-full border border-brand-softGreen flex items-center justify-center text-brand-darkGreen hover:bg-brand-softGreen hover:border-brand-darkGreen/40 transition active:scale-95 shadow-2xs cursor-pointer"
@@ -277,6 +278,7 @@ export function QuickCategories({
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
+              suppressHydrationWarning
               onClick={() => handleArrowNavigation("right")}
               aria-label="Next categories"
               className="w-9 h-9 rounded-full border border-brand-softGreen flex items-center justify-center text-brand-darkGreen hover:bg-brand-softGreen hover:border-brand-darkGreen/40 transition active:scale-95 shadow-2xs cursor-pointer"

@@ -69,9 +69,9 @@ export default function AdminLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-[#F5F8F5] text-brand-darkGray flex flex-col md:flex-row font-sans">
+    <div className="h-screen overflow-hidden bg-[#F5F8F5] text-brand-darkGray flex flex-col md:flex-row font-sans">
       {/* Mobile Header */}
-      <header className="md:hidden bg-brand-darkGreen text-white px-4 py-3 flex items-center justify-between shadow-md sticky top-0 z-40">
+      <header className="md:hidden bg-brand-darkGreen text-white px-4 py-3 flex items-center justify-between shadow-md shrink-0 z-40">
         <img
           src="/assets/logo/LOGO.png"
           alt="PoultryFarm"
@@ -97,13 +97,13 @@ export default function AdminLayout({
 
       {/* Sidebar Navigation */}
       <aside
-        className={`fixed md:sticky top-0 h-screen w-64 bg-brand-darkGreen text-white flex flex-col justify-between z-50 transition-transform duration-300 ease-in-out ${
+        className={`fixed md:static top-0 h-full w-64 bg-brand-darkGreen text-white flex flex-col justify-between z-50 shrink-0 overflow-y-auto transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
         <div>
           {/* Brand Header with Clean Logo */}
-          <div className="p-5 border-b border-white/10 flex items-center justify-center">
+          <div className="p-5 border-b border-white/10 flex items-center justify-center shrink-0">
             <img
               src="/assets/logo/LOGO.png"
               alt="PoultryFarm Logo"
@@ -143,7 +143,7 @@ export default function AdminLayout({
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-white/10 space-y-2">
+        <div className="p-4 border-t border-white/10 space-y-2 shrink-0">
           <Link
             href="/"
             target="_blank"
@@ -164,8 +164,8 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
+      <main className="flex-1 flex flex-col min-w-0 h-full overflow-y-auto">
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-8 flex-grow">
           {children}
         </div>
       </main>

@@ -4,6 +4,8 @@ export interface IEnquiry extends Document {
   customerName: string;
   phone: string;
   email?: string;
+  category: string;
+  enquiryType: "product" | "category" | "general" | "newsletter";
   productName?: string;
   quantity?: string;
   message?: string;
@@ -17,6 +19,12 @@ const EnquirySchema = new Schema<IEnquiry>(
     customerName: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
     email: { type: String, default: "", trim: true },
+    category: { type: String, default: "General Farm Enquiry", trim: true },
+    enquiryType: {
+      type: String,
+      enum: ["product", "category", "general", "newsletter"],
+      default: "general",
+    },
     productName: { type: String, default: "General Enquiry" },
     quantity: { type: String, default: "Not specified" },
     message: { type: String, default: "" },

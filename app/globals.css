@@ -84,4 +84,19 @@
   .shadow-soft-green {
     box-shadow: 0 10px 30px -10px rgba(31, 107, 69, 0.3);
   }
+
+  .thin-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .thin-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.02);
+  }
+  .thin-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(94, 159, 98, 0.45);
+    border-radius: 9999px;
+  }
+  .thin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(31, 107, 69, 0.8);
+  }
 }

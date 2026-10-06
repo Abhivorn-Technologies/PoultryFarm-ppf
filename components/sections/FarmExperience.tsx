@@ -168,6 +168,7 @@ export function FarmExperience() {
             {PRODUCTS_3D.map((p, idx) => (
               <button
                 key={p.id}
+                suppressHydrationWarning
                 onClick={() => {
                   setSelectedProductIndex(idx);
                   setActiveHotspot(null);

@@ -11,6 +11,10 @@ import {
   Layers,
   ArrowUpDown,
   Filter,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -27,10 +31,12 @@ export function ProductsCatalogContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState<"featured" | "name-asc" | "name-desc">("featured");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
   const shouldReduceMotion = useReducedMotion();
 
-  // Fetch live products from MongoDB Atlas
+  // Fetch live products from farm catalogue system
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
@@ -81,10 +87,34 @@ export function ProductsCatalogContent() {
     return list.sort((a, b) => a.itemNumber - b.itemNumber);
   }, [filteredProducts, sortBy]);
 
+  // Reset page to 1 when filters or sorting change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory, sortBy, itemsPerPage]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedProducts.length / itemsPerPage));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, sortedProducts.length);
+  const paginatedProducts = sortedProducts.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    const validPage = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(validPage);
+    if (typeof window !== "undefined") {
+      const el = document.getElementById("catalog-products-section");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.scrollTo({ top: 380, behavior: "smooth" });
+      }
+    }
+  };
+
   const handleResetFilters = () => {
     setSearchQuery("");
     setSelectedCategory("all");
     setSortBy("featured");
+    setCurrentPage(1);
   };
 
   const selectedCategoryObj = useMemo(() => {
@@ -258,7 +288,7 @@ export function ProductsCatalogContent() {
         </section>
 
         {/* 5. PRODUCT SHOWCASE GRID */}
-        <div className="py-10">
+        <div id="catalog-products-section" className="py-10 scroll-mt-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimatePresence mode="wait">
               {sortedProducts.length === 0 ? (
@@ -292,18 +322,126 @@ export function ProductsCatalogContent() {
                 </motion.div>
               ) : (
                 <motion.div
-                  key={`all-products-grid-${selectedCategory}-${sortBy}`}
+                  key={`all-products-grid-${selectedCategory}-${sortBy}-${currentPage}`}
                   initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
                   transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="space-y-10"
                 >
+                  {/* Results count header */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-brand-gray pb-2 border-b border-brand-softGreen/40">
+                    <div>
+                      Showing <strong className="text-brand-darkGray font-bold">{startIndex + 1}–{endIndex}</strong> of{" "}
+                      <strong className="text-brand-darkGreen font-bold">{sortedProducts.length}</strong> products
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="font-medium text-brand-gray">Products per page:</span>
+                      <select
+                        value={itemsPerPage}
+                        onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                        className="bg-white border border-brand-softGreen rounded-lg px-2 py-1 text-xs font-bold text-brand-darkGray focus:outline-none focus:ring-1 focus:ring-brand-freshGreen cursor-pointer"
+                      >
+                        <option value={12}>12 items</option>
+                        <option value={24}>24 items</option>
+                        <option value={36}>36 items</option>
+                        <option value={48}>48 items</option>
+                      </select>
+                    </div>
+                  </div>
+
                   {/* Responsive product catalogue grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {sortedProducts.map((product) => (
+                    {paginatedProducts.map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
                   </div>
+
+                  {/* Pagination Controls Bar */}
+                  {totalPages > 1 && (
+                    <div className="bg-white p-4 sm:p-5 rounded-3xl border border-brand-softGreen/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 mt-8">
+                      <div className="text-xs font-medium text-brand-gray order-2 sm:order-1">
+                        Page <strong className="text-brand-darkGray font-bold">{currentPage}</strong> of{" "}
+                        <strong className="text-brand-darkGray font-bold">{totalPages}</strong>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 order-1 sm:order-2 flex-wrap justify-center">
+                        {/* First Page */}
+                        <button
+                          onClick={() => handlePageChange(1)}
+                          disabled={currentPage === 1}
+                          className="p-2 rounded-xl border border-brand-softGreen/80 text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition"
+                          title="First Page"
+                        >
+                          <ChevronsLeft className="w-4 h-4" />
+                        </button>
+
+                        {/* Previous Page */}
+                        <button
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                          className="px-3 py-2 rounded-xl border border-brand-softGreen/80 text-xs font-bold text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition flex items-center gap-1"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                          <span>Prev</span>
+                        </button>
+
+                        {/* Numbered Page Buttons */}
+                        {Array.from({ length: totalPages }, (_, i) => i + 1)
+                          .filter((p) => {
+                            // Show first, last, current, and +/- 1 around current
+                            return (
+                              p === 1 ||
+                              p === totalPages ||
+                              Math.abs(p - currentPage) <= 1
+                            );
+                          })
+                          .map((p, idx, arr) => {
+                            const prev = arr[idx - 1];
+                            const showEllipsis = prev && p - prev > 1;
+
+                            return (
+                              <React.Fragment key={p}>
+                                {showEllipsis && (
+                                  <span className="px-1 text-xs text-brand-gray font-bold">...</span>
+                                )}
+                                <button
+                                  onClick={() => handlePageChange(p)}
+                                  className={`w-9 h-9 rounded-xl text-xs font-bold transition flex items-center justify-center ${
+                                    currentPage === p
+                                      ? "bg-brand-darkGreen text-white shadow-xs font-black"
+                                      : "border border-brand-softGreen/80 text-brand-darkGray hover:bg-brand-softGreen/40"
+                                  }`}
+                                >
+                                  {p}
+                                </button>
+                              </React.Fragment>
+                            );
+                          })}
+
+                        {/* Next Page */}
+                        <button
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                          className="px-3 py-2 rounded-xl border border-brand-softGreen/80 text-xs font-bold text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition flex items-center gap-1"
+                        >
+                          <span>Next</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+
+                        {/* Last Page */}
+                        <button
+                          onClick={() => handlePageChange(totalPages)}
+                          disabled={currentPage === totalPages}
+                          className="p-2 rounded-xl border border-brand-softGreen/80 text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition"
+                          title="Last Page"
+                        >
+                          <ChevronsRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

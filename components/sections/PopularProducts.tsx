@@ -65,6 +65,7 @@ export function PopularProducts({ activeTab: externalTab, onTabChange }: Popular
               <div className="flex items-center gap-1.5 p-1 bg-white rounded-full border border-brand-softGreen shadow-xs shrink-0 whitespace-nowrap min-w-max">
                 <button
                   key="all"
+                  suppressHydrationWarning
                   onClick={(e) => {
                     handleTabClick("all");
                     e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
@@ -80,6 +81,7 @@ export function PopularProducts({ activeTab: externalTab, onTabChange }: Popular
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat.id}
+                    suppressHydrationWarning
                     onClick={(e) => {
                       handleTabClick(cat.slug);
                       e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });

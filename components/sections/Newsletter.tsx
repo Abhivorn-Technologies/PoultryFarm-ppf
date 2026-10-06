@@ -7,11 +7,35 @@ export function Newsletter() {
   const [email, setEmail] = useState("");
   const { showToast } = useCart();
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!email || isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      await fetch("/api/enquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: "Newsletter Subscriber",
+          phone: "Email Subscriber",
+          email: email.trim(),
+          category: "Newsletter & Updates",
+          enquiryType: "newsletter",
+          productName: "Poultry Farm Community Subscription",
+          message: "Subscribed to seasonal breed notifications and farm advisory updates.",
+        }),
+      });
+
       showToast(`Thank you! ${email} has been subscribed to poultry updates.`);
       setEmail("");
+    } catch (err) {
+      console.error(err);
+      showToast("Subscription received. Thank you!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

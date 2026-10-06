@@ -12,6 +12,7 @@ import {
   Plus,
   Database,
   RefreshCw,
+  Layers,
 } from "lucide-react";
 
 interface EnquiryItem {
@@ -19,6 +20,7 @@ interface EnquiryItem {
   customerName: string;
   phone: string;
   email?: string;
+  category?: string;
   productName?: string;
   quantity?: string;
   message?: string;
@@ -35,8 +37,6 @@ export default function AdminDashboardPage() {
   });
   const [recentEnquiries, setRecentEnquiries] = useState<EnquiryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [seeding, setSeeding] = useState(false);
-  const [seedMessage, setSeedMessage] = useState("");
 
   const fetchDashboardData = async () => {
     try {
@@ -69,73 +69,39 @@ export default function AdminDashboardPage() {
     fetchDashboardData();
   }, []);
 
-  const handleSeedDatabase = async () => {
-    if (!confirm("This will upload all 89 catalogue items to your MongoDB Atlas database. Proceed?")) {
-      return;
-    }
-    try {
-      setSeeding(true);
-      setSeedMessage("");
-      const res = await fetch("/api/seed", { method: "POST" });
-      const data = await res.json();
-      if (data.success) {
-        setSeedMessage(`✅ ${data.message}`);
-        fetchDashboardData();
-      } else {
-        alert(data.error || "Failed to seed database");
-      }
-    } catch (err: unknown) {
-      console.error(err);
-      alert("Error connecting to database");
-    } finally {
-      setSeeding(false);
-    }
-  };
-
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
-      {/* Top Welcome Banner */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-brand-softGreen/60 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-xs font-bold text-brand-darkGreen bg-brand-softGreen/50 px-3 py-1 rounded-full uppercase tracking-wider">
-            Farm Overview & Control Room
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-brand-darkGray mt-2">
-            Welcome to PoultryFarm Admin
-          </h1>
-          <p className="text-xs sm:text-sm text-brand-gray mt-1">
-            Monitor real-time customer quotations, manage breeding stock catalogue, and reply to leads.
-          </p>
-          {seedMessage && (
-            <div className="mt-2.5 inline-block px-3 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-lg border border-emerald-200 animate-in fade-in">
-              {seedMessage}
+    <div className="space-y-6">
+      {/* Sticky Top Welcome Banner with Decreased Height */}
+      <div className="sticky top-0 z-30 bg-[#F5F8F5]/95 backdrop-blur-md py-3 border-b border-brand-softGreen/50">
+        <div className="bg-white rounded-2xl px-5 py-3 border border-brand-softGreen/60 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold text-brand-darkGreen bg-brand-softGreen/50 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                Farm Control Room
+              </span>
+              <span className="text-[11px] text-brand-gray font-medium hidden sm:inline">PoultryFarm Management</span>
             </div>
-          )}
-        </div>
-        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
-          <button
-            onClick={handleSeedDatabase}
-            disabled={seeding}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition shadow-sm disabled:opacity-50"
-            title="Upload all 89 items to MongoDB"
-          >
-            <Database className="w-3.5 h-3.5" />
-            <span>{seeding ? "Seeding..." : "Seed All Data"}</span>
-          </button>
-          <Link
-            href="/admin/products"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs transition shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Product</span>
-          </Link>
-          <Link
-            href="/admin/enquiries"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-cardCream hover:bg-brand-softGreen text-brand-darkGreen border border-brand-softGreen font-bold text-xs transition"
-          >
-            <span>View All Leads</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </Link>
+            <h1 className="text-lg sm:text-xl font-black text-brand-darkGray mt-0.5">
+              Welcome to PoultryFarm Admin
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <Link
+              href="/admin/products"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs transition shadow-xs"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Product</span>
+            </Link>
+            <Link
+              href="/admin/enquiries"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-cardCream hover:bg-brand-softGreen text-brand-darkGreen border border-brand-softGreen font-bold text-xs transition"
+            >
+              <span>View Enquiries</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -144,7 +110,7 @@ export default function AdminDashboardPage() {
         {/* Metric 1 */}
         <div className="bg-white p-5 rounded-2xl border border-brand-softGreen/60 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-brand-gray">Total Catalogue Items</span>
+            <span className="text-xs font-bold text-brand-gray">Total Products Listed</span>
             <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
               <Package className="w-4 h-4" />
             </div>
@@ -161,7 +127,7 @@ export default function AdminDashboardPage() {
         {/* Metric 2 */}
         <div className="bg-white p-5 rounded-2xl border border-brand-softGreen/60 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-brand-gray">New Incoming Leads</span>
+            <span className="text-xs font-bold text-brand-gray">Pending Enquiries</span>
             <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
               <Clock className="w-4 h-4" />
             </div>
@@ -170,14 +136,14 @@ export default function AdminDashboardPage() {
             {loading ? "..." : stats.newEnquiries}
           </div>
           <div className="text-[11px] text-amber-700 font-semibold mt-1">
-            Requires quotation followup
+            Waiting for quotation follow-up
           </div>
         </div>
 
         {/* Metric 3 */}
         <div className="bg-white p-5 rounded-2xl border border-brand-softGreen/60 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-brand-gray">Total Customer Enquiries</span>
+            <span className="text-xs font-bold text-brand-gray">Total Enquiries Received</span>
             <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
               <MessageSquare className="w-4 h-4" />
             </div>
@@ -186,14 +152,14 @@ export default function AdminDashboardPage() {
             {loading ? "..." : stats.totalEnquiries}
           </div>
           <div className="text-[11px] text-brand-gray font-medium mt-1">
-            Stored in MongoDB
+            All-time customer requests
           </div>
         </div>
 
         {/* Metric 4 */}
         <div className="bg-white p-5 rounded-2xl border border-brand-softGreen/60 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-brand-gray">Farm Sectors</span>
+            <span className="text-xs font-bold text-brand-gray">Farm Categories</span>
             <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center">
               <CheckCircle className="w-4 h-4" />
             </div>
@@ -202,7 +168,7 @@ export default function AdminDashboardPage() {
             {stats.categories}
           </div>
           <div className="text-[11px] text-purple-700 font-semibold mt-1">
-            Active 2-column showcase
+            12 specialized poultry sectors
           </div>
         </div>
       </div>
@@ -239,7 +205,7 @@ export default function AdminDashboardPage() {
                 <tr>
                   <th className="py-3 px-4">Customer</th>
                   <th className="py-3 px-4">Phone / WhatsApp</th>
-                  <th className="py-3 px-4">Product Interested</th>
+                  <th className="py-3 px-4">Product & Category</th>
                   <th className="py-3 px-4">Status</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
@@ -253,8 +219,21 @@ export default function AdminDashboardPage() {
                     <td className="py-3.5 px-4 text-brand-gray font-mono">
                       {enq.phone}
                     </td>
-                    <td className="py-3.5 px-4 text-brand-darkGray font-medium">
-                      {enq.productName}
+                    <td className="py-3.5 px-4">
+                      <div className="font-bold text-brand-darkGray text-xs sm:text-sm">
+                        {enq.productName}
+                      </div>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs">
+                          <Layers className="w-2.5 h-2.5 text-emerald-600" />
+                          <span>Category: {enq.category || "Chicks & Young Birds"}</span>
+                        </span>
+                      </div>
+                      {enq.message && (
+                        <div className="text-[11px] text-brand-gray mt-1 line-clamp-1 italic max-w-sm">
+                          &quot;{enq.message}&quot;
+                        </div>
+                      )}
                     </td>
                     <td className="py-3.5 px-4">
                       <span

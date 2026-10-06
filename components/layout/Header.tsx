@@ -184,6 +184,7 @@ export function Header({ variant = "auto" }: HeaderProps) {
 
           {/* Enquire Now Action CTA */}
           <button
+            suppressHydrationWarning
             onClick={() => openEnquiryModal()}
             className="inline-flex items-center gap-2 bg-brand-darkGreen hover:bg-brand-green text-white px-5 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all shadow-md shadow-brand-darkGreen/25 hover:shadow-lg active:scale-95 shrink-0 whitespace-nowrap"
             id="header-enquire-button"

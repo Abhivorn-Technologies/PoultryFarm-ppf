@@ -1,9 +1,27 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { X, Send, CheckCircle2, ShieldCheck, PhoneCall, Mail, User, HelpCircle, Sparkles } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  X,
+  Send,
+  CheckCircle2,
+  ShieldCheck,
+  Sparkles,
+  AlertCircle,
+  Phone,
+  Mail,
+  User,
+  Check,
+} from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { CATEGORIES } from "@/data/categories";
+
+interface FormErrors {
+  name?: string;
+  phone?: string;
+  email?: string;
+  message?: string;
+}
 
 export function EnquiryModal() {
   const { isEnquiryOpen, closeEnquiryModal, selectedEnquiryProduct, showToast } = useCart();
@@ -13,12 +31,64 @@ export function EnquiryModal() {
     name: "",
     phone: "",
     email: "",
-    category: "Chicks & Live Birds",
+    category: CATEGORIES[0].name,
     productName: "",
     message: "",
   });
 
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const messageInputRef = useRef<HTMLTextAreaElement>(null);
+
+  const validateField = (field: string, value: string): string | undefined => {
+    switch (field) {
+      case "name": {
+        const trimmed = value.trim();
+        if (!trimmed) return "Full Name is required";
+        if (trimmed.length < 2) return "Name must be at least 2 characters";
+        if (!/^[a-zA-Z\s.'-]+$/.test(trimmed)) return "Please enter a valid name (letters and spaces only)";
+        return undefined;
+      }
+      case "phone": {
+        const trimmed = value.trim();
+        if (!trimmed) return "Phone / WhatsApp number is required";
+        const digitsOnly = trimmed.replace(/\D/g, "");
+        if (digitsOnly.length < 10) return "Phone number must contain at least 10 digits";
+        if (digitsOnly.length > 15) return "Phone number cannot exceed 15 digits";
+        return undefined;
+      }
+      case "email": {
+        const trimmed = value.trim();
+        if (!trimmed) return "Email address is required";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        if (!emailRegex.test(trimmed)) return "Please enter a valid email address (e.g. name@example.com)";
+        return undefined;
+      }
+      case "message": {
+        const trimmed = value.trim();
+        if (!trimmed) return "Please describe your requirement or questions";
+        if (trimmed.length < 10) return "Message must be at least 10 characters long";
+        return undefined;
+      }
+      default:
+        return undefined;
+    }
+  };
+
+  const validateAll = () => {
+    const errs: FormErrors = {
+      name: validateField("name", formData.name),
+      phone: validateField("phone", formData.phone),
+      email: validateField("email", formData.email),
+      message: validateField("message", formData.message),
+    };
+    return errs;
+  };
 
   useEffect(() => {
     if (selectedEnquiryProduct) {
@@ -26,44 +96,101 @@ export function EnquiryModal() {
         ...prev,
         category: selectedEnquiryProduct.category,
         productName: selectedEnquiryProduct.name,
-        message: `I am interested in ${selectedEnquiryProduct.name} (Item #${selectedEnquiryProduct.itemNumber}). Please provide catalogue specifications, batch availability, and quotation details.`,
+        message: `I am interested in ${selectedEnquiryProduct.name} under ${selectedEnquiryProduct.category} (Item #${selectedEnquiryProduct.itemNumber}). Please provide catalogue specifications, batch availability, and quotation details.`,
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
+        category: CATEGORIES[0].name,
         productName: "",
+        message: `I am interested in ${CATEGORIES[0].name}. Please provide batch availability, price list, and quotation details.`,
       }));
     }
+    setErrors({});
+    setTouched({});
     setIsSubmitted(false);
     setIsSubmitting(false);
   }, [selectedEnquiryProduct, isEnquiryOpen]);
 
   if (!isEnquiryOpen) return null;
 
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (touched[field]) {
+      const err = validateField(field, value);
+      setErrors((prev) => ({ ...prev, [field]: err }));
+    }
+  };
+
+  const handleInputBlur = (field: string) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    const err = validateField(field, formData[field as keyof typeof formData] || "");
+    setErrors((prev) => ({ ...prev, [field]: err }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
 
+    // Validate entire form
+    const validationErrors = validateAll();
+    setTouched({
+      name: true,
+      phone: true,
+      email: true,
+      message: true,
+    });
+    setErrors(validationErrors);
+
+    // If any error exists, focus the first failing field
+    if (validationErrors.name) {
+      nameInputRef.current?.focus();
+      showToast(validationErrors.name);
+      return;
+    }
+    if (validationErrors.phone) {
+      phoneInputRef.current?.focus();
+      showToast(validationErrors.phone);
+      return;
+    }
+    if (validationErrors.email) {
+      emailInputRef.current?.focus();
+      showToast(validationErrors.email);
+      return;
+    }
+    if (validationErrors.message) {
+      messageInputRef.current?.focus();
+      showToast(validationErrors.message);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
+      const activeCategory =
+        formData.category ||
+        (selectedEnquiryProduct ? selectedEnquiryProduct.category : CATEGORIES[0].name);
+
       const res = await fetch("/api/enquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customerName: formData.name,
-          phone: formData.phone,
-          email: formData.email,
-          productName: formData.productName || "General Catalogue Enquiry",
-          message: formData.message,
+          customerName: formData.name.trim(),
+          phone: formData.phone.trim(),
+          email: formData.email.trim(),
+          category: activeCategory,
+          enquiryType: selectedEnquiryProduct ? "product" : "category",
+          productName:
+            formData.productName || (selectedEnquiryProduct ? selectedEnquiryProduct.name : `Enquiry: ${activeCategory}`),
+          message: formData.message.trim(),
         }),
       });
 
       if (res.ok) {
         setIsSubmitted(true);
-        showToast("Enquiry submitted successfully! Our team will contact you shortly.");
+        showToast("Enquiry submitted successfully! Our farm team will contact you shortly.");
       } else {
         const errorData = await res.json().catch(() => ({}));
-        showToast(errorData.error || "Failed to submit enquiry. Please try again.");
+        showToast(errorData.error || "Failed to submit enquiry. Please verify your details.");
       }
     } catch (err) {
       console.error("Failed to post enquiry to database:", err);
@@ -129,7 +256,7 @@ export function EnquiryModal() {
                 {selectedEnquiryProduct ? `Enquire About ${selectedEnquiryProduct.name}` : "Enquire About Our Products"}
               </h2>
               <p className="text-xs sm:text-sm text-brand-gray mt-1">
-                Fill in your details below to receive full technical specifications, batch availability, and farm quotation.
+                Fill in your verified details below to receive direct technical specifications, batch availability, and farm quotation.
               </p>
             </div>
 
@@ -151,59 +278,129 @@ export function EnquiryModal() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-3.5">
+            <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* Full Name Field */}
                 <div>
-                  <label className="block text-xs font-bold text-brand-darkGray uppercase tracking-wider mb-1">
-                    Full Name *
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-bold text-brand-darkGray uppercase tracking-wider flex items-center gap-1">
+                      <User className="w-3 h-3 text-brand-freshGreen" />
+                      <span>Full Name <span className="text-red-500">*</span></span>
+                    </label>
+                    {touched.name && !errors.name && formData.name.trim().length >= 2 && (
+                      <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> Valid
+                      </span>
+                    )}
+                  </div>
                   <input
+                    ref={nameInputRef}
                     type="text"
-                    required
                     placeholder="Your Name / Farm Name"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border border-brand-softGreen text-xs sm:text-sm text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen placeholder:text-gray-400"
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    onBlur={() => handleInputBlur("name")}
+                    className={`w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border text-xs sm:text-sm text-brand-darkGray transition-all focus:outline-none placeholder:text-gray-400 ${
+                      touched.name && errors.name
+                        ? "border-red-400 focus:ring-2 focus:ring-red-400/30 bg-red-50/20"
+                        : "border-brand-softGreen focus:ring-2 focus:ring-brand-freshGreen"
+                    }`}
                   />
+                  {touched.name && errors.name && (
+                    <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-500" />
+                      <span>{errors.name}</span>
+                    </p>
+                  )}
                 </div>
 
+                {/* Phone / WhatsApp Field */}
                 <div>
-                  <label className="block text-xs font-bold text-brand-darkGray uppercase tracking-wider mb-1">
-                    Phone / WhatsApp *
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-bold text-brand-darkGray uppercase tracking-wider flex items-center gap-1">
+                      <Phone className="w-3 h-3 text-brand-freshGreen" />
+                      <span>Phone / WhatsApp <span className="text-red-500">*</span></span>
+                    </label>
+                    {touched.phone && !errors.phone && formData.phone.trim().replace(/\D/g, "").length >= 10 && (
+                      <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> Valid
+                      </span>
+                    )}
+                  </div>
                   <input
+                    ref={phoneInputRef}
                     type="tel"
-                    required
                     placeholder="+91 98765 43210"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border border-brand-softGreen text-xs sm:text-sm text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen placeholder:text-gray-400"
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    onBlur={() => handleInputBlur("phone")}
+                    className={`w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border text-xs sm:text-sm text-brand-darkGray transition-all focus:outline-none placeholder:text-gray-400 ${
+                      touched.phone && errors.phone
+                        ? "border-red-400 focus:ring-2 focus:ring-red-400/30 bg-red-50/20"
+                        : "border-brand-softGreen focus:ring-2 focus:ring-brand-freshGreen"
+                    }`}
                   />
+                  {touched.phone && errors.phone && (
+                    <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-500" />
+                      <span>{errors.phone}</span>
+                    </p>
+                  )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* Email Field */}
                 <div>
-                  <label className="block text-xs font-bold text-brand-darkGray uppercase tracking-wider mb-1">
-                    Email Address *
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-bold text-brand-darkGray uppercase tracking-wider flex items-center gap-1">
+                      <Mail className="w-3 h-3 text-brand-freshGreen" />
+                      <span>Email Address <span className="text-red-500">*</span></span>
+                    </label>
+                    {touched.email && !errors.email && formData.email.trim() && (
+                      <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> Valid
+                      </span>
+                    )}
+                  </div>
                   <input
+                    ref={emailInputRef}
                     type="email"
-                    required
                     placeholder="name@example.com"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border border-brand-softGreen text-xs sm:text-sm text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen placeholder:text-gray-400"
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    onBlur={() => handleInputBlur("email")}
+                    className={`w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border text-xs sm:text-sm text-brand-darkGray transition-all focus:outline-none placeholder:text-gray-400 ${
+                      touched.email && errors.email
+                        ? "border-red-400 focus:ring-2 focus:ring-red-400/30 bg-red-50/20"
+                        : "border-brand-softGreen focus:ring-2 focus:ring-brand-freshGreen"
+                    }`}
                   />
+                  {touched.email && errors.email && (
+                    <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-500" />
+                      <span>{errors.email}</span>
+                    </p>
+                  )}
                 </div>
 
+                {/* Product Category Selection */}
                 <div>
                   <label className="block text-xs font-bold text-brand-darkGray uppercase tracking-wider mb-1">
-                    Product Category *
+                    Product Category <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    onChange={(e) => {
+                      const newCat = e.target.value;
+                      setFormData((prev) => ({
+                        ...prev,
+                        category: newCat,
+                        message: prev.productName
+                          ? `I am interested in ${prev.productName} under ${newCat}. Please provide catalogue specifications, batch availability, and quotation details.`
+                          : `I am interested in ${newCat}. Please provide batch availability, price list, and quotation details.`,
+                      }));
+                    }}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border border-brand-softGreen text-xs sm:text-sm text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen cursor-pointer"
                   >
                     {CATEGORIES.map((cat) => (
@@ -216,18 +413,37 @@ export function EnquiryModal() {
                 </div>
               </div>
 
+              {/* Message Field */}
               <div>
-                <label className="block text-xs font-bold text-brand-darkGray uppercase tracking-wider mb-1">
-                  Enquiry Message / Requirement
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-bold text-brand-darkGray uppercase tracking-wider">
+                    Enquiry Message / Requirement <span className="text-red-500">*</span>
+                  </label>
+                  <span className={`text-[10px] font-semibold ${
+                    formData.message.trim().length < 10 ? "text-amber-600" : "text-brand-gray"
+                  }`}>
+                    {formData.message.trim().length} chars (min 10)
+                  </span>
+                </div>
                 <textarea
+                  ref={messageInputRef}
                   rows={3}
-                  required
                   placeholder="Specify desired quantity, breed preferences, delivery location, or specific questions..."
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border border-brand-softGreen text-xs sm:text-sm text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen placeholder:text-gray-400 resize-none"
+                  onChange={(e) => handleInputChange("message", e.target.value)}
+                  onBlur={() => handleInputBlur("message")}
+                  className={`w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border text-xs sm:text-sm text-brand-darkGray transition-all focus:outline-none placeholder:text-gray-400 resize-none ${
+                    touched.message && errors.message
+                      ? "border-red-400 focus:ring-2 focus:ring-red-400/30 bg-red-50/20"
+                      : "border-brand-softGreen focus:ring-2 focus:ring-brand-freshGreen"
+                  }`}
                 />
+                {touched.message && errors.message && (
+                  <p className="text-[11px] text-red-600 font-semibold mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-500" />
+                    <span>{errors.message}</span>
+                  </p>
+                )}
               </div>
 
               <div className="pt-2">

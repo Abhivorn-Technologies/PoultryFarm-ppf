@@ -18,14 +18,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Set secure HTTP-only session cookie
+    // Set secure HTTP-only browser session cookie (cleared automatically when browser is closed)
     const cookieStore = await cookies();
     cookieStore.set("admin_session", "authenticated", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
     return NextResponse.json({

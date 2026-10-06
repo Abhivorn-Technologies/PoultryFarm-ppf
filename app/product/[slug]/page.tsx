@@ -35,18 +35,17 @@ export default function ProductDetailPage({
   const [loading, setLoading] = React.useState(!initialProduct);
 
   React.useEffect(() => {
-    if (!product) {
-      fetch("/api/products")
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success && Array.isArray(data.data)) {
-            const found = data.data.find((p: any) => p.slug === slug);
-            if (found) setProduct(found);
-          }
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [slug, product]);
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data)) {
+          const found = data.data.find((p: any) => p.slug === slug);
+          if (found) setProduct(found);
+        }
+      })
+      .catch((err) => console.log("Using static product fallback:", err))
+      .finally(() => setLoading(false));
+  }, [slug]);
 
   const { openEnquiryModal } = useCart();
 
