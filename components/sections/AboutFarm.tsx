@@ -1,90 +1,85 @@
 "use client";
 
 import React from "react";
-import { CATEGORIES } from "@/data/categories";
+import Link from "next/link";
+import { ArrowRight, Calendar, Building2, MapPin, Layers } from "lucide-react";
 
 export function AboutFarm() {
+  const stats = [
+    {
+      value: "2008",
+      label: "Established",
+      icon: Calendar,
+    },
+    {
+      value: "Manufacturer / Distributor",
+      label: "Business",
+      icon: Building2,
+    },
+    {
+      value: "Hyderabad",
+      label: "Location",
+      icon: MapPin,
+    },
+    {
+      value: "Poultry Solutions",
+      label: "Products & Services",
+      icon: Layers,
+    },
+  ];
+
   return (
-    <section className="py-16 bg-[#9DCD5A] border-t border-brand-darkGreen/15" id="about">
+    <section className="py-14 sm:py-16 bg-[#9DCD5A] border-t border-brand-darkGreen/15" id="about">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Left: Product Quality Composite */}
-          <div className="lg:col-span-6 relative">
-            <div className="relative rounded-3xl overflow-hidden shadow-xl border-4 border-white/60">
-              <img
-                alt="Poultry products, live chicks and equipment showcase"
-                className="w-full h-[400px] object-cover"
-                src="/assets/products/equipment/feeder.jpg"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-              <div className="absolute bottom-4 left-6 text-white">
-                <div className="text-xs uppercase font-semibold text-brand-yellow">
-                  Poultry Farm & Product Catalogue
-                </div>
-                <div className="text-base font-bold">Bio-Secure Quality Stock & Equipment</div>
-              </div>
+        <div className="bg-white rounded-3xl p-6 sm:p-10 lg:p-12 border border-brand-darkGreen/15 shadow-card relative overflow-hidden">
+          {/* Subtle background decoration */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-brand-softGreen/30 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+
+          <div className="relative z-10 max-w-4xl">
+            {/* Eyebrow */}
+            <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-brand-darkGreen bg-brand-softGreen px-3.5 py-1.5 rounded-full border border-brand-freshGreen/30 mb-4">
+              ABOUT PPF GROUP OF COMPANIES
             </div>
 
-            {/* Floating 100% Quality Badge */}
-            <div className="absolute -bottom-6 -right-4 bg-white p-4 rounded-2xl shadow-elevated border border-brand-softGreen flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-brand-softGreen text-brand-darkGreen flex items-center justify-center text-2xl font-black">
-                ✓
-              </div>
-              <div>
-                <div className="text-base font-black text-brand-darkGreen">100%</div>
-                <div className="text-xs font-semibold text-brand-darkGray">Verified Catalogue</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: Text Content & Statistics */}
-          <div className="lg:col-span-6 space-y-6">
-            <div className="inline-block text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-white/70 backdrop-blur-xs px-3.5 py-1 rounded-full border border-brand-darkGreen/15">
-              Product Catalogue
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-brand-darkGray leading-tight">
-              Comprehensive Poultry Catalogue & Farm Solutions
-            </h2>
-            <p className="text-sm sm:text-base text-brand-darkGray/90 leading-relaxed font-medium">
-              We provide complete poultry product solutions including day-old chicks, live heritage and commercial breeds, fertile hatching eggs, feeding equipment, incubators, feeds, and veterinary supplies nationwide with strict biosecurity standards.
+            {/* Main Content Paragraph */}
+            <p className="text-base sm:text-xl lg:text-2xl font-bold text-brand-darkGray leading-relaxed mb-8 sm:mb-10">
+              Established in 2008 at Hyderabad, Telangana, PPF Group of Companies is a manufacturer and trader of poultry farm chicks, hatching eggs, poultry ducks, egg incubators and other poultry products.
             </p>
 
-            {/* 4 Stats Cards Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-              <div className="bg-white rounded-xl p-3 text-center border border-brand-darkGreen/15 shadow-2xs">
-                <div className="text-2xl font-black text-brand-darkGreen">✓</div>
-                <div className="text-[11px] font-bold text-brand-darkGray mt-0.5">
-                  Official Products
-                </div>
-              </div>
-              <div className="bg-white rounded-xl p-3 text-center border border-brand-darkGreen/15 shadow-2xs">
-                <div className="text-2xl font-black text-brand-darkGreen">{CATEGORIES.length}</div>
-                <div className="text-[11px] font-bold text-brand-darkGray mt-0.5">
-                  Product Categories
-                </div>
-              </div>
-              <div className="bg-white rounded-xl p-3 text-center border border-brand-darkGreen/15 shadow-2xs">
-                <div className="text-2xl font-black text-brand-darkGreen">100%</div>
-                <div className="text-[11px] font-bold text-brand-darkGray mt-0.5">
-                  Bio-Secure Sourced
-                </div>
-              </div>
-              <div className="bg-white rounded-xl p-3 text-center border border-brand-darkGreen/15 shadow-2xs">
-                <div className="text-2xl font-black text-brand-darkGreen">Direct</div>
-                <div className="text-[11px] font-bold text-brand-darkGray mt-0.5">
-                  Nationwide Dispatch
-                </div>
-              </div>
+            {/* 4 Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 sm:mb-10">
+              {stats.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={index}
+                    className="bg-brand-cardCream rounded-2xl p-4 sm:p-5 border border-brand-softGreen/80 hover:border-brand-freshGreen/60 hover:shadow-sm transition-all flex flex-col justify-between"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="w-9 h-9 rounded-xl bg-brand-softGreen text-brand-darkGreen flex items-center justify-center">
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <span className="text-[11px] font-bold text-brand-gray uppercase tracking-wider">
+                        {item.label}
+                      </span>
+                    </div>
+                    <div className="text-base sm:text-lg font-black text-brand-darkGray leading-snug">
+                      {item.value}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Action Button */}
-            <div className="pt-2">
-              <a
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs uppercase tracking-wider transition shadow-md"
-                href="#products"
+            {/* CTA Button */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white font-black text-xs sm:text-sm uppercase tracking-wider transition shadow-md shadow-brand-darkGreen/20 hover:shadow-lg active:scale-95 group"
               >
-                Browse Catalog Products
-              </a>
+                <span>MORE ABOUT US</span>
+                <ArrowRight className="w-4 h-4 text-brand-yellow group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
           </div>
         </div>

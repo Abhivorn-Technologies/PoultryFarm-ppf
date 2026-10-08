@@ -77,7 +77,7 @@ export const PRODUCTS: Product[] = [
       "Check the daily local chicken price before deciding when and where to sell.",
       "Proper weighing, healthy birds, and timely marketing can help farmers improve their returns."
     ],
-    "image": "/assets/ppf products/broiler image.jpg",
+    "image": "/assets/ppf products/Broiler Hens Sale for Meat Purpose.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -109,7 +109,7 @@ export const PRODUCTS: Product[] = [
       "Pure Aseel meat is valued for its traditional taste and firm texture.",
       "A good choice for farmers looking for quality, traditional Aseel birds for meat purpose."
     ],
-    "image": "/assets/products/chicks/asil-pure-chicks.jpg",
+    "image": "/assets/ppf products/Pure Aseel Chicks – Meat Purpose.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -140,7 +140,7 @@ export const PRODUCTS: Product[] = [
       "They generally have good feed-conversion ability and strong survival characteristics when properly managed.",
       "Aseel Cross chicks are a good option for farmers looking for hardy birds with good market value."
     ],
-    "image": "/assets/products/chicks/asil-pure-chicks.jpg",
+    "image": "/assets/ppf products/Cross Aseel Chicks – Meat Purpose.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -232,7 +232,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "Peruvadai chicks generally take around 4–6 months (120–180 days) to reach a good adult size, depending on feed, care, and the purpose of rearing."
     },
-    "image": "/assets/products/chicks/sonali-chicks.jpg",
+    "image": "/assets/ppf products/Peruvadai Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -303,7 +303,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "With good feed and care, they can reach a good market size in about 12–16 weeks for meat purposes."
     },
-    "image": "/assets/products/chicks/sonali-chicks.jpg",
+    "image": "/assets/ppf products/Kaveri Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -432,7 +432,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "With good feed and proper care, they generally reach a good size for meat in about 12–16 weeks."
     },
-    "image": "/assets/products/chicks/layer-chicks.jpg",
+    "image": "/assets/ppf products/Vanaraja Single Color Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -462,7 +462,7 @@ export const PRODUCTS: Product[] = [
       "Giriraja hens can produce a good number of eggs, making them useful for farmers who want both eggs and meat.",
       "The breed is suitable for free-range farming, where birds can forage naturally while receiving supplementary feed."
     ],
-    "image": "/assets/products/chicks/layer-chicks.jpg",
+    "image": "/assets/ppf products/Giriraja Multi-Color Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -492,7 +492,7 @@ export const PRODUCTS: Product[] = [
       "Their meat is valued for its lean, firm texture and distinct taste, giving farmers a different market option.",
       "Guinea fowl also produce small, hard-shelled eggs and can be a good choice for farmers looking for a low-input poultry bird."
     ],
-    "image": "/assets/products/chicks/layer-chicks.jpg",
+    "image": "/assets/ppf products/Guinea Fowl Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -521,7 +521,7 @@ export const PRODUCTS: Product[] = [
       "They need a balanced layer feed with enough calcium to support strong shells and consistent egg production.",
       "They are a suitable choice for farmers who want regular egg income over a long laying period."
     ],
-    "image": "/assets/products/chicks/layer-chicks.jpg",
+    "image": "/assets/ppf products/Brown Layer Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -550,7 +550,7 @@ export const PRODUCTS: Product[] = [
       "They are known for good egg production with relatively low feed consumption, making feed efficiency an important advantage.",
       "White layers are suitable for farmers who want to focus on large-scale, consistent egg production."
     ],
-    "image": "/assets/products/chicks/layer-chicks.jpg",
+    "image": "/assets/ppf products/White Layer Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -642,7 +642,7 @@ export const PRODUCTS: Product[] = [
       "Farmers can sell them as live birds or for meat, depending on local market demand.",
       "They are a useful option for farmers looking to utilize male layer chicks instead of discarding them."
     ],
-    "image": "/assets/products/chicks/broiler-chicks.jpg",
+    "image": "/assets/ppf products/Brown Layer Male Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -672,7 +672,7 @@ export const PRODUCTS: Product[] = [
       "Their white feathers and active nature make them easy to identify and manage on the farm.",
       "They can be a practical option for farmers who want to raise male chicks for meat instead of wasting them."
     ],
-    "image": "/assets/products/chicks/broiler-chicks.jpg",
+    "image": "/assets/ppf products/White Layer Male Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -702,7 +702,7 @@ export const PRODUCTS: Product[] = [
       "Turkey meat is high in protein and relatively lean, giving farmers a specialized meat market.",
       "Turkeys are suitable for open-range and semi-intensive farming, provided they have clean housing, good ventilation, and protection from extreme weather."
     ],
-    "image": "/assets/products/birds/quail-birds.jpg",
+    "image": "/assets/ppf products/Turkey Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -733,7 +733,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "Depending on the breed, males can grow much larger than females and may take several months to reach market size."
     },
-    "image": "/assets/products/birds/quail-birds.jpg",
+    "image": "/assets/ppf products/Turkey Live Birds – Meat Purpose.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -827,7 +827,7 @@ export const PRODUCTS: Product[] = [
       "Sonali birds generally have good adaptability and attractive appearance, making them popular in local markets.",
       "With proper care and feeding, they continue to develop a good body size and can later be kept for meat or breeding purposes."
     ],
-    "image": "/assets/ppf products/sonali birds.webp",
+    "image": "/assets/ppf products/Sonali One Month Old.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -857,7 +857,7 @@ export const PRODUCTS: Product[] = [
       "They can be raised in a backyard or free-range system with enough space for movement.",
       "Aseel birds grow slowly, so proper feeding and care are important for good body development as they mature."
     ],
-    "image": "/assets/products/chicks/asil-pure-chicks.jpg",
+    "image": "/assets/ppf products/Aseel Fighter – 1-Month-Old Birds.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -888,7 +888,7 @@ export const PRODUCTS: Product[] = [
       "Ducklings need starter feed, clean drinking water, warmth, and a dry shelter during the early weeks.",
       "Indian Runner ducks are suitable for backyard and small-scale farming, especially where there is a market for duck eggs."
     ],
-    "image": "/assets/products/birds/duck-birds.jpg",
+    "image": "/assets/ppf products/Indian Runner Duckling Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -918,7 +918,7 @@ export const PRODUCTS: Product[] = [
       "Farmers can sell live birds for breeding, egg production, or meat, depending on market demand.",
       "With proper feed and care, Indian Runner ducks can provide both egg income and additional value from meat birds."
     ],
-    "image": "/assets/products/birds/duck-birds.jpg",
+    "image": "/assets/ppf products/Indian Runner Live Birds – Meat & Egg Purpose.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -956,7 +956,7 @@ export const PRODUCTS: Product[] = [
         "description": "300 eggs per year under good management."
       }
     ],
-    "image": "/assets/products/birds/duck-birds.jpg",
+    "image": "/assets/ppf products/Khaki Campbell Duckling Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -986,7 +986,7 @@ export const PRODUCTS: Product[] = [
       "They need balanced feed, clean drinking water, and a dry shelter for healthy growth and good egg production.",
       "Farmers can sell live Khaki Campbell ducks for breeding, egg production, or meat, while males and surplus birds can be used for meat."
     ],
-    "image": "/assets/products/birds/duck-birds.jpg",
+    "image": "/assets/ppf products/Khaki Campbell Live Birds.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1019,7 +1019,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "With proper feed and management, they can reach a good meat size in about 7–9 weeks."
     },
-    "image": "/assets/products/birds/duck-birds.jpg",
+    "image": "/assets/ppf products/White Pekin Duckling Chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1052,7 +1052,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "They can reach a suitable market size in around 7–9 weeks with proper feeding and care."
     },
-    "image": "/assets/products/birds/duck-birds.jpg",
+    "image": "/assets/ppf products/White Pekin Live Birds – Meat Purpose.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1849,7 +1849,7 @@ export const PRODUCTS: Product[] = [
         "description": "inflammatory/supportive medicines – used to reduce inflammation or support recovery when appropriate."
       }
     ],
-    "image": "/assets/products/medicines/vaccines.jpg",
+    "image": "/assets/ppf products/Poultry Medicines.png",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1900,7 +1900,7 @@ export const PRODUCTS: Product[] = [
         "description": "used only where permitted and according to applicable veterinary and government requirements."
       }
     ],
-    "image": "/assets/products/medicines/vaccines.jpg",
+    "image": "/assets/ppf products/Poultry Vaccines.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -3099,7 +3099,7 @@ export const PRODUCTS: Product[] = [
         "description": "support supplements – Help maintain normal immune function."
       }
     ],
-    "image": "/assets/products/medicines/vaccines.jpg",
+    "image": "/assets/ppf products/Poultry Respiratory Support Medicines.png",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,

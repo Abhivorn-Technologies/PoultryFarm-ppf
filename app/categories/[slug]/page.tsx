@@ -1,3 +1,10 @@
-import CategoryDetailPage from "@/app/category/[slug]/page";
+import { redirect } from "next/navigation";
 
-export default CategoryDetailPage;
+export default async function CategoriesSlugPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  redirect(`/category/${slug}`);
+}

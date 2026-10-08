@@ -57,9 +57,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }, 4000);
   };
 
-  const openEnquiryModal = (product: Product | null = null) => {
-    setSelectedEnquiryProduct(product);
+  const openEnquiryModal = (product: any = null) => {
+    if (
+      product &&
+      typeof product === "object" &&
+      typeof product.name === "string" &&
+      !("nativeEvent" in product) &&
+      !("target" in product)
+    ) {
+      setSelectedEnquiryProduct(product);
+    } else {
+      setSelectedEnquiryProduct(null);
+    }
     setIsEnquiryOpen(true);
+  };
+
+  const handleSetQuickViewProduct = (product: any) => {
+    if (
+      product &&
+      typeof product === "object" &&
+      typeof product.name === "string" &&
+      !("nativeEvent" in product) &&
+      !("target" in product)
+    ) {
+      setQuickViewProduct(product);
+    } else {
+      setQuickViewProduct(null);
+    }
   };
 
   const closeEnquiryModal = () => {
@@ -81,7 +105,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         openEnquiryModal,
         closeEnquiryModal,
         quickViewProduct,
-        setQuickViewProduct,
+        setQuickViewProduct: handleSetQuickViewProduct,
         toastMessage,
         showToast,
         // compatibility stubs

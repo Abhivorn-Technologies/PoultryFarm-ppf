@@ -46,9 +46,8 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        {/* Category Badge */}
-        <div className="flex items-center justify-between text-xs text-brand-gray mb-1">
-          <span className="text-brand-freshGreen font-semibold text-[11px] truncate">{product.category}</span>
+        {/* Entry Number */}
+        <div className="flex items-center justify-end text-xs text-brand-gray mb-1">
           <span className="text-[10px] font-bold text-brand-gray bg-brand-cream px-1.5 py-0.5 rounded shrink-0">
             Entry #{product.itemNumber}
           </span>

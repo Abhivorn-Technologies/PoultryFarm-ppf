@@ -38,11 +38,8 @@ export default function Home() {
         {/* 4. Trust Features Strip */}
         <TrustStrip />
 
-        {/* 5. Popular Products Grid */}
-        <PopularProducts
-          activeTab={activeCategoryFilter}
-          onTabChange={setActiveCategoryFilter}
-        />
+        {/* 5. Complete Category-Grouped Product Catalogue */}
+        <PopularProducts />
 
         {/* 6. About Us Marketplace */}
         <AboutFarm />

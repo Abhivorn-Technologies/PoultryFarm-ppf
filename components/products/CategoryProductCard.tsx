@@ -42,16 +42,13 @@ export function CategoryProductCard({ product }: CategoryProductCardProps) {
             <span>Verified</span>
           </div>
 
-          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs">
-            <span className="font-semibold drop-shadow-sm text-[11px] bg-black/40 backdrop-blur-sm px-2.5 py-0.5 rounded-md">
-              {product.category}
-            </span>
-            {product.subTypes && product.subTypes.length > 0 && (
+          {product.subTypes && product.subTypes.length > 0 && (
+            <div className="absolute bottom-3 right-3 flex items-center justify-end text-white text-xs">
               <span className="text-[10px] font-bold bg-brand-yellow text-brand-darkGray px-2 py-0.5 rounded-md shadow-xs">
                 {product.subTypes.length} Available Variants
               </span>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Product Title & Short Description */}

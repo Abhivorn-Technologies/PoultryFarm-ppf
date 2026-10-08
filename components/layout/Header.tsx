@@ -94,12 +94,16 @@ export function Header({ variant = "auto" }: HeaderProps) {
           >
             Home
           </Link>
-          <a
-            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
-            href="/#about"
+          <Link
+            className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen ${
+              pathname === "/about"
+                ? "text-brand-darkGreen font-black border-b-2 border-brand-darkGreen pb-0.5"
+                : "text-brand-darkGray"
+            }`}
+            href="/about"
           >
             About
-          </a>
+          </Link>
           <a
             className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
             href="/#products"
@@ -235,9 +239,15 @@ export function Header({ variant = "auto" }: HeaderProps) {
             <Link onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream text-brand-darkGreen" href="/">
               Home
             </Link>
-            <a onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#about">
+            <Link
+              onClick={() => setMobileMenuOpen(false)}
+              className={`px-3 py-2 rounded-lg hover:bg-brand-cardCream ${
+                pathname === "/about" ? "text-brand-darkGreen font-black" : ""
+              }`}
+              href="/about"
+            >
               About
-            </a>
+            </Link>
             <a onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#products">
               Products
             </a>

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { use } from "react";
+import React from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   ShieldCheck,
   Truck,
@@ -23,13 +24,9 @@ import { PRODUCTS } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { ProductCard } from "@/components/products/ProductCard";
 
-export default function ProductDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const resolvedParams = use(params);
-  const slug = resolvedParams.slug;
+export default function ProductDetailPage() {
+  const routeParams = useParams();
+  const slug = (routeParams?.slug as string) || "";
   const initialProduct = PRODUCTS.find((p) => p.slug === slug);
   const [product, setProduct] = React.useState<any>(initialProduct);
   const [loading, setLoading] = React.useState(!initialProduct);

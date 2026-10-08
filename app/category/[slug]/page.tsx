@@ -1,16 +1,14 @@
 "use client";
 
-import React, { use, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
-  ArrowLeft,
   Search,
   Layers,
   Sparkles,
-  CheckCircle2,
   Send,
 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
@@ -20,13 +18,9 @@ import { PRODUCTS } from "@/data/products";
 import { CatalogueProductCard } from "@/components/products/CatalogueProductCard";
 import { useCart } from "@/context/CartContext";
 
-export default function CategoryDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const resolvedParams = use(params);
-  const slug = resolvedParams.slug;
+export default function CategoryDetailPage() {
+  const routeParams = useParams();
+  const slug = (routeParams?.slug as string) || "";
 
   const categoryIndex = CATEGORIES.findIndex((c) => c.slug === slug);
   const category = categoryIndex !== -1 ? CATEGORIES[categoryIndex] : null;
@@ -100,8 +94,14 @@ export default function CategoryDetailPage({
   const totalCategoriesStr = String(CATEGORIES.length).padStart(2, "0");
 
   // Previous and Next category navigation
-  const prevCategory = categoryIndex > 0 ? CATEGORIES[categoryIndex - 1] : CATEGORIES[CATEGORIES.length - 1];
-  const nextCategory = categoryIndex < CATEGORIES.length - 1 ? CATEGORIES[categoryIndex + 1] : CATEGORIES[0];
+  const prevCategory =
+    categoryIndex > 0
+      ? CATEGORIES[categoryIndex - 1]
+      : CATEGORIES[CATEGORIES.length - 1];
+  const nextCategory =
+    categoryIndex < CATEGORIES.length - 1
+      ? CATEGORIES[categoryIndex + 1]
+      : CATEGORIES[0];
 
   return (
     <div className="flex flex-col min-h-screen bg-[#9DCD5A] text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
@@ -116,7 +116,10 @@ export default function CategoryDetailPage({
                 Home
               </Link>
               <span>/</span>
-              <Link href="/categories" className="hover:text-brand-darkGreen transition">
+              <Link
+                href="/categories"
+                className="hover:text-brand-darkGreen transition"
+              >
                 Categories
               </Link>
               <span>/</span>
@@ -126,13 +129,7 @@ export default function CategoryDetailPage({
             </div>
           </div>
 
-          {/* ==================================================
-              CATEGORY HEADER STRUCTURE (As strictly required):
-              1. Category number (e.g. CATEGORY 01 OF 12)
-              2. Category title (e.g. CHICKS & YOUNG BIRDS)
-              3. Category description
-              4. Product count (e.g. 24 Products)
-              ================================================== */}
+          {/* Category Header */}
           <div className="bg-white rounded-3xl p-6 sm:p-10 border border-brand-softGreen shadow-card mb-10">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="max-w-3xl space-y-2.5">
@@ -165,7 +162,8 @@ export default function CategoryDetailPage({
                     <Layers className="w-3.5 h-3.5 text-brand-freshGreen" />
                     <span>
                       {categoryProducts.length}{" "}
-                      {categoryProducts.length === 1 ? "Product" : "Products"} in Catalogue
+                      {categoryProducts.length === 1 ? "Product" : "Products"} in
+                      Catalogue
                     </span>
                   </span>
                 </div>
@@ -174,8 +172,9 @@ export default function CategoryDetailPage({
               {/* Category Quick Actions & Enquire */}
               <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col gap-3">
                 <button
+                  type="button"
                   onClick={() => openEnquiryModal(null)}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold text-xs shadow-md transition active:scale-98"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold text-xs shadow-md transition active:scale-98 cursor-pointer"
                 >
                   <Send className="w-4 h-4 text-brand-yellow" />
                   <span>Enquire About {category.name}</span>
@@ -219,8 +218,10 @@ export default function CategoryDetailPage({
               <Search className="w-4 h-4 text-brand-gray absolute left-3.5 top-3 pointer-events-none" />
               {searchQuery && (
                 <button
+                  type="button"
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3.5 top-2.5 text-gray-400 hover:text-brand-darkGray text-xs p-1"
+                  className="absolute right-3.5 top-2.5 text-gray-400 hover:text-brand-darkGray text-xs p-1 cursor-pointer"
+                  aria-label="Clear search"
                 >
                   ✕
                 </button>
@@ -236,12 +237,7 @@ export default function CategoryDetailPage({
             </div>
           </div>
 
-          {/* ==================================================
-              STRICT 2-COLUMN PRODUCT GRID ON DESKTOP & TABLET
-              Mobile: 1 column
-              Tablet: 2 columns
-              Desktop: 2 columns (MUST NOT BECOME 4 COLUMNS)
-              ================================================== */}
+          {/* Product Grid */}
           {filteredProducts.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 text-center border border-brand-softGreen max-w-lg mx-auto my-12 shadow-card">
               <div className="w-16 h-16 rounded-full bg-brand-softGreen/50 text-brand-darkGreen flex items-center justify-center mx-auto mb-4">
@@ -254,8 +250,9 @@ export default function CategoryDetailPage({
                 No products in {category.name} matched &quot;{searchQuery}&quot;.
               </p>
               <button
+                type="button"
                 onClick={() => setSearchQuery("")}
-                className="px-6 py-2.5 rounded-full bg-brand-darkGreen text-white font-bold text-xs shadow hover:bg-brand-green transition"
+                className="px-6 py-2.5 rounded-full bg-brand-darkGreen text-white font-bold text-xs shadow hover:bg-brand-green transition cursor-pointer"
               >
                 Clear Search
               </button>
@@ -264,7 +261,11 @@ export default function CategoryDetailPage({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
               {filteredProducts.map((product, index) => (
                 <CatalogueProductCard
-                  key={product.id ? String(product.id) : (product.slug || `cat-prod-${product.itemNumber}-${index}`)}
+                  key={
+                    product.id
+                      ? String(product.id)
+                      : product.slug || `cat-prod-${product.itemNumber}-${index}`
+                  }
                   product={product}
                   index={index}
                 />
@@ -309,7 +310,13 @@ export default function CategoryDetailPage({
                   <div className="text-xs font-bold mt-1 line-clamp-1">
                     {cat.name}
                   </div>
-                  <div className={`text-[10px] mt-0.5 ${cat.slug === category.slug ? "text-brand-yellow" : "text-brand-freshGreen"} font-semibold`}>
+                  <div
+                    className={`text-[10px] mt-0.5 ${
+                      cat.slug === category.slug
+                        ? "text-brand-yellow"
+                        : "text-brand-freshGreen"
+                    }`}
+                  >
                     {cat.itemCount} Products
                   </div>
                 </Link>
