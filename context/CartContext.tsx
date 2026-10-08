@@ -25,8 +25,8 @@ interface EnquiryContextType {
   setQuickViewProduct: (product: Product | null) => void;
 
   // Toast notifications
-  toastMessage: string | null;
-  showToast: (msg: string) => void;
+  toastMessage: { text: string; type?: "success" | "error" | "info" } | null;
+  showToast: (msg: string, type?: "success" | "error" | "info") => void;
 
   // Helper backward-compatibility stubs so no external component crashes
   isCartOpen: boolean;
@@ -48,13 +48,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
   const [selectedEnquiryProduct, setSelectedEnquiryProduct] = useState<Product | null>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<{ text: string; type?: "success" | "error" | "info" } | null>(null);
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
+  const showToast = (msg: string, type: "success" | "error" | "info" = "success") => {
+    setToastMessage({ text: msg, type });
     setTimeout(() => {
-      setToastMessage((cur) => (cur === msg ? null : cur));
-    }, 3500);
+      setToastMessage((cur) => (cur?.text === msg ? null : cur));
+    }, 4000);
   };
 
   const openEnquiryModal = (product: Product | null = null) => {
@@ -102,11 +102,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       {/* Toast popup */}
       {toastMessage && (
         <div className="fixed top-20 right-6 z-50 animate-in fade-in slide-in-from-top-2">
-          <div className="bg-brand-darkGray text-white text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-2xl border border-brand-yellow flex items-center gap-2.5">
-            <span className="w-5 h-5 rounded-full bg-brand-yellow text-brand-darkGray flex items-center justify-center font-black text-xs">
-              ✓
+          <div
+            className={`text-white text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 backdrop-blur-md ${
+              toastMessage.type === "error"
+                ? "bg-[#1f1616] border border-red-500/80 shadow-red-500/10"
+                : toastMessage.type === "info"
+                ? "bg-[#141b24] border border-sky-500/80 shadow-sky-500/10"
+                : "bg-brand-darkGray border border-brand-yellow/80 shadow-brand-yellow/10"
+            }`}
+          >
+            <span
+              className={`w-5 h-5 rounded-full flex items-center justify-center font-black text-xs shrink-0 ${
+                toastMessage.type === "error"
+                  ? "bg-red-500 text-white"
+                  : toastMessage.type === "info"
+                  ? "bg-sky-500 text-white"
+                  : "bg-brand-yellow text-brand-darkGray"
+              }`}
+            >
+              {toastMessage.type === "error" ? "!" : toastMessage.type === "info" ? "i" : "✓"}
             </span>
-            <span>{toastMessage}</span>
+            <span className="font-medium">{toastMessage.text}</span>
           </div>
         </div>
       )}

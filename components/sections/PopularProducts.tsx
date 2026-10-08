@@ -38,9 +38,25 @@ export function PopularProducts({ activeTab: externalTab, onTabChange }: Popular
     }
   };
 
+  const [productsList, setProductsList] = useState(PRODUCTS);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setProductsList(data.data);
+        }
+      })
+      .catch((err) => console.log("Using static catalogue fallback for popular products:", err?.message || err));
+  }, []);
+
   // Filter products based on category slug and search query
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((product) => {
+    return productsList.filter((product) => {
       const matchesCategory =
         activeCategory === "all" || product.categorySlug === activeCategory;
 
@@ -56,7 +72,7 @@ export function PopularProducts({ activeTab: externalTab, onTabChange }: Popular
 
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [productsList, activeCategory, searchQuery]);
 
   // Reset to page 1 on filter or search changes
   useEffect(() => {
@@ -141,6 +157,7 @@ export function PopularProducts({ activeTab: externalTab, onTabChange }: Popular
               <div className="flex items-center gap-1.5 p-1.5 bg-white/90 backdrop-blur-xs rounded-full border border-brand-darkGreen/20 shadow-xs shrink-0 whitespace-nowrap min-w-max">
                 <button
                   key="all"
+                  type="button"
                   suppressHydrationWarning
                   onClick={(e) => {
                     handleTabClick("all");
@@ -157,6 +174,7 @@ export function PopularProducts({ activeTab: externalTab, onTabChange }: Popular
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat.id}
+                    type="button"
                     suppressHydrationWarning
                     onClick={(e) => {
                       handleTabClick(cat.slug);

@@ -92,6 +92,7 @@ export default function ImageUploadField({
         </label>
         <button
           type="button"
+          suppressHydrationWarning
           onClick={() => setShowUrlInput(!showUrlInput)}
           className="text-[11px] font-bold text-brand-darkGreen hover:underline flex items-center gap-1"
         >
@@ -121,7 +122,9 @@ export default function ImageUploadField({
                 alt="Selected preview"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src =
+                  const target = e.currentTarget as HTMLImageElement;
+                  target.onerror = null;
+                  target.src =
                     "/assets/products/chicks/broiler-chicks.jpg";
                 }}
               />
@@ -136,6 +139,7 @@ export default function ImageUploadField({
             {value && (
               <button
                 type="button"
+                suppressHydrationWarning
                 onClick={() => fileInputRef.current?.click()}
                 className="absolute inset-0 bg-black/40 text-white font-bold text-[10px] flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity backdrop-blur-[2px]"
               >
@@ -186,6 +190,7 @@ export default function ImageUploadField({
                 </div>
                 <button
                   type="button"
+                  suppressHydrationWarning
                   onClick={(e) => {
                     e.stopPropagation();
                     fileInputRef.current?.click();
@@ -231,6 +236,7 @@ export default function ImageUploadField({
             {value && (
               <button
                 type="button"
+                suppressHydrationWarning
                 onClick={() => onChange("")}
                 className="absolute right-2.5 top-2.5 text-brand-gray hover:text-red-500"
                 title="Clear image"

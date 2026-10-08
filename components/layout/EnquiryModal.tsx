@@ -212,6 +212,8 @@ export function EnquiryModal() {
       <div className="relative bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-brand-softGreen overflow-hidden z-10 animate-in zoom-in-95 duration-200">
         {/* Close Button */}
         <button
+          type="button"
+          suppressHydrationWarning
           onClick={closeEnquiryModal}
           className="absolute top-5 right-5 p-2 rounded-full bg-brand-cardCream hover:bg-brand-softGreen text-brand-darkGray transition-colors"
           aria-label="Close enquiry modal"
@@ -239,6 +241,8 @@ export function EnquiryModal() {
               <span>Direct Farm Bio-Secure Assurance • Nationwide Dispatch</span>
             </div>
             <button
+              type="button"
+              suppressHydrationWarning
               onClick={closeEnquiryModal}
               className="mt-4 px-8 py-3 rounded-full bg-brand-darkGreen text-white font-bold text-xs hover:bg-brand-green transition-all shadow-md"
             >
@@ -449,6 +453,7 @@ export function EnquiryModal() {
               <div className="pt-2">
                 <button
                   type="submit"
+                  suppressHydrationWarning
                   disabled={isSubmitting}
                   className="w-full py-3.5 rounded-2xl bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98 disabled:opacity-60 disabled:cursor-not-allowed"
                 >

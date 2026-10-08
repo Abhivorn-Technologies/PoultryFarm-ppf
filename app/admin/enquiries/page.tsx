@@ -17,6 +17,8 @@ import {
   Filter,
   Copy,
 } from "lucide-react";
+import ConfirmModal from "@/components/admin/ConfirmModal";
+import { useCart } from "@/context/CartContext";
 
 interface EnquiryItem {
   _id: string;
@@ -33,11 +35,14 @@ interface EnquiryItem {
 }
 
 export default function AdminEnquiriesPage() {
+  const { showToast } = useCart();
   const [enquiries, setEnquiries] = useState<EnquiryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [enquiryToDelete, setEnquiryToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchEnquiries = async () => {
     try {
@@ -70,24 +75,34 @@ export default function AdminEnquiriesPage() {
         setEnquiries((prev) =>
           prev.map((e) => (e._id === id ? { ...e, status: newStatus as any } : e))
         );
+        showToast("Status updated successfully", "success");
       }
     } catch (err) {
       console.error(err);
+      showToast("Error updating status", "error");
     }
   };
 
-  const handleDeleteEnquiry = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this enquiry?")) return;
+  const executeDeleteEnquiry = async () => {
+    if (!enquiryToDelete) return;
     try {
-      const res = await fetch(`/api/enquiries?id=${id}`, {
+      setIsDeleting(true);
+      const res = await fetch(`/api/enquiries?id=${enquiryToDelete}`, {
         method: "DELETE",
       });
       const data = await res.json();
       if (data.success) {
-        setEnquiries((prev) => prev.filter((e) => e._id !== id));
+        setEnquiries((prev) => prev.filter((e) => e._id !== enquiryToDelete));
+        showToast("Enquiry deleted successfully", "success");
+        setEnquiryToDelete(null);
+      } else {
+        showToast(data.error || "Failed to delete enquiry", "error");
       }
     } catch (err) {
       console.error("Failed to delete enquiry:", err);
+      showToast("Failed to delete enquiry", "error");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -380,8 +395,8 @@ export default function AdminEnquiriesPage() {
                     ) : null}
 
                     <button
-                      onClick={() => handleDeleteEnquiry(enq._id)}
-                      className="inline-flex items-center justify-center p-2 rounded-full border border-red-200 bg-white hover:bg-red-50 text-red-500 hover:text-red-700 transition"
+                      onClick={() => setEnquiryToDelete(enq._id)}
+                      className="inline-flex items-center justify-center p-2 rounded-full border border-red-200 bg-white hover:bg-red-50 text-red-500 hover:text-red-700 transition cursor-pointer"
                       title="Delete Lead"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -407,6 +422,19 @@ export default function AdminEnquiriesPage() {
           })
         )}
       </div>
+
+      {/* In-app Confirmation Modal for Deleting Enquiry */}
+      <ConfirmModal
+        isOpen={!!enquiryToDelete}
+        title="Delete Enquiry"
+        message="Are you sure you want to permanently delete this lead? This action cannot be undone."
+        confirmText="Yes, Delete"
+        cancelText="Cancel"
+        isDanger={true}
+        isLoading={isDeleting}
+        onConfirm={executeDeleteEnquiry}
+        onCancel={() => setEnquiryToDelete(null)}
+      />
     </div>
   );
 }

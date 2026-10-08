@@ -16,6 +16,7 @@ export function Header({ variant = "auto" }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [productsList, setProductsList] = useState<typeof PRODUCTS>(PRODUCTS);
   const [searchResults, setSearchResults] = useState<typeof PRODUCTS>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -23,6 +24,20 @@ export function Header({ variant = "auto" }: HeaderProps) {
 
   // Determine if hero overlay mode should be active
   const isHeroMode = variant === "hero" || (variant === "auto" && pathname === "/");
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setProductsList(data.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,7 +51,7 @@ export function Header({ variant = "auto" }: HeaderProps) {
   useEffect(() => {
     if (searchQuery.trim().length > 1) {
       const q = searchQuery.toLowerCase();
-      const matched = PRODUCTS.filter(
+      const matched = productsList.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
           p.category.toLowerCase().includes(q) ||
@@ -50,16 +65,11 @@ export function Header({ variant = "auto" }: HeaderProps) {
       setSearchResults([]);
       setIsSearchOpen(false);
     }
-  }, [searchQuery]);
+  }, [searchQuery, productsList]);
 
-  // Position and background styling based on context
-  const headerClasses = isHeroMode
-    ? `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-md border-b border-brand-softGreen/60 shadow-sm"
-          : "bg-transparent border-b border-transparent"
-      }`
-    : "sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-brand-softGreen/60 shadow-sm transition-all duration-300";
+  // Sticky solid opaque white header (never transparent)
+  const headerClasses =
+    "sticky top-0 z-50 bg-white border-b border-brand-softGreen/60 shadow-sm transition-all duration-200";
 
   return (
     <header className={headerClasses}>
@@ -75,45 +85,45 @@ export function Header({ variant = "auto" }: HeaderProps) {
         </Link>
 
         {/* CENTER: Desktop Nav Links */}
-        <div className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-bold text-[#1F2937] whitespace-nowrap shrink-0">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-bold text-brand-darkGray whitespace-nowrap shrink-0">
           <Link
-            className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)] ${
-              pathname === "/" ? "text-brand-darkGreen font-black border-b-2 border-brand-darkGreen pb-0.5" : "text-[#1F2937]"
+            className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen ${
+              pathname === "/" ? "text-brand-darkGreen font-black border-b-2 border-brand-darkGreen pb-0.5" : "text-brand-darkGray"
             }`}
             href="/"
           >
             Home
           </Link>
           <a
-            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]"
+            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
             href="/#about"
           >
             About
           </a>
           <a
-            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]"
+            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
             href="/#products"
           >
             Products
           </a>
           <Link
-            className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)] ${
+            className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen ${
               pathname?.startsWith("/categories") || pathname?.startsWith("/category")
                 ? "text-brand-darkGreen font-black border-b-2 border-brand-darkGreen pb-0.5"
-                : "text-[#1F2937]"
+                : "text-brand-darkGray"
             }`}
             href="/categories"
           >
             Categories
           </Link>
           <a
-            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]"
+            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
             href="/#why-choose-us"
           >
             Why Choose Us
           </a>
           <a
-            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]"
+            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
             href="/#contact"
           >
             Contact
@@ -125,11 +135,7 @@ export function Header({ variant = "auto" }: HeaderProps) {
           {/* Search Input Form */}
           <div className="hidden md:flex relative items-center">
             <input
-              className={`w-44 lg:w-52 xl:w-60 pl-9 pr-4 py-2 text-xs rounded-full border transition-all placeholder:text-gray-500 text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen/50 ${
-                isHeroMode && !isScrolled
-                  ? "bg-white/85 backdrop-blur-md border-white/80 shadow-2xs"
-                  : "bg-brand-cardCream border-brand-softGreen/80"
-              }`}
+              className="w-44 lg:w-52 xl:w-60 pl-9 pr-4 py-2 text-xs rounded-full border border-brand-softGreen/80 bg-brand-cardCream transition-all placeholder:text-gray-500 text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen/50"
               placeholder="Search chicks, feeds..."
               type="text"
               autoComplete="off"
@@ -147,7 +153,14 @@ export function Header({ variant = "auto" }: HeaderProps) {
               <div className="absolute top-12 left-0 right-0 bg-white rounded-2xl shadow-elevated border border-brand-softGreen p-2 z-50 animate-in fade-in slide-in-from-top-2">
                 <div className="text-[10px] uppercase font-bold text-brand-gray px-3 py-1 border-b border-brand-softGreen/40 flex justify-between items-center">
                   <span>Found {searchResults.length} Products</span>
-                  <button onClick={() => setIsSearchOpen(false)} className="text-gray-400 hover:text-black">✕</button>
+                  <button
+                    type="button"
+                    suppressHydrationWarning
+                    onClick={() => setIsSearchOpen(false)}
+                    className="text-gray-400 hover:text-black cursor-pointer"
+                  >
+                    ✕
+                  </button>
                 </div>
                 <div className="divide-y divide-brand-softGreen/30 max-h-72 overflow-y-auto">
                   {searchResults.map((prod) => (
@@ -182,6 +195,7 @@ export function Header({ variant = "auto" }: HeaderProps) {
 
           {/* Enquire Now Action CTA */}
           <button
+            type="button"
             suppressHydrationWarning
             onClick={() => openEnquiryModal()}
             className="inline-flex items-center gap-2 bg-brand-darkGreen hover:bg-brand-green text-white px-5 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all shadow-md shadow-brand-darkGreen/25 hover:shadow-lg active:scale-95 shrink-0 whitespace-nowrap"
@@ -193,8 +207,10 @@ export function Header({ variant = "auto" }: HeaderProps) {
 
           {/* Mobile Menu Button */}
           <button
+            type="button"
+            suppressHydrationWarning
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-xl bg-white/80 backdrop-blur-md text-brand-darkGray hover:bg-brand-cardCream border border-brand-softGreen/60 shrink-0"
+            className="lg:hidden p-2 rounded-xl bg-white text-brand-darkGray hover:bg-brand-cardCream border border-brand-softGreen/60 shrink-0 cursor-pointer"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -204,7 +220,7 @@ export function Header({ variant = "auto" }: HeaderProps) {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white/98 backdrop-blur-xl border-b border-brand-softGreen/80 px-4 py-4 space-y-3 shadow-xl">
+        <div className="lg:hidden bg-white border-b border-brand-softGreen/80 px-4 py-4 space-y-3 shadow-xl">
           <div className="relative">
             <input
               className="w-full pl-9 pr-4 py-2 text-xs rounded-full bg-brand-cardCream border border-brand-softGreen/80 focus:outline-none text-brand-darkGray"
@@ -235,6 +251,8 @@ export function Header({ variant = "auto" }: HeaderProps) {
               Contact
             </a>
             <button
+              type="button"
+              suppressHydrationWarning
               onClick={() => {
                 setMobileMenuOpen(false);
                 openEnquiryModal();

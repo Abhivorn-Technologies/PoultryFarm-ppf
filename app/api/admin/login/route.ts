@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { createSessionToken, SESSION_DURATION_SECONDS } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
@@ -18,9 +19,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Set secure HTTP-only browser session cookie (cleared automatically when browser is closed)
+    // Generate cryptographically signed token for window session
+    const { token, expiresAt } = await createSessionToken(SESSION_DURATION_SECONDS);
+
     const cookieStore = await cookies();
-    cookieStore.set("admin_session", "authenticated", {
+    cookieStore.set("admin_session", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -30,6 +33,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       message: "Admin authenticated successfully",
+      expiresAt,
     });
   } catch (error: unknown) {
     console.error("Login error:", error);

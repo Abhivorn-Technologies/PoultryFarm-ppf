@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
 import ImageUploadField from "@/components/admin/ImageUploadField";
+import ConfirmModal from "@/components/admin/ConfirmModal";
+import { useCart } from "@/context/CartContext";
 
 interface ProductItem {
   _id?: string;
@@ -51,6 +53,7 @@ interface ProductItem {
 }
 
 export default function AdminProductsPage() {
+  const { showToast } = useCart();
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -60,30 +63,19 @@ export default function AdminProductsPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<{ id?: string; slug?: string; itemNum?: number; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
-  // New product form fields
+  // Simplified product form fields matching website UI: Title, Category, Image, Description
   const [newProduct, setNewProduct] = useState({
     name: "",
     category: CATEGORIES[0].name,
     categorySlug: CATEGORIES[0].slug,
     image: "/assets/products/chicks/broiler-chicks.jpg",
-    price: "",
-    priceDisplay: "Price on Enquiry",
-    unit: "per bird",
-    shortDescription: "",
     description: "",
-    available: true,
-    featured: false,
-    isPopular: false,
   });
-  const [newDetailsText, setNewDetailsText] = useState("");
-  const [newTagsText, setNewTagsText] = useState("");
-
-  // Edit product helper fields
-  const [editDetailsText, setEditDetailsText] = useState("");
-  const [editTagsText, setEditTagsText] = useState("");
 
   const fetchProducts = async () => {
     try {
@@ -113,66 +105,24 @@ export default function AdminProductsPage() {
     }));
   };
 
-  const handleToggleAvailability = async (product: ProductItem) => {
-    if (!product._id) {
-      alert("This item is from initial data. Please save to database to toggle status.");
-      return;
-    }
-    const newStatus = !product.available;
-    // Optimistic UI update
-    setProducts((prev) =>
-      prev.map((item) => (item._id === product._id ? { ...item, available: newStatus } : item))
-    );
-
-    try {
-      const res = await fetch(`/api/products/${product._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ available: newStatus }),
-      });
-      const data = await res.json();
-      if (!data.success) {
-        // revert on failure
-        setProducts((prev) =>
-          prev.map((item) => (item._id === product._id ? { ...item, available: !newStatus } : item))
-        );
-      }
-    } catch (err) {
-      console.error("Failed to toggle status:", err);
-      // revert on error
-      setProducts((prev) =>
-        prev.map((item) => (item._id === product._id ? { ...item, available: !newStatus } : item))
-      );
-    }
-  };
-
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.category) return;
 
     try {
       setSubmitting(true);
-      const parsedDetails = newDetailsText
-        .split("\n")
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-
-      const parsedTags = newTagsText
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-
+      const desc = newProduct.description.trim();
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...newProduct,
-          price: newProduct.price ? Number(newProduct.price) : null,
-          priceDisplay: newProduct.price
-            ? `₹${newProduct.price} / ${newProduct.unit || "unit"}`
-            : "Price on Enquiry",
-          details: parsedDetails,
-          tags: parsedTags,
+          name: newProduct.name.trim(),
+          category: newProduct.category,
+          categorySlug: newProduct.categorySlug,
+          image: newProduct.image.trim(),
+          description: desc,
+          shortDescription: desc,
+          available: true,
         }),
       });
 
@@ -184,24 +134,16 @@ export default function AdminProductsPage() {
           category: CATEGORIES[0].name,
           categorySlug: CATEGORIES[0].slug,
           image: "/assets/products/chicks/broiler-chicks.jpg",
-          price: "",
-          priceDisplay: "Price on Enquiry",
-          unit: "per bird",
-          shortDescription: "",
           description: "",
-          available: true,
-          featured: false,
-          isPopular: false,
         });
-        setNewDetailsText("");
-        setNewTagsText("");
+        showToast("Product created successfully", "success");
         fetchProducts();
       } else {
-        alert(resData.error || "Failed to create product");
+        showToast(resData.error || "Failed to create product", "error");
       }
     } catch (err) {
       console.error(err);
-      alert("Error saving product to database");
+      showToast("Error saving product to database", "error");
     } finally {
       setSubmitting(false);
     }
@@ -210,16 +152,8 @@ export default function AdminProductsPage() {
   const handleOpenEdit = (product: ProductItem) => {
     setEditingProduct({
       ...product,
-      price: product.price !== null && product.price !== undefined ? (product.price as any) : "",
-      shortDescription: product.shortDescription || "",
-      description: product.description || "",
-      details: product.details || [],
-      tags: product.tags || [],
-      featured: product.featured ?? false,
-      isPopular: product.isPopular ?? false,
+      description: product.description || product.shortDescription || "",
     });
-    setEditDetailsText((product.details || []).join("\n"));
-    setEditTagsText((product.tags || []).join(", "));
     setIsEditModalOpen(true);
   };
 
@@ -227,76 +161,89 @@ export default function AdminProductsPage() {
     e.preventDefault();
     if (!editingProduct) return;
 
-    if (!editingProduct._id) {
-      alert("This default product cannot be edited directly. Please create new items to customize.");
+    const targetId =
+      editingProduct._id || editingProduct.slug || String(editingProduct.itemNumber);
+    if (!targetId) {
+      showToast("Product identifier is missing. Please refresh and try again.", "error");
       return;
     }
 
     try {
       setSubmitting(true);
-      const parsedDetails = editDetailsText
-        .split("\n")
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-
-      const parsedTags = editTagsText
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-
-      const res = await fetch(`/api/products/${editingProduct._id}`, {
+      const desc = (editingProduct.description || "").trim();
+      const res = await fetch(`/api/products/${targetId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...editingProduct,
-          price: editingProduct.price ? Number(editingProduct.price) : null,
-          priceDisplay: editingProduct.price
-            ? `₹${editingProduct.price} / ${editingProduct.unit || "unit"}`
-            : "Price on Enquiry",
-          shortDescription: editingProduct.shortDescription || "",
-          description: editingProduct.description || "",
-          details: parsedDetails,
-          tags: parsedTags,
-          featured: !!editingProduct.featured,
-          isPopular: !!editingProduct.isPopular,
+          name: editingProduct.name.trim(),
+          category: editingProduct.category,
+          categorySlug: editingProduct.categorySlug,
+          image: editingProduct.image.trim(),
+          description: desc,
+          shortDescription: desc,
         }),
       });
 
       const resData = await res.json();
       if (resData.success) {
         setProducts((prev) =>
-          prev.map((p) => (p._id === editingProduct._id ? resData.data : p))
+          prev.map((p) => {
+            const isMatch =
+              (p._id && p._id === targetId) ||
+              (p.slug && p.slug === targetId) ||
+              p.itemNumber === editingProduct.itemNumber;
+            return isMatch ? { ...p, ...resData.data } : p;
+          })
         );
         setIsEditModalOpen(false);
         setEditingProduct(null);
+        showToast("Product updated successfully", "success");
       } else {
-        alert(resData.error || "Failed to update product");
+        showToast(resData.error || "Failed to update product", "error");
       }
     } catch (err) {
       console.error(err);
-      alert("Error updating product in database");
+      showToast("Error updating product in database", "error");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDeleteProduct = async (id?: string) => {
-    if (!id) {
-      alert("This default product cannot be deleted. Custom products can be deleted at any time.");
+  const executeDeleteProduct = async () => {
+    if (!productToDelete) return;
+    const targetId =
+      productToDelete.id ||
+      productToDelete.slug ||
+      (productToDelete.itemNum ? String(productToDelete.itemNum) : "");
+    if (!targetId) {
+      showToast("Product identifier is missing.", "error");
+      setProductToDelete(null);
       return;
     }
-    if (!confirm("Are you sure you want to delete this product?")) return;
 
     try {
-      const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+      setIsDeleting(true);
+      const res = await fetch(`/api/products/${targetId}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
-        setProducts((prev) => prev.filter((p) => p._id !== id));
+        setProducts((prev) =>
+          prev.filter(
+            (p) =>
+              p._id !== targetId &&
+              p.slug !== targetId &&
+              String(p.itemNumber) !== targetId
+          )
+        );
+        showToast("Product deleted successfully", "success");
+        setProductToDelete(null);
       } else {
-        alert(data.error || "Failed to delete");
+        showToast(data.error || "Failed to delete product", "error");
       }
     } catch (err) {
       console.error(err);
+      showToast("Error deleting product from database", "error");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -441,127 +388,45 @@ export default function AdminProductsPage() {
                   alt={p.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src =
+                    const target = e.currentTarget as HTMLImageElement;
+                    target.onerror = null;
+                    target.src =
                       "/assets/products/chicks/broiler-chicks.jpg";
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
                 {/* Top Badges */}
                 <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/95 text-brand-darkGray shadow-xs backdrop-blur-xs">
                     #{p.itemNumber}
                   </span>
-                  {p.featured && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white shadow-xs flex items-center gap-0.5">
-                      <Star className="w-2.5 h-2.5 fill-current" /> Featured
-                    </span>
-                  )}
-                  {p.isPopular && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500 text-white shadow-xs flex items-center gap-0.5">
-                      <Flame className="w-2.5 h-2.5 fill-current" /> Popular
-                    </span>
-                  )}
                 </div>
 
-                {/* Stock Toggle Button directly on Card */}
-                <button
-                  onClick={() => handleToggleAvailability(p)}
-                  className={`absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-xs transition-transform active:scale-95 flex items-center gap-1 backdrop-blur-sm ${
-                    p.available
-                      ? "bg-emerald-600/90 hover:bg-emerald-700 text-white"
-                      : "bg-red-600/90 hover:bg-red-700 text-white"
-                  }`}
-                  title="Click to toggle Stock Status"
-                >
-                  {p.available ? (
-                    <>
-                      <CheckCircle2 className="w-3 h-3" /> In Stock
-                    </>
-                  ) : (
-                    <>
-                      <XCircle className="w-3 h-3" /> Out of Stock
-                    </>
-                  )}
-                </button>
-
-                {/* Category & Price Overlay at bottom of image */}
+                {/* Category Overlay at bottom of image */}
                 <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-white">
-                  <span className="text-[10px] font-bold bg-black/50 px-2 py-0.5 rounded-md backdrop-blur-xs line-clamp-1 max-w-[140px]">
+                  <span className="text-[10px] font-bold bg-black/60 px-2.5 py-0.5 rounded-md backdrop-blur-xs line-clamp-1">
                     {p.category}
-                  </span>
-                  <span className="text-xs font-black bg-brand-darkGreen/90 px-2.5 py-0.5 rounded-md backdrop-blur-xs">
-                    {p.priceDisplay}
                   </span>
                 </div>
               </div>
 
-              {/* Card Middle: Content & Internal Scrolling Fields */}
+              {/* Card Middle: Content */}
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                <div>
-                  <h3 className="font-extrabold text-sm text-brand-darkGray leading-tight line-clamp-1">
+                <div className="space-y-1.5">
+                  <h3 className="font-extrabold text-sm sm:text-base text-brand-darkGray leading-tight line-clamp-1">
                     {p.name}
                   </h3>
-                  <div className="text-[11px] text-brand-gray mt-0.5 line-clamp-1">
-                    {p.shortDescription || p.category}
-                  </div>
-                </div>
-
-                {/* Internal Scrolling Fields Container */}
-                <div className="bg-[#FAFBF9] border border-brand-softGreen/50 rounded-2xl p-2.5 max-h-32 overflow-y-auto thin-scrollbar space-y-2 text-left">
-                  {/* Overview */}
-                  {p.shortDescription && (
-                    <div className="text-[11px] leading-relaxed text-brand-darkGray">
-                      <span className="font-bold text-brand-darkGreen">Overview: </span>
-                      <span className="text-brand-gray">{p.shortDescription}</span>
-                    </div>
-                  )}
-
-                  {/* Full Description snippet */}
-                  {p.description && (
-                    <div className="text-[11px] leading-relaxed text-brand-darkGray">
-                      <span className="font-bold text-brand-darkGreen">Details: </span>
-                      <span className="text-brand-gray">{p.description}</span>
-                    </div>
-                  )}
-
-                  {/* Bullet Specs */}
-                  {p.details && p.details.length > 0 && (
-                    <div className="space-y-1 pt-1 border-t border-brand-softGreen/30">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-brand-darkGreen">
-                        Key Specs ({p.details.length}):
-                      </div>
-                      <div className="space-y-0.5">
-                        {p.details.map((bullet, idx) => (
-                          <div key={idx} className="flex items-start gap-1 text-[10px] text-brand-darkGray">
-                            <Check className="w-2.5 h-2.5 text-brand-freshGreen shrink-0 mt-0.5" />
-                            <span className="leading-tight">{bullet}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Tags */}
-                  {p.tags && p.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 pt-1 border-t border-brand-softGreen/30">
-                      {p.tags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="px-1.5 py-0.5 rounded text-[9px] font-medium bg-brand-softGreen/50 text-brand-darkGreen"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  <p className="text-xs text-brand-gray leading-relaxed line-clamp-3">
+                    {p.description || p.shortDescription || "No description provided."}
+                  </p>
                 </div>
 
                 {/* Card Actions Footer */}
-                <div className="pt-2 border-t border-brand-softGreen/40 flex items-center justify-between gap-1.5">
+                <div className="pt-3 border-t border-brand-softGreen/40 flex items-center justify-between gap-2">
                   <button
                     onClick={() => handleOpenEdit(p)}
-                    className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-xl bg-brand-lightGreen hover:bg-brand-softGreen text-brand-darkGreen font-bold text-xs transition"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-brand-lightGreen hover:bg-brand-softGreen text-brand-darkGreen font-bold text-xs transition cursor-pointer"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                     <span>Edit Product</span>
@@ -571,21 +436,19 @@ export default function AdminProductsPage() {
                     href={`/product/${p.slug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-1.5 rounded-xl text-brand-gray hover:text-brand-darkGreen hover:bg-brand-cardCream border border-transparent hover:border-brand-softGreen transition"
+                    className="p-2 rounded-xl text-brand-gray hover:text-brand-darkGreen hover:bg-brand-cardCream border border-transparent hover:border-brand-softGreen transition"
                     title="View Live Store Page"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
 
-                  {p._id && (
-                    <button
-                      onClick={() => handleDeleteProduct(p._id)}
-                      className="p-1.5 rounded-xl text-red-500 hover:text-red-700 hover:bg-red-50 border border-transparent hover:border-red-100 transition"
-                      title="Delete Product"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  )}
+                  <button
+                    onClick={() => setProductToDelete({ id: p._id, slug: p.slug, itemNum: p.itemNumber, name: p.name })}
+                    className="p-2 rounded-xl text-red-500 hover:text-red-700 hover:bg-red-50 border border-transparent hover:border-red-100 transition cursor-pointer"
+                    title="Delete Product"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -601,8 +464,7 @@ export default function AdminProductsPage() {
                   <th className="py-3 px-4">#</th>
                   <th className="py-3 px-4">Product Info</th>
                   <th className="py-3 px-4">Category</th>
-                  <th className="py-3 px-4">Price Display</th>
-                  <th className="py-3 px-4">Stock Status</th>
+                  <th className="py-3 px-4">Description</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -617,29 +479,16 @@ export default function AdminProductsPage() {
                         <img
                           src={p.image}
                           alt={p.name}
-                          className="w-10 h-10 rounded-xl object-cover border border-brand-softGreen shrink-0"
+                          className="w-11 h-11 rounded-xl object-cover border border-brand-softGreen shrink-0"
                           onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).src =
+                            const target = e.currentTarget as HTMLImageElement;
+                            target.onerror = null;
+                            target.src =
                               "/assets/products/chicks/broiler-chicks.jpg";
                           }}
                         />
-                        <div>
-                          <div className="font-bold text-brand-darkGray text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
-                            <span>{p.name}</span>
-                            {p.featured && (
-                              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-500 text-white shadow-2xs flex items-center gap-0.5">
-                                <Star className="w-2 h-2 fill-current" /> Featured
-                              </span>
-                            )}
-                            {p.isPopular && (
-                              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-rose-500 text-white shadow-2xs flex items-center gap-0.5">
-                                <Flame className="w-2 h-2 fill-current" /> Popular
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-[11px] text-brand-gray line-clamp-1">
-                            {p.shortDescription || p.category}
-                          </div>
+                        <div className="font-bold text-brand-darkGray text-xs sm:text-sm">
+                          {p.name}
                         </div>
                       </div>
                     </td>
@@ -648,57 +497,36 @@ export default function AdminProductsPage() {
                         {p.category}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-brand-darkGray">
-                      {p.priceDisplay}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <button
-                        onClick={() => handleToggleAvailability(p)}
-                        className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full cursor-pointer transition ${
-                          p.available
-                            ? "text-emerald-700 bg-emerald-50 hover:bg-emerald-100"
-                            : "text-red-600 bg-red-50 hover:bg-red-100"
-                        }`}
-                        title="Click to toggle"
-                      >
-                        {p.available ? (
-                          <>
-                            <CheckCircle2 className="w-3 h-3" /> Available
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="w-3 h-3" /> Out of Stock
-                          </>
-                        )}
-                      </button>
+                    <td className="py-3.5 px-4 max-w-md">
+                      <p className="text-xs text-brand-gray line-clamp-2">
+                        {p.description || p.shortDescription || "—"}
+                      </p>
                     </td>
                     <td className="py-3.5 px-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <a
-                          href={`/product/${p.slug}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-1.5 rounded-lg text-brand-gray hover:text-brand-darkGreen hover:bg-brand-softGreen/40 transition"
-                          title="View on Live Store"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
                         <button
                           onClick={() => handleOpenEdit(p)}
-                          className="p-1.5 rounded-lg text-brand-darkGreen hover:text-brand-green hover:bg-brand-softGreen/50 transition"
+                          className="p-1.5 rounded-lg text-brand-darkGreen hover:bg-brand-softGreen/50 transition cursor-pointer"
                           title="Edit Product"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
-                        {p._id && (
-                          <button
-                            onClick={() => handleDeleteProduct(p._id)}
-                            className="p-1.5 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition"
-                            title="Delete Product"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        )}
+                        <a
+                          href={`/product/${p.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="p-1.5 rounded-lg text-brand-gray hover:text-brand-darkGreen hover:bg-brand-cardCream transition"
+                          title="View on site"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                        <button
+                          onClick={() => setProductToDelete({ id: p._id, slug: p.slug, itemNum: p.itemNumber, name: p.name })}
+                          className="p-1.5 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition cursor-pointer"
+                          title="Delete Product"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -800,237 +628,99 @@ export default function AdminProductsPage() {
       {/* ================= ADD PRODUCT MODAL ================= */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full border border-brand-softGreen shadow-2xl relative animate-in zoom-in-95 flex flex-col max-h-[90vh] overflow-hidden">
+          <div className="bg-white rounded-3xl max-w-xl w-full border border-brand-softGreen shadow-2xl relative animate-in zoom-in-95 flex flex-col max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
             <div className="p-5 sm:px-7 border-b border-brand-softGreen/60 flex items-center justify-between bg-white shrink-0">
               <div>
-                <h2 className="text-xl font-black text-brand-darkGray">Add New Poultry Product</h2>
+                <h2 className="text-xl font-black text-brand-darkGray">Add New Product</h2>
                 <p className="text-xs text-brand-gray mt-0.5">
-                  Direct upload images and specify commercial attributes for your catalogue.
+                  Specify product details to display on your catalogue.
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 rounded-full bg-brand-cardCream text-brand-gray hover:text-brand-darkGray"
+                className="p-2 rounded-full bg-brand-cardCream text-brand-gray hover:text-brand-darkGray cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Modal Internal Scrolling Body */}
-            <form onSubmit={handleCreateProduct} className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-5 thin-scrollbar">
-              {/* 1. Core Info Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60 space-y-3">
-                <h3 className="text-xs font-black text-brand-darkGreen uppercase tracking-wider flex items-center gap-1.5">
-                  <Package className="w-3.5 h-3.5" /> 1. Core Product Details
-                </h3>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Product / Breed Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Pure Aseel Gamecock Pair"
-                    value={newProduct.name}
-                    onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                      Category *
-                    </label>
-                    <select
-                      value={newProduct.category}
-                      onChange={(e) => handleCategorySelect(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
-                    >
-                      {CATEGORIES.map((c) => (
-                        <option key={c.id} value={c.name}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                      Stock Availability
-                    </label>
-                    <select
-                      value={newProduct.available ? "yes" : "no"}
-                      onChange={(e) =>
-                        setNewProduct({ ...newProduct, available: e.target.value === "yes" })
-                      }
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
-                    >
-                      <option value="yes">In Stock / Available</option>
-                      <option value="no">Out of Stock</option>
-                    </select>
-                  </div>
-                </div>
+            {/* Modal Form */}
+            <form onSubmit={handleCreateProduct} className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-4 thin-scrollbar">
+              {/* 1. Title / Breed Name */}
+              <div>
+                <label className="block text-xs font-bold text-brand-darkGray mb-1">
+                  Product Title / Breed Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Pure Aseel Gamecock Pair"
+                  value={newProduct.name}
+                  onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
+                />
               </div>
 
-              {/* 2. Direct Image Upload Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60">
+              {/* 2. Category */}
+              <div>
+                <label className="block text-xs font-bold text-brand-darkGray mb-1">
+                  Category *
+                </label>
+                <select
+                  value={newProduct.category}
+                  onChange={(e) => handleCategorySelect(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
+                >
+                  {CATEGORIES.map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 3. Image Upload Field */}
+              <div>
                 <ImageUploadField
-                  label="Product Photo (Direct Upload)"
-                  helperText="Upload photo directly from phone/laptop or specify an asset link."
+                  label="Product Photo *"
+                  helperText="Upload a product photo directly or specify an asset link."
                   value={newProduct.image}
                   onChange={(url) => setNewProduct({ ...newProduct, image: url })}
                 />
               </div>
 
-              {/* 3. Pricing & Marketing Badges Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60 space-y-3">
-                <h3 className="text-xs font-black text-brand-darkGreen uppercase tracking-wider flex items-center gap-1.5">
-                  <DollarSign className="w-3.5 h-3.5" /> 3. Pricing & Badges
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                      Price (₹) (Leave empty for &quot;Price on Enquiry&quot;)
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="e.g. 150"
-                      value={newProduct.price}
-                      onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                      Denomination Unit
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. per bird, per chick, per bag"
-                      value={newProduct.unit}
-                      onChange={(e) => setNewProduct({ ...newProduct, unit: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-5 pt-1">
-                  <label className="flex items-center gap-2 text-xs font-bold text-brand-darkGray cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={newProduct.featured}
-                      onChange={(e) =>
-                        setNewProduct({ ...newProduct, featured: e.target.checked })
-                      }
-                      className="w-4 h-4 rounded text-brand-darkGreen focus:ring-brand-freshGreen"
-                    />
-                    <span>⭐ Featured on Homepage</span>
-                  </label>
-
-                  <label className="flex items-center gap-2 text-xs font-bold text-brand-darkGray cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={newProduct.isPopular}
-                      onChange={(e) =>
-                        setNewProduct({ ...newProduct, isPopular: e.target.checked })
-                      }
-                      className="w-4 h-4 rounded text-brand-darkGreen focus:ring-brand-freshGreen"
-                    />
-                    <span>🔥 Best Seller / Popular Badge</span>
-                  </label>
-                </div>
+              {/* 4. Description */}
+              <div>
+                <label className="block text-xs font-bold text-brand-darkGray mb-1">
+                  Product Description *
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  placeholder="Enter full product description as displayed on the website..."
+                  value={newProduct.description}
+                  onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white leading-relaxed"
+                />
               </div>
 
-              {/* 4. Descriptions Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60 space-y-3">
-                <h3 className="text-xs font-black text-brand-darkGreen uppercase tracking-wider flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5" /> 4. Overview & Descriptions
-                </h3>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Short Overview (Card Summary)
-                  </label>
-                  <textarea
-                    rows={2}
-                    placeholder="Short 1-2 sentence overview for cards and product overview box..."
-                    value={newProduct.shortDescription}
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, shortDescription: e.target.value })
-                    }
-                    className="w-full px-3.5 py-2 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Full In-Depth Description
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="Comprehensive description of background, health standards, or specs..."
-                    value={newProduct.description}
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, description: e.target.value })
-                    }
-                    className="w-full px-3.5 py-2 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-              </div>
-
-              {/* 5. Specifications & Tags Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60 space-y-3">
-                <h3 className="text-xs font-black text-brand-darkGreen uppercase tracking-wider flex items-center gap-1.5">
-                  <Tag className="w-3.5 h-3.5" /> 5. Bullet Specifications & Tags
-                </h3>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Official Specifications (1 point per line)
-                  </label>
-                  <textarea
-                    rows={4}
-                    placeholder={"Disease resistance certified by hatchery\nAverage weight gain: 50-60g/day\nMinimum Order: 100 birds\nBio-secure transport packaging"}
-                    value={newDetailsText}
-                    onChange={(e) => setNewDetailsText(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-brand-softGreen text-xs font-mono focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Search Tags (Comma-separated)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="chicks, asil, breeding, day-old, vaccinated"
-                    value={newTagsText}
-                    onChange={(e) => setNewTagsText(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-              </div>
-
-              {/* Fixed Footer Buttons */}
+              {/* Footer Buttons */}
               <div className="sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 border-t border-brand-softGreen/50 flex justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-full border border-brand-softGreen text-xs font-bold text-brand-gray hover:bg-brand-cardCream"
+                  className="px-4 py-2 rounded-full border border-brand-softGreen text-xs font-bold text-brand-gray hover:bg-brand-cardCream cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white text-xs font-bold shadow-md transition disabled:opacity-60"
+                  className="px-6 py-2 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white text-xs font-bold shadow-md transition disabled:opacity-60 cursor-pointer"
                 >
-                  {submitting ? "Saving Product..." : "Save Product to Catalogue"}
+                  {submitting ? "Saving Product..." : "Save Product"}
                 </button>
               </div>
             </form>
@@ -1041,7 +731,7 @@ export default function AdminProductsPage() {
       {/* ================= EDIT PRODUCT MODAL ================= */}
       {isEditModalOpen && editingProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full border border-brand-softGreen shadow-2xl relative animate-in zoom-in-95 flex flex-col max-h-[90vh] overflow-hidden">
+          <div className="bg-white rounded-3xl max-w-xl w-full border border-brand-softGreen shadow-2xl relative animate-in zoom-in-95 flex flex-col max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
             <div className="p-5 sm:px-7 border-b border-brand-softGreen/60 flex items-center justify-between bg-white shrink-0">
               <div>
@@ -1049,230 +739,91 @@ export default function AdminProductsPage() {
                   Edit Product #{editingProduct.itemNumber}
                 </h2>
                 <p className="text-xs text-brand-gray mt-0.5">
-                  Update details, upload new photos, or adjust pricing & specifications.
+                  Update title, category, photo, or description.
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => {
                   setIsEditModalOpen(false);
                   setEditingProduct(null);
                 }}
-                className="p-2 rounded-full bg-brand-cardCream text-brand-gray hover:text-brand-darkGray"
+                className="p-2 rounded-full bg-brand-cardCream text-brand-gray hover:text-brand-darkGray cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Modal Internal Scrolling Body */}
-            <form onSubmit={handleUpdateProduct} className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-5 thin-scrollbar">
-              {/* 1. Core Info Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60 space-y-3">
-                <h3 className="text-xs font-black text-brand-darkGreen uppercase tracking-wider flex items-center gap-1.5">
-                  <Package className="w-3.5 h-3.5" /> 1. Core Product Details
-                </h3>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Product / Breed Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={editingProduct.name}
-                    onChange={(e) =>
-                      setEditingProduct({ ...editingProduct, name: e.target.value })
-                    }
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                      Category *
-                    </label>
-                    <select
-                      value={editingProduct.category}
-                      onChange={(e) => {
-                        const found = CATEGORIES.find((c) => c.name === e.target.value);
-                        setEditingProduct({
-                          ...editingProduct,
-                          category: e.target.value,
-                          categorySlug: found ? found.slug : editingProduct.categorySlug,
-                        });
-                      }}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
-                    >
-                      {CATEGORIES.map((c) => (
-                        <option key={c.id} value={c.name}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                      Stock Availability
-                    </label>
-                    <select
-                      value={editingProduct.available ? "yes" : "no"}
-                      onChange={(e) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          available: e.target.value === "yes",
-                        })
-                      }
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
-                    >
-                      <option value="yes">In Stock / Available</option>
-                      <option value="no">Out of Stock</option>
-                    </select>
-                  </div>
-                </div>
+            {/* Modal Form */}
+            <form onSubmit={handleUpdateProduct} className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-4 thin-scrollbar">
+              {/* 1. Title / Breed Name */}
+              <div>
+                <label className="block text-xs font-bold text-brand-darkGray mb-1">
+                  Product Title / Breed Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editingProduct.name}
+                  onChange={(e) =>
+                    setEditingProduct({ ...editingProduct, name: e.target.value })
+                  }
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
+                />
               </div>
 
-              {/* 2. Direct Image Upload Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60">
+              {/* 2. Category */}
+              <div>
+                <label className="block text-xs font-bold text-brand-darkGray mb-1">
+                  Category *
+                </label>
+                <select
+                  value={editingProduct.category}
+                  onChange={(e) => {
+                    const found = CATEGORIES.find((c) => c.name === e.target.value);
+                    setEditingProduct({
+                      ...editingProduct,
+                      category: e.target.value,
+                      categorySlug: found ? found.slug : editingProduct.categorySlug,
+                    });
+                  }}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
+                >
+                  {CATEGORIES.map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 3. Image Upload Field */}
+              <div>
                 <ImageUploadField
-                  label="Product Photo (Direct Upload)"
-                  helperText="Upload a new photo directly from your device or keep existing URL."
+                  label="Product Photo *"
+                  helperText="Upload a new photo or keep the existing image."
                   value={editingProduct.image}
                   onChange={(url) => setEditingProduct({ ...editingProduct, image: url })}
                 />
               </div>
 
-              {/* 3. Pricing & Marketing Badges Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60 space-y-3">
-                <h3 className="text-xs font-black text-brand-darkGreen uppercase tracking-wider flex items-center gap-1.5">
-                  <DollarSign className="w-3.5 h-3.5" /> 3. Pricing & Badges
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                      Price (₹) (Empty for &quot;Price on Enquiry&quot;)
-                    </label>
-                    <input
-                      type="number"
-                      value={editingProduct.price ?? ""}
-                      onChange={(e) =>
-                        setEditingProduct({ ...editingProduct, price: e.target.value as any })
-                      }
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                      Denomination Unit
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. per bird, per chick, per bag"
-                      value={editingProduct.unit || ""}
-                      onChange={(e) =>
-                        setEditingProduct({ ...editingProduct, unit: e.target.value })
-                      }
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-5 pt-1">
-                  <label className="flex items-center gap-2 text-xs font-bold text-brand-darkGray cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={!!editingProduct.featured}
-                      onChange={(e) =>
-                        setEditingProduct({ ...editingProduct, featured: e.target.checked })
-                      }
-                      className="w-4 h-4 rounded text-brand-darkGreen focus:ring-brand-freshGreen"
-                    />
-                    <span>⭐ Featured on Homepage</span>
-                  </label>
-
-                  <label className="flex items-center gap-2 text-xs font-bold text-brand-darkGray cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={!!editingProduct.isPopular}
-                      onChange={(e) =>
-                        setEditingProduct({ ...editingProduct, isPopular: e.target.checked })
-                      }
-                      className="w-4 h-4 rounded text-brand-darkGreen focus:ring-brand-freshGreen"
-                    />
-                    <span>🔥 Best Seller / Popular Badge</span>
-                  </label>
-                </div>
+              {/* 4. Description */}
+              <div>
+                <label className="block text-xs font-bold text-brand-darkGray mb-1">
+                  Product Description *
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  value={editingProduct.description || ""}
+                  onChange={(e) =>
+                    setEditingProduct({ ...editingProduct, description: e.target.value })
+                  }
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white leading-relaxed"
+                />
               </div>
 
-              {/* 4. Descriptions Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60 space-y-3">
-                <h3 className="text-xs font-black text-brand-darkGreen uppercase tracking-wider flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5" /> 4. Overview & Descriptions
-                </h3>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Short Overview (Card Summary)
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={editingProduct.shortDescription || ""}
-                    onChange={(e) =>
-                      setEditingProduct({ ...editingProduct, shortDescription: e.target.value })
-                    }
-                    className="w-full px-3.5 py-2 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Full In-Depth Description
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={editingProduct.description || ""}
-                    onChange={(e) =>
-                      setEditingProduct({ ...editingProduct, description: e.target.value })
-                    }
-                    className="w-full px-3.5 py-2 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-              </div>
-
-              {/* 5. Specifications & Tags Card */}
-              <div className="bg-brand-cardCream/60 p-4 rounded-2xl border border-brand-softGreen/60 space-y-3">
-                <h3 className="text-xs font-black text-brand-darkGreen uppercase tracking-wider flex items-center gap-1.5">
-                  <Tag className="w-3.5 h-3.5" /> 5. Bullet Specifications & Tags
-                </h3>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Official Specifications (1 point per line)
-                  </label>
-                  <textarea
-                    rows={4}
-                    value={editDetailsText}
-                    onChange={(e) => setEditDetailsText(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-brand-softGreen text-xs font-mono focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                    Search Tags (Comma-separated)
-                  </label>
-                  <input
-                    type="text"
-                    value={editTagsText}
-                    onChange={(e) => setEditTagsText(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
-                  />
-                </div>
-              </div>
-
-              {/* Sticky Footer */}
+              {/* Footer Buttons */}
               <div className="sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 border-t border-brand-softGreen/50 flex justify-end gap-2.5">
                 <button
                   type="button"
@@ -1280,14 +831,14 @@ export default function AdminProductsPage() {
                     setIsEditModalOpen(false);
                     setEditingProduct(null);
                   }}
-                  className="px-4 py-2 rounded-full border border-brand-softGreen text-xs font-bold text-brand-gray hover:bg-brand-cardCream"
+                  className="px-4 py-2 rounded-full border border-brand-softGreen text-xs font-bold text-brand-gray hover:bg-brand-cardCream cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white text-xs font-bold shadow-md transition disabled:opacity-60"
+                  className="px-6 py-2 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white text-xs font-bold shadow-md transition disabled:opacity-60 cursor-pointer"
                 >
                   {submitting ? "Saving Changes..." : "Save Product Changes"}
                 </button>
@@ -1296,6 +847,18 @@ export default function AdminProductsPage() {
           </div>
         </div>
       )}
+      {/* In-app Confirmation Modal for Deleting Products (No Browser Confirm Alerts) */}
+      <ConfirmModal
+        isOpen={!!productToDelete}
+        title="Delete Product"
+        message={`Are you sure you want to permanently delete "${productToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Yes, Delete Product"
+        cancelText="Cancel"
+        isDanger={true}
+        isLoading={isDeleting}
+        onConfirm={executeDeleteProduct}
+        onCancel={() => setProductToDelete(null)}
+      />
     </div>
   );
 }

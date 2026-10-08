@@ -25,14 +25,55 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isVerifyingWindow, setIsVerifyingWindow] = useState(pathname !== "/admin/login");
+
+  // Window-based session enforcement:
+  // sessionStorage is strictly scoped to the current browser window/tab.
+  // When the window/tab is closed, the session terminates immediately.
+  React.useEffect(() => {
+    if (pathname === "/admin/login") {
+      setIsVerifyingWindow(false);
+      return;
+    }
+
+    const hasActiveWindow =
+      typeof window !== "undefined" &&
+      sessionStorage.getItem("admin_window_session") === "active";
+
+    if (!hasActiveWindow) {
+      // Window was closed/reopened or accessed without signing in in this window
+      fetch("/api/admin/logout", { method: "POST" }).finally(() => {
+        router.push("/admin/login");
+        router.refresh();
+      });
+      return;
+    }
+
+    setIsVerifyingWindow(false);
+  }, [pathname, router]);
 
   // If on the login page, render full screen without the admin sidebar
   if (pathname === "/admin/login") {
     return <>{children}</>;
   }
 
+  // Prevent flash of protected UI while verifying the window session
+  if (isVerifyingWindow) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-[#F5F8F5] text-brand-darkGray text-xs font-bold">
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-brand-darkGreen animate-ping" />
+          <span>Verifying admin session...</span>
+        </div>
+      </div>
+    );
+  }
+
   const handleLogout = async () => {
     try {
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("admin_window_session");
+      }
       await fetch("/api/admin/logout", { method: "POST" });
       router.push("/admin/login");
       router.refresh();

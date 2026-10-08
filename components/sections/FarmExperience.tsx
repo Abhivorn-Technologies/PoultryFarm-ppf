@@ -251,6 +251,8 @@ export function FarmExperience() {
                 </span>
               </div>
               <button
+                type="button"
+                suppressHydrationWarning
                 className="bg-brand-yellow hover:bg-[#e6b738] text-brand-darkGray font-bold text-xs px-4 py-1.5 rounded-full transition shadow-sm active:scale-95 flex items-center gap-1.5"
                 onClick={() => showToast(`Selected 3D view for "${product.name}"`)}
               >

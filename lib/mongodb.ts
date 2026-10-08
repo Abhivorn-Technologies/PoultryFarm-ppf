@@ -1,11 +1,12 @@
-import dns from "dns";
+import dns from "node:dns";
 import mongoose from "mongoose";
 
 // Resolve MongoDB Atlas SRV DNS reliably across Windows ISPs
 try {
-  dns.setServers(["8.8.8.8", "1.1.1.1"]);
-} catch {
-  // Ignore in environments where setting servers is restricted
+  dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+  console.log("📡 MongoDB DNS Servers configured:", dns.getServers());
+} catch (dnsErr) {
+  console.warn("⚠️ Could not set DNS servers:", dnsErr);
 }
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -40,6 +41,11 @@ export async function connectToDatabase() {
       "Please define the MONGODB_URI environment variable inside .env.local"
     );
   }
+
+  // Ensure DNS resolvers are Google/Cloudflare to avoid Windows/ISP ECONNREFUSED on SRV records
+  try {
+    dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+  } catch {}
 
   if (cached.conn) {
     return cached.conn;

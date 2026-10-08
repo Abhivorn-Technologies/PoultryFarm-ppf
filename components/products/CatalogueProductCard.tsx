@@ -73,6 +73,11 @@ export function CatalogueProductCard({ product, index = 0 }: CatalogueProductCar
               loading="lazy"
               className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500 ease-out"
             />
+            {product.category && (
+              <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs text-brand-darkGreen text-[11px] font-bold px-3 py-1 rounded-full border border-brand-softGreen/80 shadow-xs">
+                {product.category}
+              </div>
+            )}
           </div>
 
           {/* 2. Product Information */}

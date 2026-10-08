@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Product from "@/models/Product";
 
+import mongoose from "mongoose";
+
 interface Params {
   params: Promise<{ id: string }>;
 }
@@ -12,10 +14,19 @@ export async function PUT(request: Request, { params }: Params) {
     await connectToDatabase();
     const body = await request.json();
 
-    const updatedProduct = await Product.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
+    let updatedProduct;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      updatedProduct = await Product.findByIdAndUpdate(id, body, {
+        new: true,
+        runValidators: true,
+      });
+    } else {
+      updatedProduct = await Product.findOneAndUpdate(
+        { $or: [{ slug: id }, { itemNumber: Number(id) || 0 }] },
+        body,
+        { new: true, runValidators: true }
+      );
+    }
 
     if (!updatedProduct) {
       return NextResponse.json(
@@ -38,7 +49,14 @@ export async function DELETE(request: Request, { params }: Params) {
     const { id } = await params;
     await connectToDatabase();
 
-    const deletedProduct = await Product.findByIdAndDelete(id);
+    let deletedProduct;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      deletedProduct = await Product.findByIdAndDelete(id);
+    } else {
+      deletedProduct = await Product.findOneAndDelete({
+        $or: [{ slug: id }, { itemNumber: Number(id) || 0 }],
+      });
+    }
 
     if (!deletedProduct) {
       return NextResponse.json(

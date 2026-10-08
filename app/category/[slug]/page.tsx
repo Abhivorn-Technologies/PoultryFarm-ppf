@@ -32,13 +32,28 @@ export default function CategoryDetailPage({
   const category = categoryIndex !== -1 ? CATEGORIES[categoryIndex] : null;
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [productsList, setProductsList] = useState(PRODUCTS);
   const { openEnquiryModal } = useCart();
+
+  React.useEffect(() => {
+    fetch("/api/products")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setProductsList(data.data);
+        }
+      })
+      .catch((err) => console.log("Using static catalogue fallback for category products:", err?.message || err));
+  }, []);
 
   // Products belonging strictly to this category
   const categoryProducts = useMemo(() => {
     if (!category) return [];
-    return PRODUCTS.filter((p) => p.categorySlug === category.slug);
-  }, [category]);
+    return productsList.filter((p) => p.categorySlug === category.slug);
+  }, [category, productsList]);
 
   // Search filtered products within category
   const filteredProducts = useMemo(() => {

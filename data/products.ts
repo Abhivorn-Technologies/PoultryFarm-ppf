@@ -49,7 +49,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "They grow very quickly and usually reach market weight in about 5–7 weeks."
     },
-    "image": "/assets/products/chicks/broiler-chicks.jpg",
+    "image": "/assets/ppf products/broiler chick image.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -77,7 +77,7 @@ export const PRODUCTS: Product[] = [
       "Check the daily local chicken price before deciding when and where to sell.",
       "Proper weighing, healthy birds, and timely marketing can help farmers improve their returns."
     ],
-    "image": "/assets/products/chicks/broiler-chicks.jpg",
+    "image": "/assets/ppf products/broiler image.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -189,7 +189,7 @@ export const PRODUCTS: Product[] = [
         "description": "growing period is about 10–16 weeks, but the ideal selling age depends on local demand, feed cost, and desired body weight."
       }
     ],
-    "image": "/assets/products/chicks/sonali-chicks.jpg",
+    "image": "/assets/ppf products/sonali chicks images.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -271,7 +271,7 @@ export const PRODUCTS: Product[] = [
         "description": "6 months, depending on feed, breed, and care."
       }
     ],
-    "image": "/assets/products/chicks/sonali-chicks.jpg",
+    "image": "/assets/ppf products/desi chicks images.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -336,7 +336,7 @@ export const PRODUCTS: Product[] = [
         "description": "4 months, they develop a stronger body and noticeable feathers."
       }
     ],
-    "image": "/assets/products/chicks/asil-pure-chicks.jpg",
+    "image": "/assets/ppf products/aseel fighter chicks.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -365,7 +365,7 @@ export const PRODUCTS: Product[] = [
       "Aseel birds grow more slowly than broilers, and full body development generally takes several months.",
       "Good-quality parent stock can produce strong and healthy Aseel chicks when breeding and management are done properly."
     ],
-    "image": "/assets/products/chicks/broiler-chicks.jpg",
+    "image": "/assets/ppf products/aseel fighter birds images 2.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -399,7 +399,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "With proper feed and care, they can reach a good meat size in around 12–16 weeks."
     },
-    "image": "/assets/products/chicks/layer-chicks.jpg",
+    "image": "/assets/ppf products/vanaraja multi color chicks.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -582,7 +582,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "They reach a suitable meat size in about 5–7 weeks with proper feed and management."
     },
-    "image": "/assets/products/birds/quail-birds.jpg",
+    "image": "/assets/ppf products/quail chick image.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -613,7 +613,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "They can reach marketable meat size in about 5–7 weeks with proper feeding and care."
     },
-    "image": "/assets/products/birds/quail-birds.jpg",
+    "image": "/assets/ppf products/quail live birds.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -764,7 +764,7 @@ export const PRODUCTS: Product[] = [
       "Aseel birds grow more slowly than broilers, so farmers should allow several months for proper body development.",
       "Healthy one-month-old birds are a good stage for farmers who want to raise Aseel birds for future breeding or meat purposes."
     ],
-    "image": "/assets/products/chicks/asil-pure-chicks.jpg",
+    "image": "/assets/ppf products/aseel one month old.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -797,7 +797,7 @@ export const PRODUCTS: Product[] = [
     "specifications": {
       "Growth Period": "Desi birds grow slowly and usually need 4–6 months or more to reach a good size for meat, depending on the breed and feeding."
     },
-    "image": "/assets/products/chicks/sonali-chicks.jpg",
+    "image": "/assets/ppf products/desi one month old image.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -827,7 +827,7 @@ export const PRODUCTS: Product[] = [
       "Sonali birds generally have good adaptability and attractive appearance, making them popular in local markets.",
       "With proper care and feeding, they continue to develop a good body size and can later be kept for meat or breeding purposes."
     ],
-    "image": "/assets/products/chicks/sonali-chicks.jpg",
+    "image": "/assets/ppf products/sonali birds.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1200,7 +1200,7 @@ export const PRODUCTS: Product[] = [
       "Drinkers should be washed and refilled regularly to maintain good hygiene.",
       "Choose the drinker size according to the age and number of chicks to ensure all birds can drink comfortably."
     ],
-    "image": "/assets/products/equipment/feeder.jpg",
+    "image": "/assets/ppf products/poultry chick drinker.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1229,7 +1229,7 @@ export const PRODUCTS: Product[] = [
       "Feeders should be cleaned regularly to prevent mould, contamination, and disease.",
       "Choose the right feeder size based on the age and number of chicks for better feeding and growth."
     ],
-    "image": "/assets/products/equipment/feeder.jpg",
+    "image": "/assets/ppf products/chick feeder.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1287,7 +1287,7 @@ export const PRODUCTS: Product[] = [
       "A good jumbo feeder helps reduce feed wastage and spillage during feeding.",
       "Regular cleaning keeps the feeder hygienic and safe, helping birds get clean, fresh feed."
     ],
-    "image": "/assets/products/equipment/feeder.jpg",
+    "image": "/assets/ppf products/jumbo-poultry-feeder.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1316,7 +1316,7 @@ export const PRODUCTS: Product[] = [
       "They are simple to use, easy to clean, and do not require electricity.",
       "Regular cleaning and fresh water help maintain good bird health and farm hygiene."
     ],
-    "image": "/assets/products/equipment/feeder.jpg",
+    "image": "/assets/ppf products/jumbo manual drinker.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1346,7 +1346,7 @@ export const PRODUCTS: Product[] = [
       "They help reduce water spillage and wet litter when properly adjusted and maintained.",
       "Bell drinkers are easy to install, refill, and clean, making them a practical choice for poultry farms."
     ],
-    "image": "/assets/products/equipment/feeder.jpg",
+    "image": "/assets/ppf products/bell drinker.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1375,7 +1375,7 @@ export const PRODUCTS: Product[] = [
       "They help protect chicks from injury, overcrowding, and outside exposure during short-distance transportation.",
       "Using clean, strong, and properly sized boxes helps ensure safe delivery of healthy chicks to farmers."
     ],
-    "image": "/assets/products/equipment/drinker.jpg",
+    "image": "/assets/ppf products/chick paper box 2.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1421,7 +1421,7 @@ export const PRODUCTS: Product[] = [
         "description": "Suitable for hatcheries, poultry farms, and chick suppliers."
       }
     ],
-    "image": "/assets/products/equipment/drinker.jpg",
+    "image": "/assets/ppf products/chick plastic boxes.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1467,7 +1467,7 @@ export const PRODUCTS: Product[] = [
         "description": "Helps maintain a more comfortable and protected environment for healthy bird growth."
       }
     ],
-    "image": "/assets/products/equipment/drinker.jpg",
+    "image": "/assets/ppf products/poultry-farm-pvc-pardhalu.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1512,7 +1512,7 @@ export const PRODUCTS: Product[] = [
         "description": "Suitable for long–term poultry shed use with easy cleaning and maintenance."
       }
     ],
-    "image": "/assets/products/equipment/drinker.jpg",
+    "image": "/assets/ppf products/poultry shed mesh 2.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1557,7 +1557,7 @@ export const PRODUCTS: Product[] = [
         "description": "Available in different sizes and capacities for chicken, duck, quail, and other poultry eggs."
       }
     ],
-    "image": "/assets/products/incubators/incubator.jpg",
+    "image": "/assets/ppf products/incubator-egg-tray.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1602,7 +1602,7 @@ export const PRODUCTS: Product[] = [
         "description": "Durable trays are suitable for regular hatchery and chick–supply operations."
       }
     ],
-    "image": "/assets/products/incubators/incubator.jpg",
+    "image": "/assets/ppf products/incubator hatching tray.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1647,7 +1647,7 @@ export const PRODUCTS: Product[] = [
         "description": "Useful for chicken, duck, quail, turkey, and other poultry hatcheries."
       }
     ],
-    "image": "/assets/products/incubators/incubator.jpg",
+    "image": "/assets/ppf products/poultry equipment set.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1691,7 +1691,7 @@ export const PRODUCTS: Product[] = [
         "description": "Can be washed and disinfected for repeated use."
       }
     ],
-    "image": "/assets/products/chicks/layer-chicks.jpg",
+    "image": "/assets/ppf products/chicken-transport-box.jpeg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1737,7 +1737,7 @@ export const PRODUCTS: Product[] = [
         "description": "Suitable for hatcheries and poultry farms with proper training and bird handling."
       }
     ],
-    "image": "/assets/products/equipment/drinker.jpg",
+    "image": "/assets/ppf products/debeaker machine.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -1782,7 +1782,7 @@ export const PRODUCTS: Product[] = [
         "description": "Useful for broilers, layers, breeders, and other poultry birds with proper vaccination procedures."
       }
     ],
-    "image": "/assets/products/equipment/drinker.jpg",
+    "image": "/assets/ppf products/vaccination gun.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2065,7 +2065,7 @@ export const PRODUCTS: Product[] = [
         "description": "quality fertile eggs can achieve around 80–90% hatchability under proper incubation and management."
       }
     ],
-    "image": "/assets/products/eggs/hatching-eggs.jpg",
+    "image": "/assets/ppf products/broiler hatching eggs 2.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2143,7 +2143,7 @@ export const PRODUCTS: Product[] = [
         "description": "quality fertile eggs can achieve around 75–85% hatchability with proper incubation and management."
       }
     ],
-    "image": "/assets/products/eggs/hatching-eggs.jpg",
+    "image": "/assets/ppf products/sonali hatching eggs.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2182,7 +2182,7 @@ export const PRODUCTS: Product[] = [
         "description": "quality fertile eggs can achieve around 70–85% hatchability with proper incubation management."
       }
     ],
-    "image": "/assets/products/eggs/hatching-eggs.jpg",
+    "image": "/assets/ppf products/desi hatching eggs 2.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2220,7 +2220,7 @@ export const PRODUCTS: Product[] = [
         "description": "quality fertile eggs can achieve around 80–90% hatchability with proper incubation and management."
       }
     ],
-    "image": "/assets/products/eggs/hatching-eggs.jpg",
+    "image": "/assets/ppf products/brown layer hatching eggs.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2297,7 +2297,7 @@ export const PRODUCTS: Product[] = [
         "description": "quality fertile eggs can achieve around 80–90% hatchability with proper incubation and management."
       }
     ],
-    "image": "/assets/products/eggs/hatching-eggs.jpg",
+    "image": "/assets/ppf products/white layer hatching eggs.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2336,7 +2336,7 @@ export const PRODUCTS: Product[] = [
         "description": "quality fertile eggs can achieve around 75–85% hatchability with proper incubation and management."
       }
     ],
-    "image": "/assets/products/eggs/hatching-eggs.jpg",
+    "image": "/assets/ppf products/quails hatching eggs.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2374,7 +2374,7 @@ export const PRODUCTS: Product[] = [
         "description": "quality fertile eggs can achieve around 75–85% hatchability with proper incubation and management."
       }
     ],
-    "image": "/assets/products/eggs/hatching-eggs.jpg",
+    "image": "/assets/ppf products/indian runner hatching eggs.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2414,7 +2414,7 @@ export const PRODUCTS: Product[] = [
         "description": "quality fertile eggs can achieve around 75–85% hatchability with proper incubation and management."
       }
     ],
-    "image": "/assets/products/eggs/hatching-eggs.jpg",
+    "image": "/assets/ppf products/white piken hatching eggs2.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2446,7 +2446,7 @@ export const PRODUCTS: Product[] = [
       "Proper cleaning, storage, and handling help maintain freshness and quality.",
       "Available for household use, restaurants, bakeries, and food businesses."
     ],
-    "image": "/assets/products/eggs/eating-eggs.jpg",
+    "image": "/assets/ppf products/duck eating eggs.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2476,7 +2476,7 @@ export const PRODUCTS: Product[] = [
       "Selected for good shell quality, freshness, and cleanliness.",
       "Suitable for households, hotels, restaurants, bakeries, and food businesses."
     ],
-    "image": "/assets/products/eggs/eating-eggs.jpg",
+    "image": "/assets/ppf products/brown eating eggs.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2506,7 +2506,7 @@ export const PRODUCTS: Product[] = [
       "Collected from healthy and well-managed Sonali layer birds.",
       "Suitable for households, hotels, restaurants, and food businesses."
     ],
-    "image": "/assets/products/eggs/eating-eggs.jpg",
+    "image": "/assets/ppf products/sonali eating eggs.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2536,7 +2536,7 @@ export const PRODUCTS: Product[] = [
       "Collected from healthy and well-managed Desi birds.",
       "Suitable for households, restaurants, hotels, and local food businesses."
     ],
-    "image": "/assets/products/eggs/eating-eggs.jpg",
+    "image": "/assets/ppf products/desi eating eggs.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2578,7 +2578,7 @@ export const PRODUCTS: Product[] = [
         "description": "provided during the final stage to support body weight gain and meat production."
       }
     ],
-    "image": "/assets/products/feeds/feed-bag.jpg",
+    "image": "/assets/ppf products/broiler stater feed.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2627,7 +2627,7 @@ export const PRODUCTS: Product[] = [
         "description": "provides protein, calcium, phosphorus, vitamins, and minerals to support regular egg production and strong eggshells."
       }
     ],
-    "image": "/assets/products/feeds/feed-bag.jpg",
+    "image": "/assets/ppf products/layer pellets.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2656,7 +2656,7 @@ export const PRODUCTS: Product[] = [
       "It is commonly used in feed formulations for broilers, layers, chicks, and breeder birds.",
       "Farmers should use clean, properly dried, good-quality dry fish without mold, excess salt, or spoilage."
     ],
-    "image": "/assets/products/meat/dry-fish.jpg",
+    "image": "/assets/ppf products/poultry dry fish.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2716,7 +2716,7 @@ export const PRODUCTS: Product[] = [
       "It can be mixed with other feed ingredients to make a balanced poultry ration.",
       "Good-quality Soya DOC should be clean, properly processed, dry, and free from mold."
     ],
-    "image": "/assets/products/feeds/feed-bag.jpg",
+    "image": "/assets/ppf products/soya doc.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2746,7 +2746,7 @@ export const PRODUCTS: Product[] = [
       "Maize should be clean, dry, properly stored, and free from mold and excess moisture.",
       "It can be combined with Soya DOC, minerals, vitamins, and other ingredients to prepare balanced poultry feed."
     ],
-    "image": "/assets/products/feeds/feed-bag.jpg",
+    "image": "/assets/ppf products/poultry maize.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2775,7 +2775,7 @@ export const PRODUCTS: Product[] = [
       "Soya oil also helps improve feed texture and reduce dust.",
       "Good-quality oil should be fresh, clean, and properly stored to maintain feed quality."
     ],
-    "image": "/assets/products/feeds/feed-bag.jpg",
+    "image": "/assets/ppf products/soya oil.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2805,7 +2805,7 @@ export const PRODUCTS: Product[] = [
       "It is used in broiler, layer, chick, and breeder feeds according to the feed formulation.",
       "Good-quality poultry stone should be clean, dry, properly processed, and suitable for feed use."
     ],
-    "image": "/assets/products/feeds/feed-bag.jpg",
+    "image": "/assets/ppf products/poultry stone grade.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2835,7 +2835,7 @@ export const PRODUCTS: Product[] = [
       "Desi meat and eggs are commonly preferred for their traditional taste and local market demand.",
       "They are a suitable option for farmers looking for low-scale poultry farming and additional income."
     ],
-    "image": "/assets/products/chicks/sonali-chicks.jpg",
+    "image": "/assets/ppf products/country birds image.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2865,7 +2865,7 @@ export const PRODUCTS: Product[] = [
       "It should be properly packed, stored continuously in frozen conditions, and handled hygienically.",
       "It is a convenient option for businesses that need a regular supply of poultry meat."
     ],
-    "image": "/assets/products/meat/frozen-meat.jpg",
+    "image": "/assets/ppf products/poultry frozen meat.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2894,7 +2894,7 @@ export const PRODUCTS: Product[] = [
       "Suitable for farmers, meat suppliers, restaurants, hotels, and local markets.",
       "Proper feeding, clean water, housing, and good farm management help achieve better growth and meat quality."
     ],
-    "image": "/assets/products/meat/frozen-meat.jpg",
+    "image": "/assets/ppf products/white piken duck meat.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2924,7 +2924,7 @@ export const PRODUCTS: Product[] = [
       "They are suitable for farmers who want a duck breed that can provide both eggs and meat.",
       "Proper feeding, clean water, and good management help achieve healthy growth and better meat quality."
     ],
-    "image": "/assets/products/meat/frozen-meat.jpg",
+    "image": "/assets/ppf products/indian runner duck meat.webp",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -2988,7 +2988,7 @@ export const PRODUCTS: Product[] = [
       "Infrared Brooder System",
       "Charcoal Brooder System"
     ],
-    "image": "/assets/products/equipment/feeder.jpg",
+    "image": "/assets/ppf products/brooder heater.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,
@@ -3045,7 +3045,7 @@ export const PRODUCTS: Product[] = [
         "description": "Used to support normal intestinal function and feed utilization."
       }
     ],
-    "image": "/assets/products/medicines/vaccines.jpg",
+    "image": "/assets/ppf products/digestive medicine2.jpg",
     "price": null,
     "priceDisplay": "Price on Request",
     "available": true,

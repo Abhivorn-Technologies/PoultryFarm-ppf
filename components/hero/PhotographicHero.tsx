@@ -179,6 +179,7 @@ export function PhotographicHero() {
 
               {/* Third Action: Contact Us */}
               <button
+                type="button"
                 suppressHydrationWarning
                 onClick={() => openEnquiryModal()}
                 className="inline-flex items-center gap-2 px-5 py-3.5 sm:py-4 rounded-full bg-brand-softYellow/90 hover:bg-brand-softYellow text-brand-darkGray font-bold text-xs sm:text-sm border border-brand-yellow/60 shadow-2xs hover:shadow transition duration-200 active:scale-95"

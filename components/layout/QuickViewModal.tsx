@@ -41,6 +41,8 @@ export function QuickViewModal() {
       <div className="relative bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-brand-softGreen overflow-hidden z-10 animate-in zoom-in-95 duration-200">
         {/* Close button */}
         <button
+          type="button"
+          suppressHydrationWarning
           onClick={() => setQuickViewProduct(null)}
           className="absolute top-5 right-5 p-2 rounded-full bg-brand-cardCream hover:bg-brand-softGreen text-brand-darkGray transition-colors"
           aria-label="Close modal"
@@ -107,6 +109,8 @@ export function QuickViewModal() {
             {/* Action Buttons */}
             <div className="pt-4 border-t border-brand-softGreen space-y-2.5">
               <button
+                type="button"
+                suppressHydrationWarning
                 onClick={handleEnquire}
                 className="w-full py-3 px-4 rounded-xl bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs sm:text-sm shadow transition flex items-center justify-center gap-2 active:scale-98"
               >

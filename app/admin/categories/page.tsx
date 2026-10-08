@@ -23,14 +23,19 @@ import {
 import { CATEGORIES } from "@/data/categories";
 import { PRODUCTS } from "@/data/products";
 import ImageUploadField from "@/components/admin/ImageUploadField";
+import ConfirmModal from "@/components/admin/ConfirmModal";
+import { useCart } from "@/context/CartContext";
 
 export default function AdminCategoriesPage() {
+  const { showToast } = useCart();
   const [categoriesList, setCategoriesList] = useState<any[]>(CATEGORIES);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(6);
 
@@ -81,11 +86,13 @@ export default function AdminCategoriesPage() {
           description: "",
           image: "/assets/catgories/Chicks & Young Birds.png",
         });
+        showToast("Category created successfully", "success");
       } else {
-        alert(data.error || "Failed to create category");
+        showToast(data.error || "Failed to create category", "error");
       }
     } catch (err) {
       console.error("Error creating category:", err);
+      showToast("Error creating category", "error");
     }
   };
 
@@ -116,27 +123,35 @@ export default function AdminCategoriesPage() {
         );
         setIsEditModalOpen(false);
         setEditingCategory(null);
+        showToast("Category updated successfully", "success");
       } else {
-        alert(data.error || "Failed to update category");
+        showToast(data.error || "Failed to update category", "error");
       }
     } catch (err) {
       console.error("Error updating category:", err);
+      showToast("Error updating category", "error");
     }
   };
 
-  const handleDeleteCategory = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to remove the category "${name}"?`)) return;
+  const executeDeleteCategory = async () => {
+    if (!categoryToDelete) return;
 
     try {
-      const res = await fetch(`/api/categories/${id}`, { method: "DELETE" });
+      setIsDeleting(true);
+      const res = await fetch(`/api/categories/${categoryToDelete.id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
-        setCategoriesList((prev) => prev.filter((c) => (c._id || c.slug) !== id));
+        setCategoriesList((prev) => prev.filter((c) => (c._id || c.slug || c.id) !== categoryToDelete.id));
+        showToast("Category removed successfully", "success");
+        setCategoryToDelete(null);
       } else {
-        alert(data.error || "Failed to delete category");
+        showToast(data.error || "Failed to delete category", "error");
       }
     } catch (err) {
       console.error("Error deleting category:", err);
+      showToast("Error deleting category", "error");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -225,7 +240,9 @@ export default function AdminCategoriesPage() {
                   alt={cat.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src =
+                    const target = e.currentTarget as HTMLImageElement;
+                    target.onerror = null;
+                    target.src =
                       "/assets/catgories/Chicks & Young Birds.png";
                   }}
                 />
@@ -300,10 +317,10 @@ export default function AdminCategoriesPage() {
                       <ExternalLink className="w-3.5 h-3.5" />
                     </Link>
 
-                    {cat.id.startsWith("cat-") && (
+                    {(cat.id?.startsWith?.("cat-") || cat._id) && (
                       <button
-                        onClick={() => handleDeleteCategory(cat.id, cat.name)}
-                        className="p-1.5 rounded-xl text-red-500 hover:text-red-700 hover:bg-red-50 transition border border-transparent hover:border-red-100"
+                        onClick={() => setCategoryToDelete({ id: cat._id || cat.id || cat.slug, name: cat.name })}
+                        className="p-1.5 rounded-xl text-red-500 hover:text-red-700 hover:bg-red-50 transition border border-transparent hover:border-red-100 cursor-pointer"
                         title="Delete Category"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -624,6 +641,18 @@ export default function AdminCategoriesPage() {
           </div>
         </div>
       )}
+      {/* In-app Confirmation Modal for Removing Category */}
+      <ConfirmModal
+        isOpen={!!categoryToDelete}
+        title="Remove Category"
+        message={`Are you sure you want to remove the category "${categoryToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Yes, Remove Category"
+        cancelText="Cancel"
+        isDanger={true}
+        isLoading={isDeleting}
+        onConfirm={executeDeleteCategory}
+        onCancel={() => setCategoryToDelete(null)}
+      />
     </div>
   );
 }

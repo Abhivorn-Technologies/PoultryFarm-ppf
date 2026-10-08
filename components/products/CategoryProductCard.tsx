@@ -96,6 +96,8 @@ export function CategoryProductCard({ product }: CategoryProductCardProps) {
           <span>View Details</span>
         </Link>
         <button
+          type="button"
+          suppressHydrationWarning
           onClick={() => openEnquiryModal(product)}
           className="w-full py-3 rounded-2xl bg-brand-darkGreen hover:bg-brand-green text-white text-xs font-black transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-98"
         >

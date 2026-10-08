@@ -98,6 +98,8 @@ export function Newsletter() {
                 Call +91 98765 43210
               </a>
               <button
+                type="button"
+                suppressHydrationWarning
                 className="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 transition active:scale-95"
                 onClick={() => showToast("Opening WhatsApp consultation desk...")}
               >
