@@ -40,7 +40,7 @@ export function Newsletter() {
   };
 
   return (
-    <section className="py-12 bg-brand-cardCream border-y border-brand-softGreen" id="contact">
+    <section className="py-12 bg-[#9DCD5A] border-y border-brand-darkGreen/15" id="contact">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Newsletter Subscription (7 Cols) */}

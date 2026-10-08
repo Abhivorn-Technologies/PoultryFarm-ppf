@@ -66,25 +66,25 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="py-16 bg-white border-t border-brand-softGreen/50" id="why-choose-us">
+    <section className="py-16 bg-[#9DCD5A] border-t border-brand-darkGreen/15" id="why-choose-us">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left: How Catalogue Discovery Works (7 Cols) */}
           <div className="lg:col-span-7" id="how-it-works">
-            <div className="inline-block text-xs font-bold uppercase tracking-wider text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full mb-3">
+            <div className="inline-block text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-white/70 backdrop-blur-xs px-3.5 py-1 rounded-full border border-brand-darkGreen/15 mb-3">
               Simple 4-Step Process
             </div>
             <h2 className="text-3xl font-black text-brand-darkGray mb-2">How It Works</h2>
-            <p className="text-sm text-brand-gray mb-8">
+            <p className="text-sm text-brand-darkGray/90 mb-8 font-medium">
               From catalogue discovery to nationwide farm delivery with dedicated rearing support.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {steps.map((step) => (
                 <div
                   key={step.num}
-                  className="bg-brand-cardCream p-4 sm:p-5 rounded-2xl border border-brand-softGreen/60 flex gap-3.5 shadow-xs"
+                  className="bg-white p-4 sm:p-5 rounded-2xl border border-brand-darkGreen/15 flex gap-3.5 shadow-xs"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-brand-yellow text-brand-darkGray flex items-center justify-center font-black text-sm flex-shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-brand-yellow text-brand-darkGray flex items-center justify-center font-black text-sm flex-shrink-0 shadow-2xs">
                     {step.num}
                   </div>
                   <div>
@@ -98,9 +98,9 @@ export function HowItWorks() {
 
           {/* Right: Why Choose Us (5 Cols) */}
           <div
-            className="lg:col-span-5 bg-brand-cream rounded-3xl p-6 sm:p-8 border border-brand-softGreen"
+            className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-brand-darkGreen/15 shadow-sm"
           >
-            <div className="inline-block text-xs font-bold uppercase tracking-wider text-brand-freshGreen mb-1">
+            <div className="inline-block text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full mb-1">
               Farm Excellence
             </div>
             <h2 className="text-2xl font-black text-brand-darkGray mb-4">Why Choose Us?</h2>

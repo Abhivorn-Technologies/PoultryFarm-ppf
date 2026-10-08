@@ -5,11 +5,14 @@ import { PRODUCTS } from "@/data/products";
 
 export async function GET() {
   try {
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json({ success: true, count: PRODUCTS.length, data: PRODUCTS });
+    }
     await connectToDatabase();
-    let products = await Product.find({}).sort({ itemNumber: 1 });
+    let products = await Product.find({}).sort({ itemNumber: 1 }).lean();
 
     // Auto-seed: If the database is completely empty on first run, seed with our initial products
-    if (products.length === 0) {
+    if (!products || products.length === 0) {
       const initialBatch = PRODUCTS.map((p) => ({
         itemNumber: p.itemNumber,
         name: p.name,
@@ -29,17 +32,22 @@ export async function GET() {
         tags: p.tags || [],
       }));
       await Product.insertMany(initialBatch);
-      products = await Product.find({}).sort({ itemNumber: 1 });
+      products = await Product.find({}).sort({ itemNumber: 1 }).lean();
     }
 
-    return NextResponse.json({ success: true, count: products.length, data: products });
+    const transformed = (products || []).map((p: any) => ({
+      ...p,
+      id: p._id ? p._id.toString() : p.slug,
+    }));
+
+    return NextResponse.json({ success: true, count: transformed.length, data: transformed });
   } catch (error: any) {
-    console.error("Failed to fetch products:", error);
-    // If DB isn't connected yet, gracefully fallback to local products so site never breaks
+    console.warn("MongoDB products fetch fallback to static data:", error?.message || error);
+    // Gracefully return local static products so the client never crashes with a 500 error
     return NextResponse.json({
-      success: false,
+      success: true,
       fallback: true,
-      message: error?.message || "Database connection error",
+      message: error?.message || "Database fallback active",
       data: PRODUCTS,
     });
   }

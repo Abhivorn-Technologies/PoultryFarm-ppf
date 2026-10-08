@@ -148,18 +148,18 @@ export function FarmExperience() {
 
   return (
     <section
-      className="py-16 bg-gradient-to-b from-brand-cardCream to-brand-cream border-t border-brand-softGreen/40"
+      className="py-16 bg-[#9DCD5A] border-t border-brand-darkGreen/15"
       id="3d-showcase"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-brand-freshGreen">
+          <span className="text-xs font-black uppercase tracking-widest text-brand-darkGreen bg-white/70 backdrop-blur-xs px-3.5 py-1 rounded-full border border-brand-darkGreen/15">
             Interactive 3D Product Visualizer
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-brand-darkGray mt-1">
+          <h2 className="text-3xl sm:text-4xl font-black text-brand-darkGray mt-2">
             Experience Our Product Engineering
           </h2>
-          <p className="text-sm text-brand-gray mt-2">
+          <p className="text-sm text-brand-darkGray/90 mt-2 font-medium">
             Explore 3D details and feature hotspots across our high-performance poultry equipment, hatching eggs, and incubation supplies.
           </p>
 

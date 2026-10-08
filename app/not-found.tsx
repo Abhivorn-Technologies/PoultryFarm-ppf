@@ -6,9 +6,9 @@ import { Footer } from "@/components/layout/Footer";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col bg-brand-cream text-brand-darkGray">
+    <div className="min-h-screen flex flex-col bg-[#9DCD5A] text-brand-darkGray">
       <Header />
-      <main className="flex-grow flex items-center justify-center py-16 px-4">
+      <main className="flex-grow flex items-center justify-center py-16 px-4 bg-[#9DCD5A]">
         <div className="bg-white p-8 sm:p-12 rounded-3xl border border-brand-softGreen shadow-card max-w-lg w-full text-center space-y-6">
           <div className="w-16 h-16 rounded-2xl bg-brand-softGreen text-brand-darkGreen mx-auto flex items-center justify-center font-black text-2xl shadow-sm">
             404

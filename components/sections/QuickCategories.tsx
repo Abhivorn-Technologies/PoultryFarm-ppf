@@ -247,7 +247,7 @@ export function QuickCategories({
 
   return (
     <section
-      className="py-8 sm:py-10 bg-white border-y border-brand-softGreen/50 overflow-hidden"
+      className="py-8 sm:py-10 bg-[#9DCD5A] border-y border-brand-darkGreen/15 overflow-hidden"
       id="categories"
     >
       {/* 1. Header Aligned with Global Container */}
@@ -257,7 +257,7 @@ export function QuickCategories({
             <h2 className="text-xl sm:text-2xl font-black text-brand-darkGray">
               Explore by Category
             </h2>
-            <p className="text-xs sm:text-sm text-brand-gray mt-0.5">
+            <p className="text-xs sm:text-sm text-brand-darkGray/80 mt-0.5 font-medium">
               All 12 specialized poultry sectors with dedicated catalogue listings
             </p>
           </div>
@@ -273,7 +273,7 @@ export function QuickCategories({
               suppressHydrationWarning
               onClick={() => handleArrowNavigation("left")}
               aria-label="Previous categories"
-              className="w-9 h-9 rounded-full border border-brand-softGreen flex items-center justify-center text-brand-darkGreen hover:bg-brand-softGreen hover:border-brand-darkGreen/40 transition active:scale-95 shadow-2xs cursor-pointer"
+              className="w-9 h-9 rounded-full border border-brand-darkGreen/20 bg-white flex items-center justify-center text-brand-darkGreen hover:bg-brand-darkGreen hover:text-white transition active:scale-95 shadow-2xs cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -281,7 +281,7 @@ export function QuickCategories({
               suppressHydrationWarning
               onClick={() => handleArrowNavigation("right")}
               aria-label="Next categories"
-              className="w-9 h-9 rounded-full border border-brand-softGreen flex items-center justify-center text-brand-darkGreen hover:bg-brand-softGreen hover:border-brand-darkGreen/40 transition active:scale-95 shadow-2xs cursor-pointer"
+              className="w-9 h-9 rounded-full border border-brand-darkGreen/20 bg-white flex items-center justify-center text-brand-darkGreen hover:bg-brand-darkGreen hover:text-white transition active:scale-95 shadow-2xs cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -291,9 +291,9 @@ export function QuickCategories({
 
       {/* 2. Seamless Infinite Carousel Viewport */}
       <div className="relative w-full overflow-hidden">
-        {/* Subtle Edge Fade Masks for Smooth Conveyor Effect */}
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-16 md:w-24 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-16 md:w-24 bg-gradient-to-l from-white via-white/80 to-transparent z-10" />
+        {/* Subtle Edge Fade Masks for Smooth Conveyor Effect matching #9DCD5A */}
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-16 md:w-24 bg-gradient-to-r from-[#9DCD5A] via-[#9DCD5A]/80 to-transparent z-10" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-16 md:w-24 bg-gradient-to-l from-[#9DCD5A] via-[#9DCD5A]/80 to-transparent z-10" />
 
         <div
           ref={viewportRef}

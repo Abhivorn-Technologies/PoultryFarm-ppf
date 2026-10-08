@@ -35,25 +35,32 @@ export default function ProductDetailPage({
   const [loading, setLoading] = React.useState(!initialProduct);
 
   React.useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.data)) {
-          const found = data.data.find((p: any) => p.slug === slug);
-          if (found) setProduct(found);
-        }
-      })
-      .catch((err) => console.log("Using static product fallback:", err))
-      .finally(() => setLoading(false));
-  }, [slug]);
+    if (!product) {
+      fetch("/api/products")
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then((data) => {
+          if (data && data.success && Array.isArray(data.data)) {
+            const found = data.data.find((p: any) => p.slug === slug);
+            if (found) setProduct(found);
+          }
+        })
+        .catch((err) => {
+          console.warn("Using static product fallback:", err?.message || err);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [slug, product]);
 
   const { openEnquiryModal } = useCart();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-brand-cream">
+      <div className="min-h-screen flex flex-col bg-[#9DCD5A]">
         <Header />
-        <main className="flex-grow flex items-center justify-center py-20 text-center">
+        <main className="flex-grow flex items-center justify-center py-20 text-center bg-[#9DCD5A]">
           <div className="w-10 h-10 border-4 border-brand-green border-t-transparent rounded-full animate-spin"></div>
         </main>
         <Footer />
@@ -63,9 +70,9 @@ export default function ProductDetailPage({
 
   if (!product) {
     return (
-      <div className="min-h-screen flex flex-col bg-brand-cream">
+      <div className="min-h-screen flex flex-col bg-[#9DCD5A]">
         <Header />
-        <main className="flex-grow flex items-center justify-center py-20 text-center">
+        <main className="flex-grow flex items-center justify-center py-20 text-center bg-[#9DCD5A]">
           <div className="bg-white p-12 rounded-3xl border border-brand-softGreen shadow-card max-w-md mx-auto">
             <h1 className="font-black text-2xl text-brand-darkGray mb-4">
               Product Not Found
@@ -91,10 +98,10 @@ export default function ProductDetailPage({
   ).slice(0, 4);
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-cream text-brand-darkGray">
+    <div className="flex flex-col min-h-screen bg-[#9DCD5A] text-brand-darkGray">
       <Header />
 
-      <main className="flex-grow py-10">
+      <main className="flex-grow py-10 bg-[#9DCD5A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs text-brand-gray mb-6">
@@ -170,7 +177,7 @@ export default function ProductDetailPage({
                 {/* Product Tags */}
                 {product.tags && product.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-4">
-                    {product.tags.map((tag, idx) => (
+                    {product.tags.map((tag: string, idx: number) => (
                       <span
                         key={idx}
                         className="text-[11px] font-semibold bg-brand-lightGreen text-brand-darkGreen border border-brand-softGreen/80 px-2.5 py-0.5 rounded-lg"
@@ -228,7 +235,7 @@ export default function ProductDetailPage({
                     <h2>Official Specifications & Key Features</h2>
                   </div>
                   <div className="space-y-3">
-                    {product.details.map((detail, idx) => (
+                    {product.details.map((detail: string, idx: number) => (
                       <div
                         key={idx}
                         className="flex items-start gap-3 p-3.5 rounded-xl bg-brand-cream border border-brand-softGreen/60 text-xs sm:text-sm text-brand-darkGray leading-relaxed"
@@ -249,7 +256,7 @@ export default function ProductDetailPage({
                     <h2>Available Types, Stages & Variants</h2>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {product.subTypes.map((sub, idx) => (
+                    {product.subTypes.map((sub: { title: string; description: string }, idx: number) => (
                       <div
                         key={idx}
                         className="p-4 rounded-2xl bg-brand-cardCream border border-brand-softGreen/80 space-y-1.5"

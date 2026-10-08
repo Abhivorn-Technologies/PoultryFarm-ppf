@@ -10,14 +10,14 @@ interface ProductRangeProps {
 
 export function ProductRange({ onSelectCategory }: ProductRangeProps) {
   return (
-    <section className="py-16 bg-brand-cream border-t border-brand-softGreen/50" id="all-categories-grid">
+    <section className="py-16 bg-[#9DCD5A] border-t border-brand-darkGreen/15" id="all-categories-grid">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full">
+          <span className="text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-white/70 backdrop-blur-xs px-3.5 py-1 rounded-full border border-brand-darkGreen/15">
             12 Specialized Sectors
           </span>
           <h2 className="text-3xl font-black text-brand-darkGray mt-2">Our Category Showcase</h2>
-          <p className="text-sm text-brand-gray mt-1">
+          <p className="text-sm text-brand-darkGray/90 mt-1 font-medium">
             Click any sector below to view its dedicated 2-column product catalogue, breed specifications, and direct enquiry options.
           </p>
         </div>

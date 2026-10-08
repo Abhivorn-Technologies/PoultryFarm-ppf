@@ -35,7 +35,7 @@ export function TrustStrip() {
   ];
 
   return (
-    <section className="py-6 bg-brand-lightGreen/60 border-b border-brand-softGreen/40">
+    <section className="py-6 bg-[#9DCD5A] border-b border-brand-darkGreen/15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {features.map((f, i) => (

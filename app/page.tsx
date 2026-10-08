@@ -24,11 +24,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-cream text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
+    <div className="flex flex-col min-h-screen bg-[#9DCD5A] text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
       {/* 1. Navigation Header */}
       <Header />
 
-      <main id="home" className="flex-grow">
+      <main id="home" className="flex-grow bg-[#9DCD5A]">
         {/* 2. Hero Section */}
         <Hero />
 

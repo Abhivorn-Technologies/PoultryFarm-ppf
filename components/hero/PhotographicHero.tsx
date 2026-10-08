@@ -161,13 +161,13 @@ export function PhotographicHero() {
             {/* CTA Buttons Row */}
             <div className="flex flex-wrap items-center gap-3.5 pt-2">
               {/* Primary CTA: Explore Products */}
-              <Link
-                href="/products"
+              <a
+                href="/#products"
                 className="group inline-flex items-center gap-2.5 px-7 py-3.5 sm:py-4 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-sm sm:text-base tracking-wide shadow-lg shadow-brand-darkGreen/25 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
               >
                 <span>Explore Products</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
+              </a>
 
               {/* Secondary CTA: Explore Categories */}
               <Link

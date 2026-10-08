@@ -15,19 +15,20 @@
     --brand-softYellow: #FFF0B8;
     --brand-pink: #E889A5;
     --brand-softPink: #F8DCE5;
-    --brand-cream: #FFF8EA;
+    --brand-cream: #9DCD5A;
     --brand-cardCream: #FCFBF7;
   }
 
+  html {
+    background-color: #9DCD5A;
+    scroll-behavior: smooth;
+  }
+
   body {
-    background-color: #FFF8EA;
+    background-color: #9DCD5A;
     color: #242826;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     overflow-x: hidden;
-  }
-
-  html {
-    scroll-behavior: smooth;
   }
 
   /* Custom scrollbar */
@@ -36,7 +37,7 @@
     height: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: #FFF8EA;
+    background: #9DCD5A;
   }
   ::-webkit-scrollbar-thumb {
     background: #5E9F62;
@@ -99,4 +100,52 @@
   .thin-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(31, 107, 69, 0.8);
   }
+
+  /* Footer Logo Subtle Glow */
+  .footer-logo-glow {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 16px rgba(94, 159, 98, 0.3));
+    transition: transform 300ms ease, filter 300ms ease;
+  }
+  .footer-logo-glow:hover {
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.55)) drop-shadow(0 0 22px rgba(244, 197, 66, 0.35));
+  }
+
+  /* Developed by Subtle Periodic Shine */
+  @keyframes devShimmer {
+    0%, 25% {
+      background-position: -200% 0;
+    }
+    70%, 100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .developer-shine-link {
+    display: inline-block;
+    font-weight: 600;
+    background: linear-gradient(
+      110deg,
+      #ffffff 0%,
+      #ffffff 35%,
+      #c4f4d2 48%,
+      #ffffff 60%,
+      #ffffff 100%
+    );
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: devShimmer 3.6s ease-in-out infinite;
+    transition: color 350ms ease, -webkit-text-fill-color 350ms ease, filter 350ms ease, text-shadow 350ms ease;
+    text-decoration: none;
+  }
+
+  .developer-shine-link:hover {
+    background: none;
+    -webkit-text-fill-color: #2dc0eb;
+    color: #2dc0eb;
+    filter: drop-shadow(0 0 6px rgba(45, 192, 235, 0.45));
+  }
 }
+

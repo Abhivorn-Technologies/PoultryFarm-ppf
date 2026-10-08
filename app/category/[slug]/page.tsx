@@ -17,7 +17,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CATEGORIES } from "@/data/categories";
 import { PRODUCTS } from "@/data/products";
-import { CategoryProductCard } from "@/components/products/CategoryProductCard";
+import { CatalogueProductCard } from "@/components/products/CatalogueProductCard";
 import { useCart } from "@/context/CartContext";
 
 export default function CategoryDetailPage({
@@ -57,10 +57,10 @@ export default function CategoryDetailPage({
 
   if (!category) {
     return (
-      <div className="min-h-screen flex flex-col bg-brand-cream text-brand-darkGray">
+      <div className="min-h-screen flex flex-col bg-[#9DCD5A] text-brand-darkGray">
         <Header />
-        <main className="flex-grow flex items-center justify-center py-20 text-center">
-          <div className="bg-white p-12 rounded-3xl border border-brand-softGreen shadow-card max-w-md mx-auto">
+        <main className="flex-grow flex items-center justify-center py-20 text-center bg-[#9DCD5A]">
+          <div className="bg-white p-12 rounded-3xl border border-brand-darkGreen/15 shadow-card max-w-md mx-auto">
             <h1 className="font-black text-2xl text-brand-darkGray mb-4">
               Category Not Found
             </h1>
@@ -68,7 +68,7 @@ export default function CategoryDetailPage({
               The category you requested does not exist in our poultry catalogue.
             </p>
             <Link
-              href="/products"
+              href="/#products"
               className="px-6 py-2.5 rounded-full bg-brand-darkGreen text-white font-bold text-xs shadow hover:bg-brand-green transition"
             >
               Browse All Products
@@ -89,10 +89,10 @@ export default function CategoryDetailPage({
   const nextCategory = categoryIndex < CATEGORIES.length - 1 ? CATEGORIES[categoryIndex + 1] : CATEGORIES[0];
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-cream text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
+    <div className="flex flex-col min-h-screen bg-[#9DCD5A] text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
       <Header />
 
-      <main className="flex-grow py-8 sm:py-10">
+      <main className="flex-grow py-8 sm:py-10 bg-[#9DCD5A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb Navigation */}
           <div className="flex items-center justify-between gap-4 mb-6">
@@ -246,9 +246,13 @@ export default function CategoryDetailPage({
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-              {filteredProducts.map((product) => (
-                <CategoryProductCard key={product.id} product={product} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+              {filteredProducts.map((product, index) => (
+                <CatalogueProductCard
+                  key={product.id ? String(product.id) : (product.slug || `cat-prod-${product.itemNumber}-${index}`)}
+                  product={product}
+                  index={index}
+                />
               ))}
             </div>
           )}

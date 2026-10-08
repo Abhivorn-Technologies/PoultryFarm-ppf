@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export function PromotionalBanners({ onSelectCategory }: { onSelectCategory?: (cat: string) => void }) {
   return (
-    <section className="py-12 bg-white">
+    <section className="py-12 bg-[#9DCD5A]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Banner 1: High-Performance Poultry Equipment */}

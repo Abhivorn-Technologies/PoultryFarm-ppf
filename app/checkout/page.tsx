@@ -11,10 +11,10 @@ export default function CheckoutPage() {
   const { openEnquiryModal } = useCart();
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-cream text-brand-darkGray">
+    <div className="flex flex-col min-h-screen bg-[#9DCD5A] text-brand-darkGray">
       <Header />
 
-      <main className="flex-grow py-16">
+      <main className="flex-grow py-16 bg-[#9DCD5A]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl p-8 sm:p-12 border border-brand-softGreen shadow-card text-center space-y-6">
             <div className="w-20 h-20 rounded-full bg-brand-softGreen text-brand-darkGreen flex items-center justify-center mx-auto shadow-sm">

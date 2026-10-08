@@ -27,10 +27,10 @@ export function Gallery() {
   ];
 
   return (
-    <section className="py-14 bg-white border-t border-brand-softGreen/50">
+    <section className="py-14 bg-[#9DCD5A] border-t border-brand-darkGreen/15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-xl mx-auto mb-8">
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full">
+          <span className="text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-white/70 backdrop-blur-xs px-3.5 py-1 rounded-full border border-brand-darkGreen/15">
             Product Quality
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-brand-darkGray mt-2">

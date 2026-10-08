@@ -9,8 +9,6 @@ import {
   RotateCcw,
   Sparkles,
   Layers,
-  ArrowUpDown,
-  Filter,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -20,10 +18,10 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PRODUCTS } from "@/data/products";
 import { CATEGORIES } from "@/data/categories";
-import { ProductCard } from "@/components/products/ProductCard";
+import { CatalogueProductCard } from "@/components/products/CatalogueProductCard";
 import { Product } from "@/types/product";
 
-export function ProductsCatalogContent() {
+function ProductsCatalogContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("cat") || "all";
 
@@ -32,20 +30,25 @@ export function ProductsCatalogContent() {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState<"featured" | "name-asc" | "name-desc">("featured");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [slideDirection, setSlideDirection] = useState<number>(1); // 1 = forward/right, -1 = backward/left
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(2); // 2 products per page
 
   const shouldReduceMotion = useReducedMotion();
 
-  // Fetch live products from farm catalogue system
+  // Fetch live products from farm catalogue system with fallback
   useEffect(() => {
     fetch("/api/products")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
           setProductsList(data.data);
         }
       })
-      .catch((err) => console.log("Using static catalogue fallback:", err));
+      .catch((err) => console.log("Using static catalogue fallback:", err?.message || err));
   }, []);
 
   useEffect(() => {
@@ -73,7 +76,7 @@ export function ProductsCatalogContent() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [productsList, searchQuery, selectedCategory]);
 
   // Sort helper
   const sortedProducts = useMemo(() => {
@@ -97,17 +100,30 @@ export function ProductsCatalogContent() {
   const endIndex = Math.min(startIndex + itemsPerPage, sortedProducts.length);
   const paginatedProducts = sortedProducts.slice(startIndex, endIndex);
 
+  // Directional navigation without page jumps
+  const handlePrevPage = () => {
+    if (currentPage <= 1 || isTransitioning) return;
+    setIsTransitioning(true);
+    setSlideDirection(-1);
+    setCurrentPage((prev) => Math.max(1, prev - 1));
+    setTimeout(() => setIsTransitioning(false), 320);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage >= totalPages || isTransitioning) return;
+    setIsTransitioning(true);
+    setSlideDirection(1);
+    setCurrentPage((prev) => Math.min(totalPages, prev + 1));
+    setTimeout(() => setIsTransitioning(false), 320);
+  };
+
   const handlePageChange = (page: number) => {
     const validPage = Math.max(1, Math.min(page, totalPages));
+    if (validPage === currentPage || isTransitioning) return;
+    setIsTransitioning(true);
+    setSlideDirection(validPage > currentPage ? 1 : -1);
     setCurrentPage(validPage);
-    if (typeof window !== "undefined") {
-      const el = document.getElementById("catalog-products-section");
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-      } else {
-        window.scrollTo({ top: 380, behavior: "smooth" });
-      }
-    }
+    setTimeout(() => setIsTransitioning(false), 320);
   };
 
   const handleResetFilters = () => {
@@ -122,16 +138,16 @@ export function ProductsCatalogContent() {
   }, [selectedCategory]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-cream text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
+    <div className="flex flex-col min-h-screen bg-[#9DCD5A] text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
       {/* 1. Global Navigation Header */}
       <Header />
 
-      <main className="flex-grow">
+      <main className="flex-grow bg-[#9DCD5A]">
         {/* 2. Catalog Hero Section */}
-        <section className="pt-10 pb-8 bg-gradient-to-b from-white to-brand-cream border-b border-brand-softGreen/50">
+        <section className="pt-10 pb-8 bg-[#9DCD5A] border-b border-brand-darkGreen/15">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-xs text-brand-gray mb-4">
+            <div className="flex items-center gap-2 text-xs text-brand-darkGray/80 mb-4">
               <Link href="/" className="hover:text-brand-darkGreen transition">
                 Home
               </Link>
@@ -141,20 +157,20 @@ export function ProductsCatalogContent() {
 
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div className="max-w-3xl">
-                <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full border border-brand-freshGreen/30 mb-3">
-                  <Sparkles className="w-3.5 h-3.5 text-brand-freshGreen" />
-                  COMPLETE PRODUCT SHOWCASE
+                <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-brand-darkGreen bg-white/70 backdrop-blur-xs px-3.5 py-1 rounded-full border border-brand-darkGreen/15 mb-3">
+                  <Sparkles className="w-3.5 h-3.5 text-brand-darkGreen" />
+                  COMPLETE PRODUCT SHOWCASE ({PRODUCTS.length} PRODUCTS)
                 </span>
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-brand-darkGray tracking-tight leading-tight">
                   All Poultry Products
                 </h1>
-                <p className="text-sm sm:text-base text-brand-gray mt-2 leading-relaxed">
+                <p className="text-sm sm:text-base text-brand-darkGray/90 mt-2 leading-relaxed font-medium">
                   Browse our complete product catalogue featuring day-old chicks, live birds, hatching & table eggs, commercial equipment, incubators, cages, and feeds.
                 </p>
               </div>
 
               {/* Dynamic Catalog Counter Badge */}
-              <div className="bg-white px-5 py-3.5 rounded-2xl border border-brand-softGreen shadow-card shrink-0 flex items-center gap-3 self-start md:self-auto">
+              <div className="bg-white px-5 py-3.5 rounded-2xl border border-brand-darkGreen/15 shadow-sm shrink-0 flex items-center gap-3 self-start md:self-auto">
                 <div className="w-10 h-10 rounded-xl bg-brand-darkGreen text-white flex items-center justify-center font-black text-base">
                   <Layers className="w-5 h-5 text-white" />
                 </div>
@@ -163,7 +179,7 @@ export function ProductsCatalogContent() {
                     Full Catalogue
                   </div>
                   <div className="text-sm font-black text-brand-freshGreen">
-                    Official Product Range
+                    {PRODUCTS.length} Unique Products
                   </div>
                 </div>
               </div>
@@ -172,7 +188,7 @@ export function ProductsCatalogContent() {
         </section>
 
         {/* 3. Search, Sort & Category Filter Bar */}
-        <section className="py-6 bg-brand-cream sticky top-[69px] z-30 backdrop-blur-md bg-brand-cream/95 border-b border-brand-softGreen/40 shadow-xs">
+        <section className="py-6 bg-[#9DCD5A]/95 sticky top-[69px] z-30 backdrop-blur-md border-b border-brand-darkGreen/20 shadow-xs">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
               {/* Search Bar */}
@@ -199,15 +215,11 @@ export function ProductsCatalogContent() {
               {/* Product Count Display */}
               <div className="md:col-span-2 text-center md:text-left">
                 <span className="text-xs font-bold text-brand-darkGray">
-                  {selectedCategory === "all" && !searchQuery.trim() ? (
-                    <span>Showing <strong className="text-brand-darkGreen">All Available</strong> Products</span>
+                  {sortedProducts.length === 0 ? (
+                    <span>0 Products</span>
                   ) : (
                     <span>
-                      Showing{" "}
-                      <span className="text-brand-darkGreen font-black">
-                        {sortedProducts.length}
-                      </span>{" "}
-                      {sortedProducts.length === 1 ? "Product" : "Products"}
+                      Page <strong className="text-brand-darkGreen font-black">{currentPage}</strong> of {totalPages}
                     </span>
                   )}
                 </span>
@@ -235,20 +247,20 @@ export function ProductsCatalogContent() {
             <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-2.5">
               <button
                 onClick={() => setSelectedCategory("all")}
-                className={`px-3.5 sm:px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-3.5 sm:px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   selectedCategory === "all"
                     ? "bg-brand-darkGreen text-white shadow-sm"
                     : "bg-white text-brand-darkGray hover:bg-brand-softGreen/40 border border-brand-softGreen/60"
                 }`}
               >
-                <span>All Products</span>
+                <span>All Products ({PRODUCTS.length})</span>
               </button>
 
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`px-3.5 sm:px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  className={`px-3.5 sm:px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                     selectedCategory === cat.slug
                       ? "bg-brand-darkGreen text-white shadow-sm"
                       : "bg-white text-brand-darkGray hover:bg-brand-softGreen/40 border border-brand-softGreen/60"
@@ -287,8 +299,8 @@ export function ProductsCatalogContent() {
           </div>
         </section>
 
-        {/* 5. PRODUCT SHOWCASE GRID */}
-        <div id="catalog-products-section" className="py-10 scroll-mt-24">
+        {/* 5. PRODUCT SHOWCASE GRID WITH 2 PRODUCTS PER PAGE */}
+        <div id="catalog-products-section" className="py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimatePresence mode="wait">
               {sortedProducts.length === 0 ? (
@@ -321,46 +333,97 @@ export function ProductsCatalogContent() {
                   </button>
                 </motion.div>
               ) : (
-                <motion.div
-                  key={`all-products-grid-${selectedCategory}-${sortBy}-${currentPage}`}
-                  initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
-                  className="space-y-10"
-                >
+                <div className="space-y-10">
                   {/* Results count header */}
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-brand-gray pb-2 border-b border-brand-softGreen/40">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-brand-darkGray/90 pb-2 border-b border-brand-darkGreen/20">
                     <div>
-                      Showing <strong className="text-brand-darkGray font-bold">{startIndex + 1}–{endIndex}</strong> of{" "}
-                      <strong className="text-brand-darkGreen font-bold">{sortedProducts.length}</strong> products
+                      Showing <strong className="text-brand-darkGray font-black">{startIndex + 1}–{endIndex}</strong> of{" "}
+                      <strong className="text-brand-darkGreen font-black">{sortedProducts.length}</strong> products
                     </div>
 
                     <div className="flex items-center gap-2 text-xs">
-                      <span className="font-medium text-brand-gray">Products per page:</span>
+                      <span className="font-bold text-brand-darkGray">Products per page:</span>
                       <select
                         value={itemsPerPage}
                         onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                        className="bg-white border border-brand-softGreen rounded-lg px-2 py-1 text-xs font-bold text-brand-darkGray focus:outline-none focus:ring-1 focus:ring-brand-freshGreen cursor-pointer"
+                        className="bg-white border border-brand-darkGreen/30 rounded-lg px-2.5 py-1 text-xs font-bold text-brand-darkGray focus:outline-none focus:ring-1 focus:ring-brand-darkGreen cursor-pointer"
                       >
-                        <option value={12}>12 items</option>
-                        <option value={24}>24 items</option>
-                        <option value={36}>36 items</option>
-                        <option value={48}>48 items</option>
+                        <option value={2}>2 products</option>
+                        <option value={4}>4 products</option>
+                        <option value={6}>6 products</option>
+                        <option value={12}>12 products</option>
                       </select>
                     </div>
                   </div>
 
-                  {/* Responsive product catalogue grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {paginatedProducts.map((product) => (
-                      <ProductCard key={product.id} product={product} />
-                    ))}
+                  {/* 2-Column Product Catalogue Grid with Floating Side Arrows */}
+                  <div className="relative group/catalogue">
+                    {/* Floating Left Navigation Arrow */}
+                    <button
+                      type="button"
+                      onClick={handlePrevPage}
+                      disabled={currentPage === 1 || isTransitioning}
+                      aria-label="Previous products"
+                      className="hidden md:flex absolute -left-5 lg:-left-7 xl:-left-14 top-1/2 -translate-y-1/2 z-20 w-11 h-11 lg:w-12 lg:h-12 rounded-full items-center justify-center bg-white hover:bg-brand-darkGreen border border-brand-darkGreen/20 text-brand-darkGreen hover:text-white shadow-md hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:pointer-events-none disabled:hover:scale-100 disabled:hover:bg-white disabled:hover:text-brand-darkGreen cursor-pointer"
+                    >
+                      <ChevronLeft className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2.5} />
+                    </button>
+
+                    {/* Floating Right Navigation Arrow */}
+                    <button
+                      type="button"
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages || isTransitioning}
+                      aria-label="Next products"
+                      className="hidden md:flex absolute -right-5 lg:-right-7 xl:-right-14 top-1/2 -translate-y-1/2 z-20 w-11 h-11 lg:w-12 lg:h-12 rounded-full items-center justify-center bg-white hover:bg-brand-darkGreen border border-brand-darkGreen/20 text-brand-darkGreen hover:text-white shadow-md hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:pointer-events-none disabled:hover:scale-100 disabled:hover:bg-white disabled:hover:text-brand-darkGreen cursor-pointer"
+                    >
+                      <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2.5} />
+                    </button>
+
+                    {/* Directional Slide Container */}
+                    <div className="overflow-hidden">
+                      <AnimatePresence custom={slideDirection} mode="wait" initial={false}>
+                        <motion.div
+                          key={`products-page-${currentPage}`}
+                          custom={slideDirection}
+                          variants={{
+                            enter: (dir: number) => ({
+                              x: shouldReduceMotion ? 0 : dir > 0 ? 32 : -32,
+                              opacity: 0,
+                            }),
+                            center: {
+                              x: 0,
+                              opacity: 1,
+                            },
+                            exit: (dir: number) => ({
+                              x: shouldReduceMotion ? 0 : dir > 0 ? -32 : 32,
+                              opacity: 0,
+                            }),
+                          }}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{
+                            duration: 0.28,
+                            ease: [0.25, 1, 0.5, 1],
+                          }}
+                          className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10"
+                        >
+                          {paginatedProducts.map((product, index) => (
+                            <CatalogueProductCard
+                              key={product.id ? String(product.id) : (product.slug || `prod-${product.itemNumber}-${index}`)}
+                              product={product}
+                              index={index}
+                            />
+                          ))}
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
                   </div>
 
                   {/* Pagination Controls Bar */}
                   {totalPages > 1 && (
-                    <div className="bg-white p-4 sm:p-5 rounded-3xl border border-brand-softGreen/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 mt-8">
+                    <div className="bg-white p-4 sm:p-5 rounded-3xl border border-brand-darkGreen/20 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 mt-10">
                       <div className="text-xs font-medium text-brand-gray order-2 sm:order-1">
                         Page <strong className="text-brand-darkGray font-bold">{currentPage}</strong> of{" "}
                         <strong className="text-brand-darkGray font-bold">{totalPages}</strong>
@@ -370,8 +433,8 @@ export function ProductsCatalogContent() {
                         {/* First Page */}
                         <button
                           onClick={() => handlePageChange(1)}
-                          disabled={currentPage === 1}
-                          className="p-2 rounded-xl border border-brand-softGreen/80 text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition"
+                          disabled={currentPage === 1 || isTransitioning}
+                          className="p-2 rounded-xl border border-brand-softGreen/80 text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
                           title="First Page"
                         >
                           <ChevronsLeft className="w-4 h-4" />
@@ -379,9 +442,9 @@ export function ProductsCatalogContent() {
 
                         {/* Previous Page */}
                         <button
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
-                          className="px-3 py-2 rounded-xl border border-brand-softGreen/80 text-xs font-bold text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition flex items-center gap-1"
+                          onClick={handlePrevPage}
+                          disabled={currentPage === 1 || isTransitioning}
+                          className="px-3 py-2 rounded-xl border border-brand-softGreen/80 text-xs font-bold text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition flex items-center gap-1 cursor-pointer"
                         >
                           <ChevronLeft className="w-4 h-4" />
                           <span>Prev</span>
@@ -390,11 +453,11 @@ export function ProductsCatalogContent() {
                         {/* Numbered Page Buttons */}
                         {Array.from({ length: totalPages }, (_, i) => i + 1)
                           .filter((p) => {
-                            // Show first, last, current, and +/- 1 around current
+                            // Show first, last, current, and +/- 2 around current
                             return (
                               p === 1 ||
                               p === totalPages ||
-                              Math.abs(p - currentPage) <= 1
+                              Math.abs(p - currentPage) <= 2
                             );
                           })
                           .map((p, idx, arr) => {
@@ -408,7 +471,8 @@ export function ProductsCatalogContent() {
                                 )}
                                 <button
                                   onClick={() => handlePageChange(p)}
-                                  className={`w-9 h-9 rounded-xl text-xs font-bold transition flex items-center justify-center ${
+                                  disabled={isTransitioning}
+                                  className={`w-9 h-9 rounded-xl text-xs font-bold transition flex items-center justify-center cursor-pointer ${
                                     currentPage === p
                                       ? "bg-brand-darkGreen text-white shadow-xs font-black"
                                       : "border border-brand-softGreen/80 text-brand-darkGray hover:bg-brand-softGreen/40"
@@ -422,9 +486,9 @@ export function ProductsCatalogContent() {
 
                         {/* Next Page */}
                         <button
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                          className="px-3 py-2 rounded-xl border border-brand-softGreen/80 text-xs font-bold text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition flex items-center gap-1"
+                          onClick={handleNextPage}
+                          disabled={currentPage === totalPages || isTransitioning}
+                          className="px-3 py-2 rounded-xl border border-brand-softGreen/80 text-xs font-bold text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition flex items-center gap-1 cursor-pointer"
                         >
                           <span>Next</span>
                           <ChevronRight className="w-4 h-4" />
@@ -433,8 +497,8 @@ export function ProductsCatalogContent() {
                         {/* Last Page */}
                         <button
                           onClick={() => handlePageChange(totalPages)}
-                          disabled={currentPage === totalPages}
-                          className="p-2 rounded-xl border border-brand-softGreen/80 text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition"
+                          disabled={currentPage === totalPages || isTransitioning}
+                          className="p-2 rounded-xl border border-brand-softGreen/80 text-brand-darkGray hover:bg-brand-softGreen/40 disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
                           title="Last Page"
                         >
                           <ChevronsRight className="w-4 h-4" />
@@ -442,7 +506,7 @@ export function ProductsCatalogContent() {
                       </div>
                     </div>
                   )}
-                </motion.div>
+                </div>
               )}
             </AnimatePresence>
           </div>
@@ -456,7 +520,13 @@ export function ProductsCatalogContent() {
 
 export default function ProductsCatalogPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-brand-cream flex items-center justify-center font-bold text-brand-darkGreen">Loading catalogue...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#9DCD5A] flex items-center justify-center font-bold text-brand-darkGreen">
+          Loading catalogue...
+        </div>
+      }
+    >
       <ProductsCatalogContent />
     </Suspense>
   );

@@ -90,14 +90,12 @@ export function Header({ variant = "auto" }: HeaderProps) {
           >
             About
           </a>
-          <Link
-            className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)] ${
-              pathname === "/products" ? "text-brand-darkGreen font-black border-b-2 border-brand-darkGreen pb-0.5" : "text-[#1F2937]"
-            }`}
-            href="/products"
+          <a
+            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]"
+            href="/#products"
           >
             Products
-          </Link>
+          </a>
           <Link
             className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)] ${
               pathname?.startsWith("/categories") || pathname?.startsWith("/category")
@@ -224,9 +222,9 @@ export function Header({ variant = "auto" }: HeaderProps) {
             <a onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#about">
               About
             </a>
-            <Link onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/products">
+            <a onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#products">
               Products
-            </Link>
+            </a>
             <Link onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/categories">
               Categories (12 Sectors)
             </Link>

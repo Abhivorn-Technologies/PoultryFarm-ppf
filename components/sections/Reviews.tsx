@@ -26,19 +26,19 @@ export function Reviews() {
   ];
 
   return (
-    <section className="py-16 bg-brand-cream border-t border-brand-softGreen/50" id="reviews">
+    <section className="py-16 bg-[#9DCD5A] border-t border-brand-darkGreen/15" id="reviews">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-freshGreen">
+            <span className="text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-white/70 backdrop-blur-xs px-3.5 py-1 rounded-full border border-brand-darkGreen/15">
               Service Assurances & Standards
             </span>
-            <h2 className="text-3xl font-black text-brand-darkGray">Direct Supply Reliability</h2>
-            <p className="text-sm text-brand-gray mt-1">
+            <h2 className="text-3xl font-black text-brand-darkGray mt-2">Direct Supply Reliability</h2>
+            <p className="text-sm text-brand-darkGray/90 mt-1 font-medium">
               Committed to providing healthy poultry stock, precision equipment, and dependable delivery nationwide.
             </p>
           </div>
-          <div className="flex items-center gap-2 text-brand-darkGreen font-bold text-xs bg-white px-4 py-2.5 rounded-full border border-brand-softGreen shadow-xs">
+          <div className="flex items-center gap-2 text-brand-darkGreen font-bold text-xs bg-white px-4 py-2.5 rounded-full border border-brand-darkGreen/20 shadow-xs">
             <CheckCircle2 className="w-4 h-4 text-brand-freshGreen" />
             <span>Official Client Catalog Sourced</span>
           </div>

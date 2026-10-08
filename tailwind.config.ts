@@ -66,7 +66,7 @@ const config: Config = {
           },
           softPink: "#F8DCE5",
           cream: {
-            DEFAULT: "#FFF8EA",
+            DEFAULT: "#9DCD5A",
             50: "#fdfcf9",
             100: "#faf7f0",
             200: "#f4ede0",
