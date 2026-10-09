@@ -1,111 +1,43 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useCart } from "@/context/CartContext";
 
 export function Newsletter() {
-  const [email, setEmail] = useState("");
   const { showToast } = useCart();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || isSubmitting) return;
-
-    try {
-      setIsSubmitting(true);
-      await fetch("/api/enquiries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerName: "Newsletter Subscriber",
-          phone: "Email Subscriber",
-          email: email.trim(),
-          category: "Newsletter & Updates",
-          enquiryType: "newsletter",
-          productName: "Poultry Farm Community Subscription",
-          message: "Subscribed to seasonal breed notifications and farm advisory updates.",
-        }),
-      });
-
-      showToast(`Thank you! ${email} has been subscribed to poultry updates.`);
-      setEmail("");
-    } catch (err) {
-      console.error(err);
-      showToast("Subscription received. Thank you!");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
-    <section className="py-12 bg-[#9DCD5A] border-y border-brand-darkGreen/15" id="contact">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Newsletter Subscription (7 Cols) */}
-          <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-brand-softGreen/80 shadow-card">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-2xl">📬</span>
-              <h3 className="text-xl font-black text-brand-darkGray">Join Our Poultry Community</h3>
+    <section className="py-10 sm:py-12 bg-[#9DCD5A] border-y border-brand-darkGreen/15" id="contact">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Quick Help / Support Callout Banner */}
+        <div className="bg-brand-darkGreen text-white p-6 sm:p-8 md:p-10 rounded-3xl shadow-elevated flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center sm:items-start gap-4 text-center sm:text-left flex-col sm:flex-row">
+            <div className="w-14 h-14 rounded-2xl bg-brand-freshGreen/30 text-brand-yellow flex items-center justify-center text-3xl shrink-0">
+              💬
             </div>
-            <p className="text-xs text-brand-gray mb-5">
-              Get latest breed updates, vaccination schedule reminders, seasonal discounts, and stock notifications.
-            </p>
-            <form className="flex flex-col sm:flex-row gap-2.5" onSubmit={handleSubscribe}>
-              <input
-                className="flex-1 px-4 py-3 rounded-full text-xs bg-brand-cardCream border border-brand-softGreen focus:outline-none focus:ring-2 focus:ring-brand-freshGreen text-brand-darkGray placeholder:text-gray-400"
-                placeholder="Enter your email address..."
-                required
-                type="email"
-                autoComplete="email"
-                data-lpignore="true"
-                suppressHydrationWarning
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <button
-                className="px-7 py-3 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs uppercase tracking-wider transition shadow-sm active:scale-95"
-                type="submit"
-                suppressHydrationWarning
-              >
-                Subscribe
-              </button>
-            </form>
-            <span className="text-[10px] text-brand-gray mt-2 block">
-              🔒 No spam. Unsubscribe anytime with 1-click.
-            </span>
+            <div>
+              <h3 className="text-xl sm:text-2xl font-black text-white">Need Help With Your Flock?</h3>
+              <p className="text-xs sm:text-sm text-brand-softGreen mt-1 max-w-xl">
+                Our certified veterinary specialists are ready to help guide your breeding, feed, and housing decisions.
+              </p>
+            </div>
           </div>
 
-          {/* Quick Help / Support Callout (5 Cols) */}
-          <div className="lg:col-span-5 bg-brand-darkGreen text-white p-6 sm:p-8 rounded-3xl shadow-elevated flex flex-col justify-between min-h-[175px]">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand-freshGreen/30 text-brand-yellow flex items-center justify-center text-2xl flex-shrink-0">
-                💬
-              </div>
-              <div>
-                <h3 className="text-lg font-black text-white">Need Help With Your Flock?</h3>
-                <p className="text-xs text-brand-softGreen mt-1">
-                  Our certified veterinary specialists are ready to help guide your breeding, feed, and housing decisions.
-                </p>
-              </div>
-            </div>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <a
-                className="px-5 py-2.5 rounded-full bg-brand-yellow hover:bg-[#e6b738] text-brand-darkGray font-extrabold text-xs transition shadow-sm active:scale-95"
-                href="tel:+919876543210"
-              >
-                Call +91 98765 43210
-              </a>
-              <button
-                type="button"
-                suppressHydrationWarning
-                className="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 transition active:scale-95"
-                onClick={() => showToast("Opening WhatsApp consultation desk...")}
-              >
-                WhatsApp Us
-              </button>
-            </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
+            <a
+              className="px-6 py-3 rounded-full bg-brand-yellow hover:bg-[#e6b738] text-brand-darkGray font-extrabold text-xs sm:text-sm transition shadow-sm active:scale-95"
+              href="tel:+919876543210"
+            >
+              Call +91 98765 43210
+            </a>
+            <button
+              type="button"
+              suppressHydrationWarning
+              className="px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition active:scale-95 cursor-pointer"
+              onClick={() => showToast("Opening WhatsApp consultation desk...")}
+            >
+              WhatsApp Us
+            </button>
           </div>
         </div>
       </div>

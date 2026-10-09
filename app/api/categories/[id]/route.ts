@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Category from "@/models/Category";
+import Product from "@/models/Product";
+import { apiCache } from "@/lib/cache";
 
 export async function PUT(
   request: Request,
@@ -34,6 +36,8 @@ export async function PUT(
       );
     }
 
+    apiCache.invalidateCategories();
+
     return NextResponse.json({
       success: true,
       message: "Category updated successfully",
@@ -66,9 +70,20 @@ export async function DELETE(
       );
     }
 
+    // Cascade delete any products that were assigned to this deleted category
+    await Product.deleteMany({
+      $or: [
+        { categorySlug: deleted.slug },
+        { category: deleted.name },
+      ],
+    });
+
+    apiCache.invalidateCategories();
+    apiCache.invalidateProducts();
+
     return NextResponse.json({
       success: true,
-      message: "Category deleted successfully",
+      message: "Category and associated products deleted successfully",
     });
   } catch (error: any) {
     console.error("Failed to delete category:", error);

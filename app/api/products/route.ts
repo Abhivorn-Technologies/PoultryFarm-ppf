@@ -2,12 +2,25 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { PRODUCTS } from "@/data/products";
+import { apiCache } from "@/lib/cache";
 
 export async function GET() {
   try {
     if (!process.env.MONGODB_URI) {
-      return NextResponse.json({ success: true, count: PRODUCTS.length, data: PRODUCTS });
+      return NextResponse.json(
+        { success: true, count: PRODUCTS.length, data: PRODUCTS },
+        { headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" } }
+      );
     }
+
+    // Serve from cache if fresh
+    const cached = apiCache.getProducts();
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" },
+      });
+    }
+
     await connectToDatabase();
     let products = await Product.find({}).sort({ itemNumber: 1 }).lean();
 
@@ -40,7 +53,12 @@ export async function GET() {
       id: p._id ? p._id.toString() : p.slug,
     }));
 
-    return NextResponse.json({ success: true, count: transformed.length, data: transformed });
+    const responsePayload = { success: true, count: transformed.length, data: transformed };
+    apiCache.setProducts(responsePayload);
+
+    return NextResponse.json(responsePayload, {
+      headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" },
+    });
   } catch (error: any) {
     console.warn("MongoDB products fetch fallback to static data:", error?.message || error);
     // Gracefully return local static products so the client never crashes with a 500 error
@@ -80,6 +98,8 @@ export async function POST(request: Request) {
       slug,
       available: body.available ?? true,
     });
+
+    apiCache.invalidateProducts();
 
     return NextResponse.json({ success: true, data: newProduct }, { status: 201 });
   } catch (error: any) {

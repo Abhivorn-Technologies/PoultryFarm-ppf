@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Product from "@/models/Product";
-
 import mongoose from "mongoose";
+import { apiCache } from "@/lib/cache";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -35,6 +35,8 @@ export async function PUT(request: Request, { params }: Params) {
       );
     }
 
+    apiCache.invalidateProducts();
+
     return NextResponse.json({ success: true, data: updatedProduct });
   } catch (error: any) {
     return NextResponse.json(
@@ -64,6 +66,8 @@ export async function DELETE(request: Request, { params }: Params) {
         { status: 404 }
       );
     }
+
+    apiCache.invalidateProducts();
 
     return NextResponse.json({
       success: true,

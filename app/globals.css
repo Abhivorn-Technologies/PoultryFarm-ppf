@@ -147,5 +147,26 @@
     color: #2dc0eb;
     filter: drop-shadow(0 0 6px rgba(45, 192, 235, 0.45));
   }
+
+  /* Continuous Automatic Marquee for Product Glimpses */
+  @keyframes marqueeScroll {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-continuous-marquee {
+    display: flex;
+    width: max-content;
+    animation: marqueeScroll 28s linear infinite;
+    will-change: transform;
+  }
+
+  .animate-continuous-marquee:hover {
+    animation-play-state: paused;
+  }
 }
 

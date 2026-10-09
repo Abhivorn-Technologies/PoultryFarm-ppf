@@ -2554,7 +2554,7 @@ export const PRODUCTS: Product[] = [
     "itemNumber": 73,
     "name": "Broiler Poultry Feed",
     "slug": "broiler-poultry-feed",
-    "category": "Poultry Feed & Ingredients",
+    "category": "Feed & Ingredients",
     "categorySlug": "poultry-feed-ingredients",
     "shortDescription": "Specially formulated feed for broiler chickens raised for meat production.",
     "description": "Specially formulated feed for broiler chickens raised for meat production. Contains essential protein, energy, vitamins, minerals, and amino acids. Helps promote fast, uniform growth and efficient feed utilization. Suitable for commercial broiler farms and small-scale poultry units.",
@@ -2585,7 +2585,7 @@ export const PRODUCTS: Product[] = [
     "isPopular": true,
     "featured": true,
     "tags": [
-      "Poultry Feed & Ingredients",
+      "Feed & Ingredients",
       "Broiler",
       "Poultry",
       "Feed"
@@ -2596,7 +2596,7 @@ export const PRODUCTS: Product[] = [
     "itemNumber": 74,
     "name": "Layer Poultry Feed",
     "slug": "layer-poultry-feed",
-    "category": "Poultry Feed & Ingredients",
+    "category": "Feed & Ingredients",
     "categorySlug": "poultry-feed-ingredients",
     "shortDescription": "Specially formulated feed for layer chickens raised for egg production.",
     "description": "Specially formulated feed for layer chickens raised for egg production. Helps maintain good bird health, egg quality, and productive performance. Suitable for commercial layer farms and small-scale poultry units.",
@@ -2634,7 +2634,7 @@ export const PRODUCTS: Product[] = [
     "isPopular": false,
     "featured": false,
     "tags": [
-      "Poultry Feed & Ingredients",
+      "Feed & Ingredients",
       "Layer",
       "Poultry",
       "Feed"
@@ -2645,7 +2645,7 @@ export const PRODUCTS: Product[] = [
     "itemNumber": 75,
     "name": "Poultry Dry Fish",
     "slug": "poultry-dry-fish",
-    "category": "Poultry Feed & Ingredients",
+    "category": "Feed & Ingredients",
     "categorySlug": "poultry-feed-ingredients",
     "shortDescription": "Dry fish is a protein-rich feed ingredient used in poultry feed.",
     "description": "Dry fish is a protein-rich feed ingredient used in poultry feed. It helps provide high-quality animal protein for better growth and body development. It can support strong muscles, feathers, and overall bird health when used in a balanced feed. It is commonly used in feed formulations for broilers, layers, chicks, and breeder birds. Farmers should use clean, properly dried, good-quality dry fish without mold, excess salt, or spoilage.",
@@ -2663,7 +2663,7 @@ export const PRODUCTS: Product[] = [
     "isPopular": false,
     "featured": false,
     "tags": [
-      "Poultry Feed & Ingredients",
+      "Feed & Ingredients",
       "Poultry",
       "Dry",
       "Fish"
@@ -2674,7 +2674,7 @@ export const PRODUCTS: Product[] = [
     "itemNumber": 76,
     "name": "Poultry Fish Feed",
     "slug": "poultry-fish-feed",
-    "category": "Poultry Feed & Ingredients",
+    "category": "Feed & Ingredients",
     "categorySlug": "poultry-feed-ingredients",
     "shortDescription": "Poultry fish feed is a protein-rich feed ingredient made from fish or fish meal.",
     "description": "Poultry fish feed is a protein-rich feed ingredient made from fish or fish meal. It provides high-quality protein and essential amino acids for poultry growth. It supports body weight, muscle development, feather growth, and overall health. It can be used in feed for broilers, layers, chicks, and breeder birds as part of a balanced ration. Good-quality fish feed should be fresh, properly dried, clean, and free from mold or bad smell. It is especially useful when farmers need an additional protein source in poultry feed.",
@@ -2693,7 +2693,7 @@ export const PRODUCTS: Product[] = [
     "isPopular": false,
     "featured": false,
     "tags": [
-      "Poultry Feed & Ingredients",
+      "Feed & Ingredients",
       "Poultry",
       "Fish",
       "Feed"
@@ -2704,7 +2704,7 @@ export const PRODUCTS: Product[] = [
     "itemNumber": 77,
     "name": "Poultry Soya DOC",
     "slug": "poultry-soya-doc",
-    "category": "Poultry Feed & Ingredients",
+    "category": "Feed & Ingredients",
     "categorySlug": "poultry-feed-ingredients",
     "shortDescription": "Soya DOC (De-Oiled Cake) is a high-protein feed ingredient commonly used in poultry feed.",
     "description": "Soya DOC (De-Oiled Cake) is a high-protein feed ingredient commonly used in poultry feed. It provides good-quality protein and essential amino acids needed for bird growth. It supports muscle development, feather growth, and healthy body weight. Soya DOC is widely used in broiler, layer, chick, and breeder feeds. It can be mixed with other feed ingredients to make a balanced poultry ration. Good-quality Soya DOC should be clean, properly processed, dry, and free from mold.",
@@ -2723,7 +2723,7 @@ export const PRODUCTS: Product[] = [
     "isPopular": false,
     "featured": false,
     "tags": [
-      "Poultry Feed & Ingredients",
+      "Feed & Ingredients",
       "Poultry",
       "Soya",
       "DOC"
@@ -2734,7 +2734,7 @@ export const PRODUCTS: Product[] = [
     "itemNumber": 78,
     "name": "Poultry Maize",
     "slug": "poultry-maize",
-    "category": "Poultry Feed & Ingredients",
+    "category": "Feed & Ingredients",
     "categorySlug": "poultry-feed-ingredients",
     "shortDescription": "Maize (corn) is one of the main energy ingredients used in poultry feed.",
     "description": "Maize (corn) is one of the main energy ingredients used in poultry feed. It provides high energy that helps birds grow and maintain body weight. It is commonly used in broiler, layer, chick, and breeder feeds. Good-quality maize supports better feed performance and healthy bird development. Maize should be clean, dry, properly stored, and free from mold and excess moisture. It can be combined with Soya DOC, minerals, vitamins, and other ingredients to prepare balanced poultry feed.",
@@ -2753,7 +2753,7 @@ export const PRODUCTS: Product[] = [
     "isPopular": false,
     "featured": false,
     "tags": [
-      "Poultry Feed & Ingredients",
+      "Feed & Ingredients",
       "Poultry",
       "Maize"
     ]
@@ -2763,7 +2763,7 @@ export const PRODUCTS: Product[] = [
     "itemNumber": 79,
     "name": "Poultry Soya Oil",
     "slug": "poultry-soya-oil",
-    "category": "Poultry Feed & Ingredients",
+    "category": "Feed & Ingredients",
     "categorySlug": "poultry-feed-ingredients",
     "shortDescription": "Soya oil is an energy-rich ingredient used in poultry feed.",
     "description": "Soya oil is an energy-rich ingredient used in poultry feed. It provides concentrated energy to support bird growth and body weight. It helps improve the energy value and feed quality of poultry rations. It can be used in broiler, layer, chick, and breeder feeds in suitable amounts. Soya oil also helps improve feed texture and reduce dust. Good-quality oil should be fresh, clean, and properly stored to maintain feed quality.",
@@ -2782,7 +2782,7 @@ export const PRODUCTS: Product[] = [
     "isPopular": false,
     "featured": false,
     "tags": [
-      "Poultry Feed & Ingredients",
+      "Feed & Ingredients",
       "Poultry",
       "Soya",
       "Oil"
@@ -2793,7 +2793,7 @@ export const PRODUCTS: Product[] = [
     "itemNumber": 80,
     "name": "Poultry Stone Grade",
     "slug": "poultry-stone-grade",
-    "category": "Poultry Feed & Ingredients",
+    "category": "Feed & Ingredients",
     "categorySlug": "poultry-feed-ingredients",
     "shortDescription": "Poultry stone grade usually refers to feed-grade limestone or calcium stone used in poultry feed.",
     "description": "Poultry stone grade usually refers to feed-grade limestone or calcium stone used in poultry feed. It is an important source of calcium for chickens and other poultry birds. It helps support strong bones and proper body development. In layer birds, calcium is especially important for strong eggshell formation. It is used in broiler, layer, chick, and breeder feeds according to the feed formulation. Good-quality poultry stone should be clean, dry, properly processed, and suitable for feed use.",
@@ -2812,7 +2812,7 @@ export const PRODUCTS: Product[] = [
     "isPopular": false,
     "featured": false,
     "tags": [
-      "Poultry Feed & Ingredients",
+      "Feed & Ingredients",
       "Poultry",
       "Stone",
       "Grade"
@@ -3118,7 +3118,7 @@ export const PRODUCTS: Product[] = [
     "itemNumber": 89,
     "name": "Poultry Mineral Mixture",
     "slug": "poultry-mineral-mixture",
-    "category": "Poultry Feed & Ingredients",
+    "category": "Feed & Ingredients",
     "categorySlug": "poultry-feed-ingredients",
     "shortDescription": "Supports strong bones and healthy growth in chicks and growing birds.",
     "description": "Supports strong bones and healthy growth in chicks and growing birds. Provides important minerals such as calcium, phosphorus, zinc, iron, manganese, and selenium. Helps maintain good eggshell quality and egg production in layer birds. Supports muscle development, metabolism, and normal body functions. Helps prevent problems caused by mineral deficiencies when included as part of a balanced diet. Can be used for broilers, layers, breeders, and backyard poultry, depending on the product formulation.",
@@ -3137,7 +3137,7 @@ export const PRODUCTS: Product[] = [
     "isPopular": false,
     "featured": true,
     "tags": [
-      "Poultry Feed & Ingredients",
+      "Feed & Ingredients",
       "Poultry",
       "Mineral",
       "Mixture"

@@ -90,6 +90,7 @@ export function CatalogueProductCard({ product, index = 0 }: CatalogueProductCar
         <div className="pt-6 mt-6 border-t border-brand-softGreen/50 flex items-center justify-between">
           <button
             type="button"
+            suppressHydrationWarning
             onClick={() => openEnquiryModal(product)}
             className="w-full sm:w-auto px-7 py-3 rounded-full bg-brand-darkGreen hover:bg-brand-green text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow active:scale-95 flex items-center justify-center cursor-pointer"
           >

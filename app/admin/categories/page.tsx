@@ -142,6 +142,9 @@ export default function AdminCategoriesPage() {
       const data = await res.json();
       if (data.success) {
         setCategoriesList((prev) => prev.filter((c) => (c._id || c.slug || c.id) !== categoryToDelete.id));
+        if (search && (categoryToDelete.name.toLowerCase().includes(search.toLowerCase()) || search.toLowerCase().includes(categoryToDelete.name.toLowerCase()))) {
+          setSearch("");
+        }
         showToast("Category removed successfully", "success");
         setCategoryToDelete(null);
       } else {

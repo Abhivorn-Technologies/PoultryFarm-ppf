@@ -8,13 +8,13 @@ import {
   LayoutDashboard,
   Layers,
   Package,
+  Images,
   MessageSquare,
   Globe,
   Menu,
   X,
   LogOut,
   ChevronRight,
-  ShieldCheck,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -100,6 +100,12 @@ export default function AdminLayout({
       href: "/admin/products",
       icon: Package,
       active: pathname.startsWith("/admin/products"),
+    },
+    {
+      name: "Product Glimpses",
+      href: "/admin/glimpses",
+      icon: Images,
+      active: pathname.startsWith("/admin/glimpses"),
     },
     {
       name: "Customer Enquiries",

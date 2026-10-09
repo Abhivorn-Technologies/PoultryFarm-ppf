@@ -298,7 +298,7 @@ const DEPTH_CONFIG = {
   bg: {
     scale: 0.48,
     opacity: 0.25,
-    filter: "blur(2.5px)",
+    filter: "none",
     parallaxFactor: 0.018,
     interactionRadius: 130,
     repulsionStrength: 24,
@@ -307,7 +307,7 @@ const DEPTH_CONFIG = {
   mid: {
     scale: 0.75,
     opacity: 0.45,
-    filter: "blur(0.8px)",
+    filter: "none",
     parallaxFactor: 0.038,
     interactionRadius: 155,
     repulsionStrength: 34,

@@ -2,9 +2,17 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Category from "@/models/Category";
 import { CATEGORIES } from "@/data/categories";
+import { apiCache } from "@/lib/cache";
 
 export async function GET() {
   try {
+    const cached = apiCache.getCategories();
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" },
+      });
+    }
+
     await connectToDatabase();
     let categories = await Category.find({}).sort({ createdAt: 1 }).lean();
 
@@ -24,7 +32,12 @@ export async function GET() {
       categories = await Category.find({}).sort({ createdAt: 1 }).lean();
     }
 
-    return NextResponse.json({ success: true, count: categories.length, data: categories });
+    const payload = { success: true, count: categories.length, data: categories };
+    apiCache.setCategories(payload);
+
+    return NextResponse.json(payload, {
+      headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" },
+    });
   } catch (error: any) {
     console.error("Failed to fetch categories:", error);
     return NextResponse.json(
@@ -70,6 +83,8 @@ export async function POST(request: Request) {
       icon: body.icon || "Layers",
       itemCount: body.itemCount || 0,
     });
+
+    apiCache.invalidateCategories();
 
     return NextResponse.json(
       { success: true, message: "Category created successfully", data: newCategory },

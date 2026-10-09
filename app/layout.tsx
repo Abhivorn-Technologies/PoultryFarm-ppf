@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { QuickViewModal } from "@/components/layout/QuickViewModal";
+import { ScrollToTop } from "@/components/layout/ScrollToTop";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -73,11 +74,36 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${plusJakarta.variable} ${outfit.variable} scroll-smooth bg-[#9DCD5A]`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if (typeof window !== 'undefined') {
+                  var _err = console.error;
+                  console.error = function() {
+                    var msg = arguments[0];
+                    if (typeof msg === 'string' && (msg.indexOf('hydration-mismatch') !== -1 || msg.indexOf('hydrated') !== -1)) {
+                      for (var i = 0; i < arguments.length; i++) {
+                        if (String(arguments[i]).indexOf('fdprocessedid') !== -1) {
+                          return;
+                        }
+                      }
+                    }
+                    return _err.apply(console, arguments);
+                  };
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="bg-[#9DCD5A] text-brand-gray-900 font-sans antialiased selection:bg-brand-green-500 selection:text-white min-h-screen flex flex-col" suppressHydrationWarning>
         <CartProvider>
           {children}
           <CartDrawer />
           <QuickViewModal />
+          <ScrollToTop />
         </CartProvider>
       </body>
     </html>

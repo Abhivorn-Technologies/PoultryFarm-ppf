@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
@@ -22,14 +22,26 @@ export default function CategoryDetailPage() {
   const routeParams = useParams();
   const slug = (routeParams?.slug as string) || "";
 
-  const categoryIndex = CATEGORIES.findIndex((c) => c.slug === slug);
-  const category = categoryIndex !== -1 ? CATEGORIES[categoryIndex] : null;
-
+  const [categoriesList, setCategoriesList] = useState<any[]>(CATEGORIES);
   const [searchQuery, setSearchQuery] = useState("");
   const [productsList, setProductsList] = useState(PRODUCTS);
+  const [visibleCount, setVisibleCount] = useState<number>(4);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const { openEnquiryModal } = useCart();
 
   React.useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setCategoriesList(data.data);
+        }
+      })
+      .catch((err) => console.log("Using static categories fallback for category detail:", err?.message || err));
+
     fetch("/api/products")
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -43,10 +55,17 @@ export default function CategoryDetailPage() {
       .catch((err) => console.log("Using static catalogue fallback for category products:", err?.message || err));
   }, []);
 
+  const categoryIndex = categoriesList.findIndex((c) => c.slug === slug);
+  const category = categoryIndex !== -1 ? categoriesList[categoryIndex] : null;
+
   // Products belonging strictly to this category
   const categoryProducts = useMemo(() => {
     if (!category) return [];
-    return productsList.filter((p) => p.categorySlug === category.slug);
+    return productsList.filter(
+      (p) =>
+        p.categorySlug === category.slug ||
+        p.category?.toLowerCase() === category.name?.toLowerCase()
+    );
   }, [category, productsList]);
 
   // Search filtered products within category
@@ -64,6 +83,35 @@ export default function CategoryDetailPage() {
     );
   }, [category, categoryProducts, searchQuery]);
 
+  // Progressive slice: initial 4 products, more loaded on scroll
+  const displayedProducts = useMemo(() => {
+    if (searchQuery) return filteredProducts;
+    return filteredProducts.slice(0, visibleCount);
+  }, [filteredProducts, visibleCount, searchQuery]);
+
+  const hasMore = !searchQuery && displayedProducts.length < filteredProducts.length;
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore) {
+          setVisibleCount((prev) => Math.min(prev + 4, filteredProducts.length));
+        }
+      },
+      {
+        root: null,
+        rootMargin: "300px 0px",
+        threshold: 0.05,
+      }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasMore, filteredProducts.length]);
+
   if (!category) {
     return (
       <div className="min-h-screen flex flex-col bg-[#9DCD5A] text-brand-darkGray">
@@ -77,7 +125,7 @@ export default function CategoryDetailPage() {
               The category you requested does not exist in our poultry catalogue.
             </p>
             <Link
-              href="/#products"
+              href="/products"
               className="px-6 py-2.5 rounded-full bg-brand-darkGreen text-white font-bold text-xs shadow hover:bg-brand-green transition"
             >
               Browse All Products
@@ -91,17 +139,17 @@ export default function CategoryDetailPage() {
 
   // Category numbering: "CATEGORY 01 OF 12"
   const categoryNumberStr = String(categoryIndex + 1).padStart(2, "0");
-  const totalCategoriesStr = String(CATEGORIES.length).padStart(2, "0");
+  const totalCategoriesStr = String(categoriesList.length).padStart(2, "0");
 
   // Previous and Next category navigation
   const prevCategory =
     categoryIndex > 0
-      ? CATEGORIES[categoryIndex - 1]
-      : CATEGORIES[CATEGORIES.length - 1];
+      ? categoriesList[categoryIndex - 1]
+      : categoriesList[categoriesList.length - 1];
   const nextCategory =
-    categoryIndex < CATEGORIES.length - 1
-      ? CATEGORIES[categoryIndex + 1]
-      : CATEGORIES[0];
+    categoryIndex < categoriesList.length - 1
+      ? categoriesList[categoryIndex + 1]
+      : categoriesList[0];
 
   return (
     <div className="flex flex-col min-h-screen bg-[#9DCD5A] text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
@@ -244,32 +292,59 @@ export default function CategoryDetailPage() {
                 <Search className="w-8 h-8" />
               </div>
               <h3 className="font-black text-2xl text-brand-darkGray mb-2">
-                No matching products
+                {searchQuery ? "No matching products" : "Stock Arriving Soon"}
               </h3>
               <p className="text-sm text-brand-gray mb-6">
-                No products in {category.name} matched &quot;{searchQuery}&quot;.
+                {searchQuery
+                  ? `No products in ${category.name} matched "${searchQuery}".`
+                  : `Products are currently being prepared for ${category.name}. Enquire directly with our farm team for custom requests.`}
               </p>
-              <button
-                type="button"
-                onClick={() => setSearchQuery("")}
-                className="px-6 py-2.5 rounded-full bg-brand-darkGreen text-white font-bold text-xs shadow hover:bg-brand-green transition cursor-pointer"
-              >
-                Clear Search
-              </button>
+              {searchQuery ? (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="px-6 py-2.5 rounded-full bg-brand-darkGreen text-white font-bold text-xs shadow hover:bg-brand-green transition cursor-pointer"
+                >
+                  Clear Search
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => openEnquiryModal(null)}
+                  className="px-6 py-2.5 rounded-full bg-brand-darkGreen text-white font-bold text-xs shadow hover:bg-brand-green transition cursor-pointer"
+                >
+                  Enquire Now
+                </button>
+              )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-              {filteredProducts.map((product, index) => (
-                <CatalogueProductCard
-                  key={
-                    product.id
-                      ? String(product.id)
-                      : product.slug || `cat-prod-${product.itemNumber}-${index}`
-                  }
-                  product={product}
-                  index={index}
-                />
-              ))}
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+                {displayedProducts.map((product, index) => (
+                  <CatalogueProductCard
+                    key={
+                      product.id
+                        ? String(product.id)
+                        : product.slug || `cat-prod-${product.itemNumber}-${index}`
+                    }
+                    product={product}
+                    index={index}
+                  />
+                ))}
+              </div>
+
+              {/* Progressive Scroll Loading Sentinel Indicator */}
+              {hasMore && (
+                <div ref={sentinelRef} className="pt-8 pb-10 flex justify-center items-center">
+                  <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-xs text-brand-darkGreen border border-brand-darkGreen/15 shadow-sm text-xs font-bold transition-all">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-freshGreen opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-darkGreen"></span>
+                    </span>
+                    <span>Scroll down to view more products ({displayedProducts.length} of {filteredProducts.length} loaded)</span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

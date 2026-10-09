@@ -27,6 +27,7 @@ export function EnquiryModal() {
   const { isEnquiryOpen, closeEnquiryModal, selectedEnquiryProduct, showToast } = useCart();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const [categoriesList, setCategoriesList] = useState<any[]>(CATEGORIES);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -35,6 +36,91 @@ export function EnquiryModal() {
     productName: "",
     message: "",
   });
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setCategoriesList(data.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Robust helper to resolve the exact matching category from the available list
+  const resolveCategoryName = (
+    rawCategory?: string | null,
+    rawSlug?: string | null,
+    list: any[] = categoriesList
+  ): string => {
+    if (!list || list.length === 0) return rawCategory || "Chicks & Young Birds";
+
+    const targetName = (rawCategory || "").trim().toLowerCase();
+    const targetSlug = (rawSlug || "").trim().toLowerCase();
+
+    // 1. Direct case-insensitive name match
+    const byName = list.find((c) => (c.name || "").trim().toLowerCase() === targetName);
+    if (byName) return byName.name;
+
+    // 2. Direct slug match
+    if (targetSlug) {
+      const bySlug = list.find((c) => (c.slug || "").trim().toLowerCase() === targetSlug);
+      if (bySlug) return bySlug.name;
+    }
+
+    // 3. Known alias or section ID mapping (e.g. feed category variants)
+    if (targetSlug.includes("feed") || targetName.includes("feed")) {
+      const feedCat = list.find(
+        (c) =>
+          (c.slug || "").toLowerCase().includes("feed") ||
+          (c.name || "").toLowerCase().includes("feed")
+      );
+      if (feedCat) return feedCat.name;
+    }
+
+    // 4. Normalized match (strip "poultry", punctuation, whitespace)
+    const norm = (s: string) => (s || "").toLowerCase().replace(/poultry/gi, "").replace(/[^a-z0-9]/g, "");
+    const normTarget = norm(targetName || targetSlug);
+    if (normTarget) {
+      const byNorm = list.find((c) => norm(c.name) === normTarget || (c.slug && norm(c.slug) === normTarget));
+      if (byNorm) return byNorm.name;
+    }
+
+    // 5. Substring match
+    if (targetName) {
+      const byPartial = list.find((c) => {
+        const cNorm = (c.name || "").toLowerCase();
+        return cNorm.includes(targetName) || targetName.includes(cNorm);
+      });
+      if (byPartial) return byPartial.name;
+    }
+
+    return list[0]?.name || "Chicks & Young Birds";
+  };
+
+  // Auto-reset category if selected category was deleted or needs resolution
+  useEffect(() => {
+    if (categoriesList.length > 0 && formData.category && formData.category !== "General Enquiry") {
+      const exists = categoriesList.some((c) => c.name === formData.category);
+      if (!exists) {
+        const resolved = resolveCategoryName(
+          formData.category,
+          selectedEnquiryProduct?.categorySlug,
+          categoriesList
+        );
+        if (resolved && resolved !== formData.category) {
+          setFormData((prev) => ({
+            ...prev,
+            category: resolved,
+          }));
+        }
+      }
+    }
+  }, [categoriesList, formData.category, selectedEnquiryProduct]);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -92,25 +178,31 @@ export function EnquiryModal() {
 
   useEffect(() => {
     if (selectedEnquiryProduct) {
+      const matchedCat = resolveCategoryName(
+        selectedEnquiryProduct.category,
+        selectedEnquiryProduct.categorySlug,
+        categoriesList
+      );
       setFormData((prev) => ({
         ...prev,
-        category: selectedEnquiryProduct.category,
+        category: matchedCat,
         productName: selectedEnquiryProduct.name,
-        message: `I am interested in ${selectedEnquiryProduct.name} under ${selectedEnquiryProduct.category} (Item #${selectedEnquiryProduct.itemNumber}). Please provide catalogue specifications, batch availability, and quotation details.`,
+        message: `I am interested in ${selectedEnquiryProduct.name} under ${matchedCat} (Item #${selectedEnquiryProduct.itemNumber}). Please provide catalogue specifications, batch availability, and quotation details.`,
       }));
     } else {
+      const defaultCat = categoriesList[0]?.name || CATEGORIES[0].name;
       setFormData((prev) => ({
         ...prev,
-        category: CATEGORIES[0].name,
+        category: defaultCat,
         productName: "",
-        message: `I am interested in ${CATEGORIES[0].name}. Please provide batch availability, price list, and quotation details.`,
+        message: `I am interested in ${defaultCat}. Please provide batch availability, price list, and quotation details.`,
       }));
     }
     setErrors({});
     setTouched({});
     setIsSubmitted(false);
     setIsSubmitting(false);
-  }, [selectedEnquiryProduct, isEnquiryOpen]);
+  }, [selectedEnquiryProduct, isEnquiryOpen, categoriesList]);
 
   if (!isEnquiryOpen) return null;
 
@@ -273,7 +365,7 @@ export function EnquiryModal() {
                 />
                 <div className="min-w-0 flex-1">
                   <div className="text-[10px] uppercase font-bold text-brand-freshGreen">
-                    {selectedEnquiryProduct.category} • Item #{selectedEnquiryProduct.itemNumber}
+                    {formData.category || selectedEnquiryProduct.category} • Item #{selectedEnquiryProduct.itemNumber}
                   </div>
                   <div className="text-xs sm:text-sm font-bold text-brand-darkGray truncate">
                     {selectedEnquiryProduct.name}
@@ -300,6 +392,10 @@ export function EnquiryModal() {
                   <input
                     ref={nameInputRef}
                     type="text"
+                    suppressHydrationWarning
+                    data-lpignore="true"
+                    data-1p-ignore="true"
+                    autoComplete="name"
                     placeholder="Your Name / Farm Name"
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
@@ -327,13 +423,17 @@ export function EnquiryModal() {
                     </label>
                     {touched.phone && !errors.phone && formData.phone.trim().replace(/\D/g, "").length >= 10 && (
                       <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
-                        <Check className="w-3 h-3" /> Valid
+                        <Check className="w-3.5 h-3.5" /> Valid
                       </span>
                     )}
                   </div>
                   <input
                     ref={phoneInputRef}
                     type="tel"
+                    suppressHydrationWarning
+                    data-lpignore="true"
+                    data-1p-ignore="true"
+                    autoComplete="tel"
                     placeholder="+91 98765 43210"
                     value={formData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
@@ -363,13 +463,17 @@ export function EnquiryModal() {
                     </label>
                     {touched.email && !errors.email && formData.email.trim() && (
                       <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
-                        <Check className="w-3 h-3" /> Valid
+                        <Check className="w-3.5 h-3.5" /> Valid
                       </span>
                     )}
                   </div>
                   <input
                     ref={emailInputRef}
                     type="email"
+                    suppressHydrationWarning
+                    data-lpignore="true"
+                    data-1p-ignore="true"
+                    autoComplete="email"
                     placeholder="name@example.com"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
@@ -394,6 +498,9 @@ export function EnquiryModal() {
                     Product Category <span className="text-red-500">*</span>
                   </label>
                   <select
+                    suppressHydrationWarning
+                    data-lpignore="true"
+                    data-1p-ignore="true"
                     value={formData.category}
                     onChange={(e) => {
                       const newCat = e.target.value;
@@ -407,8 +514,8 @@ export function EnquiryModal() {
                     }}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-brand-cardCream border border-brand-softGreen text-xs sm:text-sm text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen cursor-pointer"
                   >
-                    {CATEGORIES.map((cat) => (
-                      <option key={cat.id} value={cat.name}>
+                    {categoriesList.map((cat) => (
+                      <option key={cat.id || cat._id || cat.slug} value={cat.name}>
                         {cat.name}
                       </option>
                     ))}
@@ -432,6 +539,9 @@ export function EnquiryModal() {
                 <textarea
                   ref={messageInputRef}
                   rows={3}
+                  suppressHydrationWarning
+                  data-lpignore="true"
+                  data-1p-ignore="true"
                   placeholder="Specify desired quantity, breed preferences, delivery location, or specific questions..."
                   value={formData.message}
                   onChange={(e) => handleInputChange("message", e.target.value)}

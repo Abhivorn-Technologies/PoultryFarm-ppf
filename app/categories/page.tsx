@@ -10,6 +10,34 @@ import { useCart } from "@/context/CartContext";
 
 export default function CategoriesDirectoryPage() {
   const { openEnquiryModal } = useCart();
+  const [categoriesList, setCategoriesList] = React.useState<any[]>(CATEGORIES);
+  const [productsList, setProductsList] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setCategoriesList(data.data);
+        }
+      })
+      .catch((err) => console.log("Using static categories fallback:", err?.message || err));
+
+    fetch("/api/products")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data)) {
+          setProductsList(data.data);
+        }
+      })
+      .catch((err) => console.log("Using static products fallback:", err?.message || err));
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#9DCD5A] text-brand-darkGray selection:bg-brand-softGreen selection:text-brand-darkGreen">
@@ -33,7 +61,7 @@ export default function CategoriesDirectoryPage() {
             <div className="max-w-3xl">
               <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full border border-brand-freshGreen/30 mb-3">
                 <Sparkles className="w-3.5 h-3.5 text-brand-freshGreen" />
-                12 SPECIALIZED SECTORS
+                {categoriesList.length} SPECIALIZED SECTORS
               </span>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-brand-darkGray tracking-tight leading-tight">
                 Poultry Product Categories
@@ -44,22 +72,25 @@ export default function CategoriesDirectoryPage() {
             </div>
           </div>
 
-          {/* Categories Grid (12 Categories) */}
+          {/* Dynamic Categories Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {CATEGORIES.map((category, index) => {
+            {categoriesList.map((category, index) => {
               const catNumber = String(index + 1).padStart(2, "0");
-              const totalCatStr = String(CATEGORIES.length).padStart(2, "0");
+              const totalCatStr = String(categoriesList.length).padStart(2, "0");
+              const productCount = productsList.length > 0
+                ? productsList.filter((p) => p.categorySlug === category.slug || p.category?.toLowerCase() === category.name?.toLowerCase()).length
+                : (category.itemCount || 0);
 
               return (
                 <div
-                  key={category.id}
+                  key={category.id || category._id || category.slug}
                   className="group bg-white rounded-3xl p-6 border border-brand-softGreen/80 shadow-card hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
                 >
                   <div>
                     {/* Media Frame */}
                     <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-brand-cardCream mb-4">
                       <img
-                        src={category.image}
+                        src={category.image || "/assets/catgories/Chicks & Young Birds.png"}
                         alt={category.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -70,7 +101,7 @@ export default function CategoriesDirectoryPage() {
                       </div>
 
                       <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-xs text-brand-darkGreen text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
-                        {category.itemCount} Products
+                        {productCount} {productCount === 1 ? "Product" : "Products"}
                       </div>
                     </div>
 
@@ -83,7 +114,7 @@ export default function CategoriesDirectoryPage() {
                       </div>
 
                       <p className="text-xs text-brand-gray leading-relaxed line-clamp-3">
-                        {category.description}
+                        {category.description || "Browse top-grade stock, accessories and specifications for this category."}
                       </p>
                     </div>
                   </div>

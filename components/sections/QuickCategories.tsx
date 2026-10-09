@@ -26,6 +26,21 @@ export function QuickCategories({
   const sequenceWidthRef = useRef<number>(0);
 
   const [, setRerenderState] = useState<number>(0);
+  const [categoriesList, setCategoriesList] = useState<any[]>(CATEGORIES);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setCategoriesList(data.data);
+        }
+      })
+      .catch((err) => console.log("Using static categories fallback for QuickCategories:", err?.message || err));
+  }, []);
 
   // Measure sequence width dynamically with ResizeObserver
   const updateSequenceWidth = useCallback(() => {
@@ -198,7 +213,7 @@ export function QuickCategories({
   }, [updateSequenceWidth]);
 
   const renderCategoryCard = (
-    cat: (typeof CATEGORIES)[0],
+    cat: any,
     idx: number,
     sequenceKey: string
   ) => {
@@ -206,7 +221,7 @@ export function QuickCategories({
 
     return (
       <Link
-        key={`${cat.id}-${sequenceKey}-${idx}`}
+        key={`${cat.id || cat._id || cat.slug}-${sequenceKey}-${idx}`}
         href={`/category/${cat.slug}`}
         onClick={() => onSelectCategory && onSelectCategory(cat.slug)}
         className="flex-shrink-0 w-48 sm:w-56 md:w-60 bg-white rounded-2xl overflow-hidden border border-brand-softGreen/60 text-left hover:border-brand-darkGreen hover:shadow-card transition-all duration-300 group flex flex-col justify-between select-none"
@@ -216,7 +231,7 @@ export function QuickCategories({
           <img
             alt={cat.name}
             className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-            src={cat.image}
+            src={cat.image || "/assets/catgories/Chicks & Young Birds.png"}
             loading="lazy"
             draggable={false}
           />
@@ -232,7 +247,7 @@ export function QuickCategories({
               {cat.name}
             </div>
             <div className="text-[11px] text-brand-gray mt-0.5 font-medium">
-              {cat.itemCount} Products
+              {cat.itemCount || 0} Products
             </div>
           </div>
           <div className="pt-2.5 mt-2.5 border-t border-brand-softGreen/40 flex items-center justify-between">
@@ -258,7 +273,7 @@ export function QuickCategories({
               Explore by Category
             </h2>
             <p className="text-xs sm:text-sm text-brand-darkGray/80 mt-0.5 font-medium">
-              All 12 specialized poultry sectors with dedicated catalogue listings
+              All {categoriesList.length} specialized poultry sectors with dedicated catalogue listings
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -266,7 +281,7 @@ export function QuickCategories({
               href="/categories"
               className="text-xs sm:text-sm font-bold text-brand-darkGreen hover:underline hidden sm:inline-flex items-center gap-1 mr-2"
             >
-              <span>View All 12 Categories</span>
+              <span>View All {categoriesList.length} Categories</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <button
@@ -312,29 +327,29 @@ export function QuickCategories({
             className="flex gap-4 sm:gap-5 w-max will-change-transform"
             style={{ transform: "translate3d(0px, 0, 0)" }}
           >
-            {/* Sequence A (12 Categories) */}
+            {/* Sequence A */}
             <div
               ref={sequenceARef}
               className="flex gap-4 sm:gap-5 flex-shrink-0"
             >
-              {CATEGORIES.map((cat, idx) =>
+              {categoriesList.map((cat, idx) =>
                 renderCategoryCard(cat, idx, "seqA")
               )}
             </div>
 
-            {/* Sequence B (12 Duplicate Categories - Exact Loop Match) */}
+            {/* Sequence B */}
             <div
               ref={sequenceBRef}
               className="flex gap-4 sm:gap-5 flex-shrink-0"
             >
-              {CATEGORIES.map((cat, idx) =>
+              {categoriesList.map((cat, idx) =>
                 renderCategoryCard(cat, idx, "seqB")
               )}
             </div>
 
-            {/* Sequence C (12 Duplicate Categories for Wide Screens) */}
+            {/* Sequence C */}
             <div className="flex gap-4 sm:gap-5 flex-shrink-0">
-              {CATEGORIES.map((cat, idx) =>
+              {categoriesList.map((cat, idx) =>
                 renderCategoryCard(cat, idx, "seqC")
               )}
             </div>

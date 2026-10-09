@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import { Product } from "@/types/product";
 
 interface EnquiryFormData {
@@ -50,14 +50,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [toastMessage, setToastMessage] = useState<{ text: string; type?: "success" | "error" | "info" } | null>(null);
 
-  const showToast = (msg: string, type: "success" | "error" | "info" = "success") => {
+  const showToast = useCallback((msg: string, type: "success" | "error" | "info" = "success") => {
     setToastMessage({ text: msg, type });
     setTimeout(() => {
       setToastMessage((cur) => (cur?.text === msg ? null : cur));
     }, 4000);
-  };
+  }, []);
 
-  const openEnquiryModal = (product: any = null) => {
+  const openEnquiryModal = useCallback((product: any = null) => {
     if (
       product &&
       typeof product === "object" &&
@@ -70,9 +70,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setSelectedEnquiryProduct(null);
     }
     setIsEnquiryOpen(true);
-  };
+  }, []);
 
-  const handleSetQuickViewProduct = (product: any) => {
+  const handleSetQuickViewProduct = useCallback((product: any) => {
     if (
       product &&
       typeof product === "object" &&
@@ -84,12 +84,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } else {
       setQuickViewProduct(null);
     }
-  };
+  }, []);
 
-  const closeEnquiryModal = () => {
+  const closeEnquiryModal = useCallback(() => {
     setIsEnquiryOpen(false);
     setSelectedEnquiryProduct(null);
-  };
+  }, []);
 
   // Compatibility stubs for legacy calls
   const addToCart = (product: Product) => {

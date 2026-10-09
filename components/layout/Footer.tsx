@@ -6,6 +6,21 @@ import { MapPin, Phone, Mail } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
 
 export function Footer() {
+  const [categoriesList, setCategoriesList] = React.useState<any[]>(CATEGORIES);
+
+  React.useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setCategoriesList(data.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
   return (
     <footer className="relative overflow-hidden bg-brand-darkGreen text-white pt-14 pb-8 border-t border-brand-freshGreen/40">
       {/* Footer Background Image Layer */}
@@ -55,9 +70,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a className="hover:text-white transition" href="/#products">
+                <Link className="hover:text-white transition" href="/products">
                   All Products
-                </a>
+                </Link>
               </li>
               <li>
                 <Link className="hover:text-white transition" href="/categories">
@@ -75,9 +90,9 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a className="hover:text-white transition" href="/#contact">
-                  Direct Enquiry
-                </a>
+                <Link className="hover:text-white transition" href="/contact">
+                  Contact Us & Enquiries
+                </Link>
               </li>
             </ul>
           </div>
@@ -86,8 +101,8 @@ export function Footer() {
           <div className="space-y-3">
             <h4 className="text-xs font-black uppercase tracking-wider text-brand-yellow">Category Showcases</h4>
             <ul className="space-y-2 text-xs text-brand-softGreen">
-              {CATEGORIES.slice(0, 6).map((cat) => (
-                <li key={cat.id}>
+              {categoriesList.slice(0, 8).map((cat) => (
+                <li key={cat.id || cat._id || cat.slug}>
                   <Link
                     className="hover:text-white transition block"
                     href={`/category/${cat.slug}`}
@@ -127,7 +142,7 @@ export function Footer() {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-softGreen/80">
           <div>© 2026 PoultryFarm. All rights reserved.</div>
 
-          <div className="text-center sm:text-right">
+          <div className="text-center sm:text-right flex flex-wrap items-center justify-center sm:justify-end gap-1.5">
             <span className="text-brand-softGreen/90">Developed by: </span>
             <a
               href="https://www.abhivorn.com/"
@@ -137,6 +152,16 @@ export function Footer() {
               title="Abhivorn Technologies Pvt Ltd."
             >
               Abhivorn Technologies Pvt Ltd.
+            </a>
+            <span className="text-brand-softGreen/60 mx-1">•</span>
+            <a
+              href="https://www.digilevelup.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="developer-shine-link"
+              title="DigiLevelUp"
+            >
+              DigiLevelUp
             </a>
           </div>
         </div>

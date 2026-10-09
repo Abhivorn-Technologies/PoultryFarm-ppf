@@ -55,6 +55,7 @@ interface ProductItem {
 export default function AdminProductsPage() {
   const { showToast } = useCart();
   const [products, setProducts] = useState<ProductItem[]>([]);
+  const [categoriesList, setCategoriesList] = useState<any[]>(CATEGORIES);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -77,6 +78,18 @@ export default function AdminProductsPage() {
     description: "",
   });
 
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("/api/categories");
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+        setCategoriesList(data.data);
+      }
+    } catch (err) {
+      console.error("Failed to load categories:", err);
+    }
+  };
+
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -93,15 +106,42 @@ export default function AdminProductsPage() {
   };
 
   useEffect(() => {
+    fetchCategories();
     fetchProducts();
   }, []);
 
+  // Automatically unselect/reset category filter and newProduct form if the category was deleted
+  useEffect(() => {
+    if (categoriesList.length > 0) {
+      if (selectedCategory !== "all") {
+        const catExists = categoriesList.some((c) => c.slug === selectedCategory);
+        if (!catExists) {
+          setSelectedCategory("all");
+        }
+      }
+
+      if (newProduct.category) {
+        const catExists = categoriesList.some(
+          (c) => c.name === newProduct.category || c.slug === newProduct.categorySlug
+        );
+        if (!catExists) {
+          setNewProduct((prev) => ({
+            ...prev,
+            category: categoriesList[0].name,
+            categorySlug: categoriesList[0].slug,
+          }));
+        }
+      }
+    }
+  }, [categoriesList, selectedCategory, newProduct.category, newProduct.categorySlug]);
+
   const handleCategorySelect = (categoryName: string) => {
-    const found = CATEGORIES.find((c) => c.name === categoryName);
+    const found = categoriesList.find((c) => c.name === categoryName);
+    const slug = found ? found.slug : categoryName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     setNewProduct((prev) => ({
       ...prev,
       category: categoryName,
-      categorySlug: found ? found.slug : "chicks-young-birds",
+      categorySlug: slug,
     }));
   };
 
@@ -129,10 +169,11 @@ export default function AdminProductsPage() {
       const resData = await res.json();
       if (resData.success) {
         setIsModalOpen(false);
+        const firstCat = categoriesList[0] || CATEGORIES[0];
         setNewProduct({
           name: "",
-          category: CATEGORIES[0].name,
-          categorySlug: CATEGORIES[0].slug,
+          category: firstCat.name,
+          categorySlug: firstCat.slug,
           image: "/assets/products/chicks/broiler-chicks.jpg",
           description: "",
         });
@@ -351,8 +392,8 @@ export default function AdminProductsPage() {
               className="text-xs rounded-xl border border-brand-softGreen/80 bg-brand-cardCream px-2.5 py-1 text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen font-medium cursor-pointer"
             >
               <option value="all">All Categories ({products.length})</option>
-              {CATEGORIES.map((c) => (
-                <option key={c.id} value={c.slug}>
+              {categoriesList.map((c) => (
+                <option key={c.id || c._id || c.slug} value={c.slug}>
                   {c.name}
                 </option>
               ))}
@@ -673,8 +714,8 @@ export default function AdminProductsPage() {
                   onChange={(e) => handleCategorySelect(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
                 >
-                  {CATEGORIES.map((c) => (
-                    <option key={c.id} value={c.name}>
+                  {categoriesList.map((c) => (
+                    <option key={c.id || c._id || c.slug} value={c.name}>
                       {c.name}
                     </option>
                   ))}
@@ -780,17 +821,18 @@ export default function AdminProductsPage() {
                 <select
                   value={editingProduct.category}
                   onChange={(e) => {
-                    const found = CATEGORIES.find((c) => c.name === e.target.value);
+                    const found = categoriesList.find((c) => c.name === e.target.value);
+                    const slug = found ? found.slug : e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
                     setEditingProduct({
                       ...editingProduct,
                       category: e.target.value,
-                      categorySlug: found ? found.slug : editingProduct.categorySlug,
+                      categorySlug: slug,
                     });
                   }}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
                 >
-                  {CATEGORIES.map((c) => (
-                    <option key={c.id} value={c.name}>
+                  {categoriesList.map((c) => (
+                    <option key={c.id || c._id || c.slug} value={c.name}>
                       {c.name}
                     </option>
                   ))}

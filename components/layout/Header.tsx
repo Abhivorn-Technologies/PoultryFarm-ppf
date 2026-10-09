@@ -104,12 +104,16 @@ export function Header({ variant = "auto" }: HeaderProps) {
           >
             About
           </Link>
-          <a
-            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
-            href="/#products"
+          <Link
+            className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen ${
+              pathname === "/products" || pathname?.startsWith("/product/")
+                ? "text-brand-darkGreen font-black border-b-2 border-brand-darkGreen pb-0.5"
+                : "text-brand-darkGray"
+            }`}
+            href="/products"
           >
             Products
-          </a>
+          </Link>
           <Link
             className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen ${
               pathname?.startsWith("/categories") || pathname?.startsWith("/category")
@@ -126,12 +130,16 @@ export function Header({ variant = "auto" }: HeaderProps) {
           >
             Why Choose Us
           </a>
-          <a
-            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
-            href="/#contact"
+          <Link
+            className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen ${
+              pathname === "/contact"
+                ? "text-brand-darkGreen font-black border-b-2 border-brand-darkGreen pb-0.5"
+                : "text-brand-darkGray"
+            }`}
+            href="/contact"
           >
             Contact
-          </a>
+          </Link>
         </div>
 
         {/* RIGHT: Search Bar & Enquire Now Action CTA */}
@@ -248,18 +256,30 @@ export function Header({ variant = "auto" }: HeaderProps) {
             >
               About
             </Link>
-            <a onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#products">
+            <Link
+              onClick={() => setMobileMenuOpen(false)}
+              className={`px-3 py-2 rounded-lg hover:bg-brand-cardCream ${
+                pathname === "/products" ? "text-brand-darkGreen font-black" : ""
+              }`}
+              href="/products"
+            >
               Products
-            </a>
+            </Link>
             <Link onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/categories">
               Categories (12 Sectors)
             </Link>
             <a onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#why-choose-us">
               Why Choose Us
             </a>
-            <a onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#contact">
+            <Link
+              onClick={() => setMobileMenuOpen(false)}
+              className={`px-3 py-2 rounded-lg hover:bg-brand-cardCream ${
+                pathname === "/contact" ? "text-brand-darkGreen font-black" : ""
+              }`}
+              href="/contact"
+            >
               Contact
-            </a>
+            </Link>
             <button
               type="button"
               suppressHydrationWarning

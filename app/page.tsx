@@ -14,7 +14,7 @@ import { ProductRange } from "@/components/sections/ProductRange";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Reviews } from "@/components/sections/Reviews";
 import { Gallery } from "@/components/sections/Gallery";
-import { Newsletter } from "@/components/sections/Newsletter";
+import { HomeContactSection } from "@/components/sections/HomeContactSection";
 
 export default function Home() {
   const [activeCategoryFilter, setActiveCategoryFilter] = useState("all");
@@ -62,8 +62,8 @@ export default function Home() {
         {/* 12. Product Quality Gallery */}
         <Gallery />
 
-        {/* 13. Newsletter & Veterinary Support CTA */}
-        <Newsletter />
+        {/* 13. Contact Us & Customer Care Showcase */}
+        <HomeContactSection />
       </main>
 
       {/* 14. Dark Green Footer */}

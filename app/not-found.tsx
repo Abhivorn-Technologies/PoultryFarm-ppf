@@ -30,7 +30,7 @@ export default function NotFound() {
               <span>Back to Home</span>
             </Link>
             <Link
-              href="/#products"
+              href="/products"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white text-brand-darkGreen border border-brand-softGreen font-bold text-xs sm:text-sm hover:bg-brand-cardCream shadow-xs transition"
             >
               <Package className="w-4 h-4" />
