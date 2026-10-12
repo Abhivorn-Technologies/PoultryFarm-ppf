@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { put } from "@vercel/blob";
 
 export async function POST(request: Request) {
   try {
@@ -13,9 +14,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
 
     // Validate mime type
     const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
@@ -34,7 +32,25 @@ export async function POST(request: Request) {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e4)}`;
     const filename = `${uniqueSuffix}-${cleanOriginalName}`;
 
-    // Ensure uploads directory exists
+    // 1. If Vercel Blob token is set, upload to Vercel Object Storage
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const blob = await put(`uploads/${filename}`, file, {
+        access: "public",
+        contentType: file.type,
+      });
+
+      return NextResponse.json({
+        success: true,
+        url: blob.url,
+        filename,
+        storage: "vercel-blob",
+        message: "Image uploaded to Vercel Blob successfully",
+      });
+    }
+
+    // 2. Local disk fallback for local development without Vercel token
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
     const uploadsDir = path.join(process.cwd(), "public", "assets", "uploads");
     await mkdir(uploadsDir, { recursive: true });
 
@@ -47,7 +63,8 @@ export async function POST(request: Request) {
       success: true,
       url: publicUrl,
       filename,
-      message: "Image uploaded successfully",
+      storage: "local-disk",
+      message: "Image uploaded successfully (local disk)",
     });
   } catch (error: any) {
     console.error("Upload error:", error);

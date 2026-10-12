@@ -6,31 +6,31 @@ import { apiCache } from "@/lib/cache";
 const DEFAULT_GLIMPSES = [
   {
     title: "Live Day-Old Chicks",
-    image: "/assets/products/chicks/broiler-chicks.jpg",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/broiler-chicks.jpg",
     tag: "Active Stock",
     order: 1,
   },
   {
     title: "Fertile Hatching Eggs",
-    image: "/assets/products/eggs/hatching-eggs.jpg",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/hatching-eggs.jpg",
     tag: "Candled & Graded",
     order: 2,
   },
   {
     title: "Modern Poultry Equipment",
-    image: "/assets/products/equipment/feeder.jpg",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/feeder.jpg",
     tag: "High Durability",
     order: 3,
   },
   {
     title: "Nutritious Feeds & Grains",
-    image: "/assets/products/feeds/feed-bag.jpg",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/feed-bag.jpg",
     tag: "Formulated Feed",
     order: 4,
   },
   {
     title: "Central Storage Warehouse",
-    image: "/assets/about/warehouse.jpg",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/gallery/warehouse.jpg",
     tag: "Storage & Logistics",
     order: 5,
   },

@@ -8,7 +8,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Chicks & Young Birds",
     description: "Broiler, Aseel, Desi, Kaveri, Sonali, Peruvadai, Vanaraja, Giriraja, Layer, and Sasso chicks and one-month-old birds.",
     icon: "Egg",
-    image: "/assets/catgories/Chicks & Young Birds.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/chicks-young-birds.png",
     badge: "Core Breeds",
   },
   {
@@ -17,7 +17,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Live Birds",
     description: "Broiler hens, Aseel parent stock, Quail, Turkey, BV300, Brown layers, and mature country live birds.",
     icon: "Feather",
-    image: "/assets/catgories/Live Birds.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/live-birds.png",
     badge: "Market & Parent Stock",
   },
   {
@@ -26,7 +26,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Ducks & Waterfowl",
     description: "Indian Runner, Khaki Campbell, and White Pekin ducklings and mature live ducks for meat and egg production.",
     icon: "Fish",
-    image: "/assets/catgories/Ducks & Waterfowl.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/ducks-waterfowl.png",
     badge: "Waterfowl",
   },
   {
@@ -35,7 +35,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Hatching Eggs",
     description: "Fertile hatching eggs for Broiler, Aseel, Sonali, Desi, Layer, Vanaraja, Quail, and Duck breeds.",
     icon: "Sparkles",
-    image: "/assets/catgories/Hatching Eggs.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/hatching-eggs.png",
     badge: "Fertile Eggs",
   },
   {
@@ -44,7 +44,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Eating Eggs",
     description: "Fresh table eating eggs including Duck, Brown, Sonali, and Desi country eating eggs.",
     icon: "Egg",
-    image: "/assets/catgories/Eating Eggs.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/eating-eggs.png",
     badge: "Table Eggs",
   },
   {
@@ -53,7 +53,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Poultry Equipment",
     description: "Chick & Jumbo drinkers, feeders, bell drinkers, transport boxes, shed paradas, mesh, debeakers, and vaccination guns.",
     icon: "Wrench",
-    image: "/assets/catgories/Poultry Equipment.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/poultry-equipment.png",
     badge: "Durable Gear",
   },
   {
@@ -62,7 +62,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Hatchery & Incubation",
     description: "Mini and large-capacity egg incubators, setter egg trays, and hatchery chick trays.",
     icon: "Cpu",
-    image: "/assets/catgories/Hatchery & Incubation.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/hatchery-incubation.png",
     badge: "Incubation",
   },
   {
@@ -71,7 +71,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Medicines & Vaccines",
     description: "Poultry medicines, vital vaccines, digestive support medicines, and respiratory support medicines.",
     icon: "ShieldAlert",
-    image: "/assets/catgories/Medicines & Vaccines.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/medicines-vaccines.png",
     badge: "Flock Health",
   },
   {
@@ -80,7 +80,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Poultry Cages",
     description: "Small and large-size poultry housing units and cages.",
     icon: "Grid",
-    image: "/assets/catgories/Poultry Cages.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/poultry-cages.png",
     badge: "Housing Units",
   },
   {
@@ -89,7 +89,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Feed & Ingredients",
     description: "Broiler & Layer feeds (Pre-Starter, Starter, Finisher/Grower), Dry Fish, Fish Feed, Soya DOC, Maize, Soya Oil, Stone Grade, and Mineral Mixture.",
     icon: "Wheat",
-    image: "/assets/catgories/Feed & Ingredients.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/feed-ingredients.png",
     badge: "Nutrition",
   },
   {
@@ -98,7 +98,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Poultry Meat",
     description: "Poultry frozen meat, White Pekin duck meat, Indian Runner duck meat, and quail birds meat.",
     icon: "Utensils",
-    image: "/assets/catgories/Poultry Meat.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/poultry-meat.png",
     badge: "Meat Products",
   },
   {
@@ -107,7 +107,7 @@ const BASE_CATEGORIES: Omit<Category, "itemCount">[] = [
     name: "Brooding Systems",
     description: "Electric, Gas, Infrared, and Charcoal brooder heating systems for young chick rearing.",
     icon: "Flame",
-    image: "/assets/catgories/Brooding Systems.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/brooding-systems.png",
     badge: "Heat Management",
   },
 ];
