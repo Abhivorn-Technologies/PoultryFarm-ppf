@@ -233,7 +233,7 @@ export default function AdminCategoriesPage() {
 
           return (
             <div
-              key={cat.id}
+              key={cat._id || cat.id || cat.slug || idx}
               className="bg-white rounded-3xl border border-brand-softGreen/60 shadow-xs overflow-hidden flex flex-col justify-between hover:border-brand-freshGreen hover:shadow-md transition-all group"
             >
               {/* Category Image Header */}

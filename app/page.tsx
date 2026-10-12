@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/hero/Hero";
-import { QuickCategories } from "@/components/sections/QuickCategories";
 import { TrustStrip } from "@/components/sections/TrustStrip";
 import { PopularProducts } from "@/components/sections/PopularProducts";
 import { AboutFarm } from "@/components/sections/AboutFarm";
@@ -30,12 +29,11 @@ export default function Home() {
 
       <main id="home" className="flex-grow bg-[#9DCD5A]">
         {/* 2. Hero Section */}
-        <Hero />
+        <Hero onSelectCategory={handleSelectCategory} />
 
-        {/* 3. Quick Categories Horizontal Rail */}
-        <QuickCategories onSelectCategory={handleSelectCategory} />
-
-        {/* 4. Trust Features Strip */}
+        {/* Categories Anchor Target for smooth navigation */}
+        <div id="categories" className="scroll-mt-24" />
+        {/* 3. Trust Features Strip */}
         <TrustStrip />
 
         {/* 5. Complete Category-Grouped Product Catalogue */}

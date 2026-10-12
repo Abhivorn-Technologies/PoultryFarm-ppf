@@ -113,11 +113,15 @@ export default function ContactPage() {
         <section className="pt-6 pb-2 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           {/* Main Visual Banner */}
           <div className="rounded-3xl overflow-hidden shadow-2xl border-2 border-white/90 bg-white">
-            <img
-              src="/assets/contact/contact-hero.png"
-              alt="PPF Group of Companies Customer Support"
-              className="w-full h-auto object-contain block"
-            />
+            <picture className="w-full h-auto block">
+              <source srcSet="/assets/contact/contact-page.webp" type="image/webp" />
+              <img
+                src="/assets/contact/contact-page.png"
+                alt="PPF Group of Companies Customer Support & Poultry Products"
+                className="w-full h-auto object-contain block"
+                loading="eager"
+              />
+            </picture>
           </div>
 
           {/* Action & Info Bar under Hero Banner */}

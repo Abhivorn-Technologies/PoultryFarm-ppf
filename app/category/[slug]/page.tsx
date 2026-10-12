@@ -371,7 +371,7 @@ export default function CategoryDetailPage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-6">
               {CATEGORIES.map((cat, idx) => (
                 <Link
-                  key={cat.id}
+                  key={cat.id || cat.slug}
                   href={`/category/${cat.slug}`}
                   className={`p-3 rounded-2xl border text-center transition-all ${
                     cat.slug === category.slug
