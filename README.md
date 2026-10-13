@@ -44,7 +44,6 @@ poultry-farm/
 │   │   ├── TrustStrip.tsx
 │   │   ├── PopularProducts.tsx
 │   │   ├── AboutFarm.tsx
-│   │   ├── FarmExperience.tsx
 │   │   ├── ShopCategories.tsx
 │   │   ├── PromotionalBanners.tsx
 │   │   ├── ProductRange.tsx

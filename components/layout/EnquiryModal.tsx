@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   X,
-  Send,
   CheckCircle2,
   ShieldCheck,
   Sparkles,
@@ -23,9 +22,18 @@ interface FormErrors {
   message?: string;
 }
 
+function WhatsAppIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.888 9.885m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
+  );
+}
+
 export function EnquiryModal() {
   const { isEnquiryOpen, closeEnquiryModal, selectedEnquiryProduct, showToast } = useCart();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [whatsappShareUrl, setWhatsappShareUrl] = useState<string>("");
 
   const [categoriesList, setCategoriesList] = useState<any[]>(CATEGORIES);
   const [formData, setFormData] = useState({
@@ -262,6 +270,31 @@ export function EnquiryModal() {
         formData.category ||
         (selectedEnquiryProduct ? selectedEnquiryProduct.category : CATEGORIES[0].name);
 
+      const targetProduct =
+        formData.productName || (selectedEnquiryProduct ? selectedEnquiryProduct.name : `Enquiry: ${activeCategory}`);
+
+      // Construct formatted WhatsApp message for PPF team (+91 99668 31212)
+      const waLines = [
+        "🐔 *NEW PRODUCT ENQUIRY - PPF Group of Companies*",
+        "",
+        `• *Product / Item:* ${targetProduct}`,
+        `• *Category:* ${activeCategory}`,
+        `• *Customer Name:* ${formData.name.trim()}`,
+        `• *Phone / WhatsApp:* ${formData.phone.trim()}`,
+        formData.email.trim() ? `• *Email:* ${formData.email.trim()}` : "",
+        "",
+        "💬 *Requirement / Message:*",
+        formData.message.trim(),
+      ].filter(Boolean);
+
+      const waUrl = `https://wa.me/919966831212?text=${encodeURIComponent(waLines.join("\n"))}`;
+      setWhatsappShareUrl(waUrl);
+
+      // Automatically launch WhatsApp chat in a new tab/window
+      try {
+        window.open(waUrl, "_blank");
+      } catch {}
+
       const res = await fetch("/api/enquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -271,22 +304,23 @@ export function EnquiryModal() {
           email: formData.email.trim(),
           category: activeCategory,
           enquiryType: selectedEnquiryProduct ? "product" : "category",
-          productName:
-            formData.productName || (selectedEnquiryProduct ? selectedEnquiryProduct.name : `Enquiry: ${activeCategory}`),
+          productName: targetProduct,
           message: formData.message.trim(),
         }),
       });
 
       if (res.ok) {
         setIsSubmitted(true);
-        showToast("Enquiry submitted successfully! Our farm team will contact you shortly.");
+        showToast("Enquiry submitted & shared to WhatsApp!");
       } else {
-        const errorData = await res.json().catch(() => ({}));
-        showToast(errorData.error || "Failed to submit enquiry. Please verify your details.");
+        // Still allow WhatsApp chat even if DB had an issue
+        setIsSubmitted(true);
+        showToast("Enquiry prepared! You can now send directly via WhatsApp.");
       }
     } catch (err) {
       console.error("Failed to post enquiry to database:", err);
-      showToast("Network error. Please try again.");
+      setIsSubmitted(true);
+      showToast("Enquiry prepared! You can now send directly via WhatsApp.");
     } finally {
       setIsSubmitting(false);
     }
@@ -314,29 +348,47 @@ export function EnquiryModal() {
         </button>
 
         {isSubmitted ? (
-          <div className="text-center py-8 space-y-4">
+          <div className="text-center py-6 sm:py-8 space-y-4">
             <div className="w-16 h-16 rounded-full bg-brand-softGreen text-brand-darkGreen flex items-center justify-center mx-auto shadow-sm">
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <h3 className="text-2xl font-black text-brand-darkGray">
-              Enquiry Received!
+              Enquiry Received &amp; Ready on WhatsApp!
             </h3>
             <p className="text-sm text-brand-gray max-w-md mx-auto leading-relaxed">
-              Thank you for contacting <strong>PoultryFarm</strong>. Our farm and catalogue specialist will review your request for{" "}
+              Thank you for contacting <strong>PoultryFarm</strong>. Your enquiry details for{" "}
               <span className="text-brand-darkGreen font-bold">
                 {formData.productName || formData.category}
               </span>{" "}
-              and contact you via phone or email within 2–4 hours.
+              have been saved and formatted to share directly with our team on WhatsApp.
             </p>
-            <div className="p-4 rounded-2xl bg-brand-cream border border-brand-softGreen/60 text-xs text-brand-darkGreen font-semibold flex items-center justify-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-brand-freshGreen" />
-              <span>Direct Farm Bio-Secure Assurance • Nationwide Dispatch</span>
+
+            {/* Direct WhatsApp Action Button */}
+            <div className="pt-2 pb-1 max-w-md mx-auto space-y-2">
+              <a
+                href={whatsappShareUrl || "https://wa.me/919966831212"}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full py-3.5 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-extrabold text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-[#25D366]/30 transition-all hover:scale-[1.01] active:scale-95 cursor-pointer"
+              >
+                <WhatsAppIcon className="w-5 h-5 text-white" />
+                <span>Continue on WhatsApp (+91 99668 31212)</span>
+              </a>
+              <p className="text-[11px] text-brand-gray">
+                Tap above if WhatsApp did not open automatically.
+              </p>
             </div>
+
+            <div className="p-3.5 rounded-2xl bg-brand-cream border border-brand-softGreen/60 text-xs text-brand-darkGreen font-semibold flex items-center justify-center gap-2 max-w-md mx-auto">
+              <ShieldCheck className="w-4 h-4 text-brand-freshGreen shrink-0" />
+              <span>Direct Farm Bio-Secure Assurance • Instant Response</span>
+            </div>
+
             <button
               type="button"
               suppressHydrationWarning
               onClick={closeEnquiryModal}
-              className="mt-4 px-8 py-3 rounded-full bg-brand-darkGreen text-white font-bold text-xs hover:bg-brand-green transition-all shadow-md"
+              className="mt-2 px-8 py-3 rounded-full bg-brand-darkGreen text-white font-bold text-xs hover:bg-brand-green transition-all shadow-md"
             >
               Back to Catalogue
             </button>
@@ -434,7 +486,7 @@ export function EnquiryModal() {
                     data-lpignore="true"
                     data-1p-ignore="true"
                     autoComplete="tel"
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 99668 31212"
                     value={formData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
                     onBlur={() => handleInputBlur("phone")}
@@ -565,14 +617,14 @@ export function EnquiryModal() {
                   type="submit"
                   suppressHydrationWarning
                   disabled={isSubmitting}
-                  className="w-full py-3.5 rounded-2xl bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full py-3.5 rounded-2xl bg-brand-darkGreen hover:bg-brand-green text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 active:scale-98 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isSubmitting ? (
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
-                      <Send className="w-4 h-4 text-brand-yellow" />
-                      <span>Send Enquiry</span>
+                      <WhatsAppIcon className="w-5 h-5 text-[#25D366]" />
+                      <span>Submit &amp; Share to WhatsApp</span>
                     </>
                   )}
                 </button>

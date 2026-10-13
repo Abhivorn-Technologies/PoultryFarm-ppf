@@ -7,7 +7,6 @@ import { Hero } from "@/components/hero/Hero";
 import { TrustStrip } from "@/components/sections/TrustStrip";
 import { PopularProducts } from "@/components/sections/PopularProducts";
 import { AboutFarm } from "@/components/sections/AboutFarm";
-import { FarmExperience } from "@/components/sections/FarmExperience";
 import { PromotionalBanners } from "@/components/sections/PromotionalBanners";
 import { ProductRange } from "@/components/sections/ProductRange";
 import { HowItWorks } from "@/components/sections/HowItWorks";
@@ -16,7 +15,7 @@ import { Gallery } from "@/components/sections/Gallery";
 import { HomeContactSection } from "@/components/sections/HomeContactSection";
 
 export default function Home() {
-  const [activeCategoryFilter, setActiveCategoryFilter] = useState("all");
+  const [_activeCategoryFilter, setActiveCategoryFilter] = useState("all");
 
   const handleSelectCategory = (catKey: string) => {
     setActiveCategoryFilter(catKey);
@@ -42,10 +41,7 @@ export default function Home() {
         {/* 6. About Us Marketplace */}
         <AboutFarm />
 
-        {/* 7. 3D Product Interactive Visualizer */}
-        <FarmExperience />
-
-        {/* 8. Promotional Banners */}
+        {/* 7. Promotional Banners */}
         <PromotionalBanners onSelectCategory={handleSelectCategory} />
 
         {/* 9. Complete Product Range (12 Categories Grid) */}

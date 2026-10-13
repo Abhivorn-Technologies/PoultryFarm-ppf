@@ -85,9 +85,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a className="hover:text-white transition" href="/#why-choose-us">
+                <Link className="hover:text-white transition" href="/#why-choose-us">
                   Why Choose Us
-                </a>
+                </Link>
               </li>
               <li>
                 <Link className="hover:text-white transition" href="/contact">
@@ -120,12 +120,12 @@ export function Footer() {
             <ul className="space-y-2.5 text-xs text-brand-softGreen">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-brand-yellow shrink-0 mt-0.5" />
-                <span className="leading-snug">Survey 48, Agri Corridor, Hyderabad, Telangana, 500043</span>
+                <span className="leading-snug">Hyderabad, Telangana, India</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-brand-yellow shrink-0" />
-                <a className="hover:text-white transition" href="tel:+919876543210">
-                  +91 98765 43210
+                <a className="hover:text-white transition" href="tel:+919966831212">
+                  +91 99668 31212
                 </a>
               </li>
               <li className="flex items-center gap-2.5">

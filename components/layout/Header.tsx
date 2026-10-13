@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Menu, X, Send, Leaf } from "lucide-react";
+import { Search, Menu, X, Send } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { PRODUCTS } from "@/data/products";
 
@@ -11,19 +11,9 @@ interface HeaderProps {
   variant?: "hero" | "default" | "auto";
 }
 
-export function Header({ variant = "auto" }: HeaderProps) {
+export function Header({ variant: _variant = "auto" }: HeaderProps) {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [productsList, setProductsList] = useState<typeof PRODUCTS>(PRODUCTS);
-  const [searchResults, setSearchResults] = useState<typeof PRODUCTS>([]);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  const { openEnquiryModal } = useCart();
-
-  // Determine if hero overlay mode should be active
-  const isHeroMode = variant === "hero" || (variant === "auto" && pathname === "/");
 
   useEffect(() => {
     fetch("/api/products")
@@ -39,13 +29,12 @@ export function Header({ variant = "auto" }: HeaderProps) {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 25);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [productsList, setProductsList] = useState<typeof PRODUCTS>(PRODUCTS);
+  const [searchResults, setSearchResults] = useState<typeof PRODUCTS>([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const { openEnquiryModal } = useCart();
 
   // Live search filtering across official catalogue products
   useEffect(() => {
@@ -124,12 +113,12 @@ export function Header({ variant = "auto" }: HeaderProps) {
           >
             Categories
           </Link>
-          <a
+          <Link
             className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
             href="/#why-choose-us"
           >
             Why Choose Us
-          </a>
+          </Link>
           <Link
             className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen ${
               pathname === "/contact"
@@ -268,9 +257,9 @@ export function Header({ variant = "auto" }: HeaderProps) {
             <Link onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/categories">
               Categories (12 Sectors)
             </Link>
-            <a onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#why-choose-us">
+            <Link onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#why-choose-us">
               Why Choose Us
-            </a>
+            </Link>
             <Link
               onClick={() => setMobileMenuOpen(false)}
               className={`px-3 py-2 rounded-lg hover:bg-brand-cardCream ${

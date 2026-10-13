@@ -20,10 +20,10 @@ export function AboutFarm() {
       detail: "Direct Farm Supply",
     },
     {
-      value: "Hyderabad",
+      value: "Hyderabad, Telangana",
       label: "Location",
       icon: MapPin,
-      detail: "Telangana, India",
+      detail: "India",
     },
     {
       value: "Poultry Solutions",

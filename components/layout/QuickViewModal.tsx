@@ -4,13 +4,10 @@ import React from "react";
 import Link from "next/link";
 import {
   X,
-  ShieldCheck,
   CheckCircle2,
   AlertTriangle,
   ArrowRight,
   Send,
-  Layers,
-  Sparkles,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 

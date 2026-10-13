@@ -26,8 +26,8 @@ export function HomeContactSection() {
     {
       id: "call",
       label: "Call Us",
-      info: "+91 98765 43210",
-      href: "tel:+919876543210",
+      info: "+91 99668 31212",
+      href: "tel:+919966831212",
       target: undefined,
       rel: undefined,
       iconType: "phone",
@@ -37,8 +37,8 @@ export function HomeContactSection() {
     {
       id: "whatsapp",
       label: "WhatsApp Us",
-      info: "+91 98765 43210",
-      href: "https://wa.me/919876543210?text=Hello%20PPF%20Team%2C%20I%20have%20an%20enquiry%20regarding%20poultry%20products.",
+      info: "+91 99668 31212",
+      href: "https://wa.me/919966831212?text=Hello%20PPF%20Team%2C%20I%20have%20an%20enquiry%20regarding%20poultry%20products.",
       target: "_blank",
       rel: "noreferrer",
       iconType: "whatsapp",
@@ -59,8 +59,8 @@ export function HomeContactSection() {
     {
       id: "office",
       label: "Visit Our Office",
-      info: "Agri Corridor, Hyderabad",
-      href: "https://maps.google.com/?q=Survey+48+Agri+Corridor+Hyderabad+Telangana+500043",
+      info: "Hyderabad, Telangana",
+      href: "https://maps.google.com/?q=Hyderabad,+Telangana",
       target: "_blank",
       rel: "noreferrer",
       iconType: "office",

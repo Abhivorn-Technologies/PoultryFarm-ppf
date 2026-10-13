@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ShieldCheck, Truck, PhoneCall, Headphones, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Truck, Headphones, CheckCircle2 } from "lucide-react";
 
 export function Reviews() {
   const serviceAssurances = [

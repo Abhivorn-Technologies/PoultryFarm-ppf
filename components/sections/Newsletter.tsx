@@ -1,10 +1,6 @@
 "use client";
 
-import React from "react";
-import { useCart } from "@/context/CartContext";
-
 export function Newsletter() {
-  const { showToast } = useCart();
 
   return (
     <section className="py-10 sm:py-12 bg-[#9DCD5A] border-y border-brand-darkGreen/15" id="contact">
@@ -26,18 +22,18 @@ export function Newsletter() {
           <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
             <a
               className="px-6 py-3 rounded-full bg-brand-yellow hover:bg-[#e6b738] text-brand-darkGray font-extrabold text-xs sm:text-sm transition shadow-sm active:scale-95"
-              href="tel:+919876543210"
+              href="tel:+919966831212"
             >
-              Call +91 98765 43210
+              Call +91 99668 31212
             </a>
-            <button
-              type="button"
-              suppressHydrationWarning
-              className="px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition active:scale-95 cursor-pointer"
-              onClick={() => showToast("Opening WhatsApp consultation desk...")}
+            <a
+              href="https://wa.me/919966831212?text=Hello%20PPF%20Team%2C%20I%20have%20an%20enquiry%20regarding%20poultry%20products."
+              target="_blank"
+              rel="noreferrer"
+              className="px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition active:scale-95 cursor-pointer inline-flex items-center"
             >
               WhatsApp Us
-            </button>
+            </a>
           </div>
         </div>
       </div>
