@@ -13,231 +13,161 @@ export function PhotographicHero({ onSelectCategory }: PhotographicHeroProps) {
   return (
     <section
       id="hero-section"
-      style={{
-        backgroundImage: "url('/assets/hero/main%20hero.png')",
-        backgroundPosition: "center 28%",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
-      className="relative isolate w-full min-h-[620px] lg:min-h-[680px] xl:h-[calc(100vh-68px)] xl:max-h-[840px] overflow-hidden select-none flex flex-col justify-between"
+      className="relative w-full overflow-hidden select-none flex flex-col"
     >
-      {/* 1. Full-Width Authentic Background Image Layer (Guaranteed above parent, zero white mask, sharp & vibrant) */}
-      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
-        <picture className="w-full h-full block">
-          <source srcSet="/assets/hero/main-hero.webp" type="image/webp" />
+      {/* 1. Upper Photographic Hero Area with Edge-to-Edge Background Image */}
+      <div
+        className="relative w-full overflow-hidden flex flex-col items-center justify-center pt-2 sm:pt-3 pb-3 sm:pb-4 md:pb-5"
+        style={{
+          backgroundImage: "url('/assets/hero/main%20hero.png')",
+          backgroundPosition: "center 30%",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        {/* Full-Width Authentic Background Image Layer (Edge-to-edge, sharp & vibrant) */}
+        <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
           <img
             src="/assets/hero/main%20hero.png"
             alt="PPF Group of Companies - Poultry Farms & Hatcheries"
-            className="w-full h-full object-cover object-[center_28%] block"
+            className="w-full h-full object-cover object-[center_30%] block"
             loading="eager"
             fetchPriority="high"
             decoding="async"
           />
-        </picture>
-      </div>
-
-      {/* 2. Top-Right Circular Trusted Poultry Industry Badge & Top-Left Framing Accent */}
-      <div className="absolute top-3 right-3 sm:top-4 sm:right-6 md:top-5 md:right-8 lg:top-6 lg:right-12 xl:right-16 z-30 pointer-events-auto">
-        <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-48 lg:h-48 xl:w-56 xl:h-56">
-          <TrustedBadge />
         </div>
-      </div>
 
-      {/* Top Left Delicate Gold Wave Framing */}
-      <div className="absolute left-0 top-0 pointer-events-none hidden lg:block opacity-80 z-10">
-        <svg width="220" height="90" viewBox="0 0 220 90" fill="none">
-          <path
-            d="M -10,10 C 60,10 120,40 180,25 C 205,18 215,8 220,0"
-            stroke="url(#topGoldRibbonAccent)"
-            strokeWidth="3.5"
-          />
-          <path
-            d="M -10,18 C 60,18 115,48 175,32 C 198,25 210,15 215,8"
-            stroke="#0B3C23"
-            strokeWidth="2"
-          />
-          <defs>
-            <linearGradient id="topGoldRibbonAccent" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#D4AF37" />
-              <stop offset="50%" stopColor="#FFF2B2" />
-              <stop offset="100%" stopColor="#B38728" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-
-      {/* 3. Center Brand Identity — Massive PPF Heading, Plaque, Subtitle & 4 Highlights */}
-      <div className="relative w-full max-w-5xl mx-auto px-4 text-center flex flex-col items-center justify-center my-auto z-20 pt-2 sm:pt-4">
-        {/* Soft, Semi-Transparent Warm-White/Cream Mask with Feathered Edges */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -inset-x-6 sm:-inset-x-12 md:-inset-x-16 -inset-y-4 sm:-inset-y-6 md:-inset-y-8 -z-10 pointer-events-none rounded-[50px] md:rounded-[90px]"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 68% at 50% 48%, rgba(255, 253, 247, 0.78) 0%, rgba(254, 250, 240, 0.58) 42%, rgba(252, 246, 230, 0.26) 70%, rgba(255, 255, 255, 0) 100%)",
-            filter: "blur(18px)",
-          }}
-        />
-
-        {/* Semantic SEO Heading */}
-        <h1 className="sr-only">
-          PPF Group of Companies - Poultry Farms &amp; Hatcheries - Trusted Poultry Industry Since 2011
-        </h1>
-
-        {/* Large PPF Text — Dominant Visual Brand Anchor */}
-        <div className="relative inline-block leading-none tracking-tight">
-          <span
-            className="font-black select-text block uppercase drop-shadow-[0_8px_18px_rgba(0,0,0,0.4)]"
-            style={{
-              fontSize: "clamp(5rem, 12.5vw, 12.5rem)",
-              lineHeight: 0.84,
-              letterSpacing: "-0.035em",
-              color: "#07331C",
-              WebkitTextStroke: "2.5px #E2B94A",
-              filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.35)) drop-shadow(0 1px 2px #FDE68A)",
-              textShadow: "0 4px 14px rgba(4, 28, 15, 0.55), 0 1px 0 #FFF6D1",
-            }}
-          >
-            PPF
-          </span>
-
-          {/* 3D Metallic Gold & Green Wave Ribbon Underneath PPF */}
-          <div className="w-full -mt-2 sm:-mt-3 md:-mt-5 lg:-mt-7 flex justify-center pointer-events-none">
-            <svg
-              viewBox="0 0 600 70"
-              className="w-[100%] max-w-[620px] h-auto drop-shadow-[0_6px_12px_rgba(0,0,0,0.35)]"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <linearGradient id="ppfRibbonGoldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#C99E32" />
-                  <stop offset="25%" stopColor="#FFF2B2" />
-                  <stop offset="50%" stopColor="#D4AF37" />
-                  <stop offset="75%" stopColor="#FCF6BA" />
-                  <stop offset="100%" stopColor="#A8791B" />
-                </linearGradient>
-                <linearGradient id="ppfRibbonGreenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#0B4024" />
-                  <stop offset="40%" stopColor="#0E5430" />
-                  <stop offset="70%" stopColor="#072F1B" />
-                  <stop offset="100%" stopColor="#041B0F" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M 20,40 C 90,62 170,18 270,30 C 370,42 460,15 580,24 C 540,38 430,62 310,48 C 210,36 120,68 20,40 Z"
-                fill="url(#ppfRibbonGreenGrad)"
-              />
-              <path
-                d="M 18,39 C 90,61 170,17 270,29 C 370,41 460,14 582,23"
-                fill="none"
-                stroke="url(#ppfRibbonGoldGrad)"
-                strokeWidth="5.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 22,41 C 120,69 210,37 310,49 C 430,63 540,39 580,25"
-                fill="none"
-                stroke="url(#ppfRibbonGoldGrad)"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-              />
-            </svg>
+        {/* Top-Right Circular Trusted Poultry Industry Badge (Since 2011) */}
+        <div className="absolute top-3 right-3 sm:top-4 sm:right-6 md:top-5 md:right-8 lg:top-6 lg:right-10 xl:right-14 z-30 pointer-events-auto">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-36 lg:h-36 xl:w-40 xl:h-40">
+            <TrustedBadge />
           </div>
         </div>
 
-        {/* Subtitle Plaque: GROUP OF COMPANIES */}
-        <div className="mt-1 sm:mt-1.5 relative z-10">
-          <div className="inline-block rounded-full bg-gradient-to-r from-[#C69A2E] via-[#FFF1AB] to-[#B88A22] p-[1.5px] shadow-[0_6px_18px_rgba(0,0,0,0.3)] transition-transform duration-200 hover:scale-[1.02]">
-            <div className="rounded-full bg-gradient-to-r from-[#DFB344] via-[#FFF6C7] to-[#D4A533] px-6 sm:px-10 md:px-14 py-1 sm:py-1.5 md:py-2 flex items-center justify-center">
-              <span className="text-[#072917] font-black uppercase tracking-wider sm:tracking-widest text-xs sm:text-base md:text-xl lg:text-2xl drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]">
-                GROUP OF COMPANIES
+        {/* Center Brand Identity — Prominently Centered Official Logo, Subtitle & Benefits */}
+        <div className="relative w-full max-w-5xl mx-auto px-4 text-center flex flex-col items-center justify-center z-20 pt-1">
+          {/* Soft, Semi-Transparent Warm-White/Cream Mask with Feathered Edges for Logo Contrast */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -inset-x-10 sm:-inset-x-20 md:-inset-x-28 -inset-y-6 sm:-inset-y-10 -z-10 pointer-events-none rounded-[70px] md:rounded-[110px]"
+            style={{
+              background:
+                "radial-gradient(ellipse 75% 65% at 50% 46%, rgba(255, 253, 246, 0.84) 0%, rgba(254, 250, 238, 0.62) 42%, rgba(252, 246, 228, 0.20) 70%, rgba(255, 255, 255, 0) 100%)",
+              filter: "blur(22px)",
+            }}
+          />
+
+          {/* Semantic SEO Heading */}
+          <h1 className="sr-only">
+            PPF Group of Companies - Poultry Farms &amp; Hatcheries - Trusted Poultry Industry Since 2011
+          </h1>
+
+          {/* Actual Official PPF Logo Prominently Centered (Do not move, resize or modify) */}
+          <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-[380px] md:h-[380px] lg:w-[460px] lg:h-[460px] xl:w-[520px] xl:h-[520px] 2xl:w-[560px] 2xl:h-[560px] mx-auto flex items-center justify-center">
+            <img
+              src="/assets/logo/LOGO.png"
+              alt="PPF - Poultry Farms & Hatcheries"
+              className="w-full h-full object-contain filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.22)] transition-transform duration-300 hover:scale-[1.01]"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+            />
+          </div>
+
+          {/* Central Text Group with Dedicated Soft Translucent Cream-White Mask */}
+          <div className="relative -mt-2 sm:-mt-3 md:-mt-4 lg:-mt-5 px-4 py-1.5 sm:py-2 flex flex-col items-center justify-center z-10">
+            {/* Subtle translucent cream-white gradient mask behind the text for contrast */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 -inset-x-6 sm:-inset-x-12 -inset-y-2 sm:-inset-y-3 -z-10 pointer-events-none rounded-full"
+              style={{
+                background:
+                  "radial-gradient(ellipse 92% 80% at 50% 50%, rgba(255, 250, 235, 0.78) 0%, rgba(255, 250, 235, 0.55) 50%, rgba(255, 250, 235, 0.18) 78%, rgba(255, 250, 235, 0) 100%)",
+                filter: "blur(12px)",
+              }}
+            />
+
+            {/* 1. POULTRY FARMS & HATCHERIES with delicate wing divider lines */}
+            <div className="flex items-center justify-center gap-2.5 sm:gap-4 text-[#063D27]">
+              <span className="h-[1.5px] w-6 sm:w-10 md:w-14 bg-gradient-to-r from-transparent to-[#063D27]" />
+              <span
+                className="font-bold sm:font-extrabold uppercase tracking-[0.22em] sm:tracking-[0.28em] text-xs sm:text-sm md:text-[15px] lg:text-base leading-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]"
+                style={{
+                  textShadow: "0 1px 2px rgba(255,255,255,0.9), 0 0 8px rgba(255,255,255,0.6)",
+                }}
+              >
+                POULTRY FARMS &amp; HATCHERIES
+              </span>
+              <span className="h-[1.5px] w-6 sm:w-10 md:w-14 bg-gradient-to-l from-transparent to-[#063D27]" />
+            </div>
+
+            {/* 2. Three Benefits in one clear horizontal row */}
+            <div className="mt-2 sm:mt-2.5 max-w-3xl mx-auto flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-3.5 md:gap-5 text-[#063D27]">
+              <div className="flex items-center gap-1.5 px-1 py-0.5">
+                <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#063D27] stroke-[2.4]" />
+                <span
+                  className="text-[10px] sm:text-[11px] md:text-xs lg:text-[12.5px] font-bold uppercase tracking-wider whitespace-nowrap drop-shadow-[0_1px_1px_rgba(255,255,255,0.85)]"
+                  style={{
+                    textShadow: "0 1px 1px rgba(255,255,255,0.8)",
+                  }}
+                >
+                  Quality Products
+                </span>
+              </div>
+
+              <div className="hidden sm:block w-px h-3.5 bg-[#063D27]/40" />
+
+              <div className="flex items-center gap-1.5 px-1 py-0.5">
+                <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#063D27] stroke-[2.4]" />
+                <span
+                  className="text-[10px] sm:text-[11px] md:text-xs lg:text-[12.5px] font-bold uppercase tracking-wider whitespace-nowrap drop-shadow-[0_1px_1px_rgba(255,255,255,0.85)]"
+                  style={{
+                    textShadow: "0 1px 1px rgba(255,255,255,0.8)",
+                  }}
+                >
+                  Trusted Supply
+                </span>
+              </div>
+
+              <div className="hidden sm:block w-px h-3.5 bg-[#063D27]/40" />
+
+              <div className="flex items-center gap-1.5 px-1 py-0.5">
+                <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#063D27] stroke-[2.4]" />
+                <span
+                  className="text-[10px] sm:text-[11px] md:text-xs lg:text-[12.5px] font-bold uppercase tracking-wider whitespace-nowrap drop-shadow-[0_1px_1px_rgba(255,255,255,0.85)]"
+                  style={{
+                    textShadow: "0 1px 1px rgba(255,255,255,0.8)",
+                  }}
+                >
+                  Farmer Success
+                </span>
+              </div>
+            </div>
+
+            {/* 3. Complete Poultry Solutions as separate centered line directly below */}
+            <div className="mt-1.5 sm:mt-2 flex items-center justify-center gap-1.5 text-[#063D27]">
+              <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#063D27] stroke-[2.4]" />
+              <span
+                className="text-[10px] sm:text-[11px] md:text-xs lg:text-[12.5px] font-bold uppercase tracking-wider whitespace-nowrap drop-shadow-[0_1px_1px_rgba(255,255,255,0.85)]"
+                style={{
+                  textShadow: "0 1px 1px rgba(255,255,255,0.8)",
+                }}
+              >
+                Complete Poultry Solutions
               </span>
             </div>
           </div>
         </div>
-
-        {/* POULTRY FARMS & HATCHERIES with decorative wing lines */}
-        <div className="mt-1.5 sm:mt-2.5 flex items-center justify-center gap-2 sm:gap-3 text-[#09371F]">
-          <span className="h-[2px] w-6 sm:w-12 bg-gradient-to-r from-transparent to-[#09371F]" />
-          <span className="font-black uppercase tracking-[0.2em] sm:tracking-[0.28em] text-[11px] sm:text-xs md:text-sm lg:text-base drop-shadow-sm">
-            POULTRY FARMS &amp; HATCHERIES
-          </span>
-          <span className="h-[2px] w-6 sm:w-12 bg-gradient-to-l from-transparent to-[#09371F]" />
-        </div>
-
-        {/* 4 Trust & Service Highlights */}
-        <div className="mt-2.5 sm:mt-3 md:mt-3.5 max-w-3xl mx-auto flex flex-wrap items-center justify-center gap-1.5 sm:gap-3 md:gap-5 text-[#0A3D22]">
-          <div className="flex items-center gap-1.5 px-2 py-0.5">
-            <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0A3D22] stroke-[2.4]" />
-            <span className="text-[9.5px] sm:text-[10.5px] md:text-xs font-black uppercase tracking-wider">
-              QUALITY PRODUCTS
-            </span>
-          </div>
-
-          <div className="hidden sm:block w-px h-3.5 bg-[#0A3D22]/30" />
-
-          <div className="flex items-center gap-1.5 px-2 py-0.5">
-            <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0A3D22] stroke-[2.4]" />
-            <span className="text-[9.5px] sm:text-[10.5px] md:text-xs font-black uppercase tracking-wider">
-              TRUSTED SUPPLY
-            </span>
-          </div>
-
-          <div className="hidden sm:block w-px h-3.5 bg-[#0A3D22]/30" />
-
-          <div className="flex items-center gap-1.5 px-2 py-0.5">
-            <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0A3D22] stroke-[2.4]" />
-            <span className="text-[9.5px] sm:text-[10.5px] md:text-xs font-black uppercase tracking-wider">
-              FARMER SUCCESS
-            </span>
-          </div>
-
-          <div className="hidden sm:block w-px h-3.5 bg-[#0A3D22]/30" />
-
-          <div className="flex items-center gap-1.5 px-2 py-0.5">
-            <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0A3D22] stroke-[2.4]" />
-            <span className="text-[9.5px] sm:text-[10.5px] md:text-xs font-black uppercase tracking-wider">
-              COMPLETE POULTRY SOLUTIONS
-            </span>
-          </div>
-        </div>
       </div>
 
-      {/* 4. Bottom Section — Arched Wave with 12-Category Carousel Visible Immediately on Initial Load */}
-      <div className="relative w-full z-20 pb-1.5 sm:pb-2.5">
-        {/* Arched Wave with Gold Metallic Border */}
-        <div className="relative w-full overflow-hidden leading-none pointer-events-none">
-          <svg
-            viewBox="0 0 1440 32"
-            preserveAspectRatio="none"
-            className="w-full h-5 sm:h-6 md:h-8 block"
-          >
-            <defs>
-              <linearGradient id="waveGoldBorderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#C99E32" />
-                <stop offset="30%" stopColor="#FFF2B2" />
-                <stop offset="50%" stopColor="#E2BD4E" />
-                <stop offset="70%" stopColor="#FFF2B2" />
-                <stop offset="100%" stopColor="#A8791B" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M 0,16 Q 720,0 1440,16 L 1440,32 L 0,32 Z"
-              fill="#062F1B"
-            />
-            <path
-              d="M 0,16 Q 720,0 1440,16"
-              fill="none"
-              stroke="url(#waveGoldBorderGrad)"
-              strokeWidth="3"
-            />
-          </svg>
-        </div>
+      {/* 2. Thin Intentional Gold Divider Line Between Hero Background and Category Carousel */}
+      <div className="relative w-full z-20 leading-none">
+        <div className="w-full h-[2px] bg-gradient-to-r from-[#C99E32] via-[#FFF2B2] to-[#A8791B] shadow-[0_1px_3px_rgba(0,0,0,0.3)]" />
+      </div>
 
-        {/* Carousel Body */}
-        <div className="w-full bg-gradient-to-b from-[#062F1B] via-[#052615] to-[#041E11] pb-1.5 sm:pb-2 pt-0">
-          <HeroCategoryCarousel onSelectCategory={onSelectCategory} />
-        </div>
+      {/* 3. Dark-Green Category Carousel — Begins Directly Below the Hero Background's Bottom Edge */}
+      <div className="relative w-full z-20 bg-gradient-to-b from-[#062F1B] via-[#052615] to-[#041E11] py-2 sm:py-2.5">
+        <HeroCategoryCarousel onSelectCategory={onSelectCategory} />
       </div>
     </section>
   );

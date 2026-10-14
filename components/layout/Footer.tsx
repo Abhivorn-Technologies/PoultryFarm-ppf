@@ -47,9 +47,9 @@ export function Footer() {
           <div className="lg:col-span-2 space-y-3.5">
             <Link href="/" className="inline-flex items-center group">
               <img
-                src="/assets/logo/LOGO.png"
-                alt="PoultryFarm"
-                className="h-12 w-auto object-contain footer-logo-glow"
+                src="/assets/logo/LOGO%20navibar.png"
+                alt="PoultryFarm PPF"
+                className="h-16 sm:h-20 lg:h-24 w-auto max-w-[280px] sm:max-w-[340px] lg:max-w-[380px] object-contain footer-logo-glow"
               />
             </Link>
             <p className="text-xs font-bold text-brand-yellow tracking-wide">

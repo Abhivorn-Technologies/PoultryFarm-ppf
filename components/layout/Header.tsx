@@ -63,13 +63,13 @@ export function Header({ variant: _variant = "auto" }: HeaderProps) {
   return (
     <header className={headerClasses}>
       {/* Main Navigation Bar */}
-      <nav className="w-full max-w-[1560px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-3.5 sm:py-4 flex items-center justify-between gap-4 xl:gap-8">
+      <nav className="w-full max-w-[1560px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-2 sm:py-2.5 lg:py-3 flex items-center justify-between gap-4 xl:gap-8">
         {/* LEFT: Brand Logo */}
         <Link href="/" className="flex items-center flex-shrink-0 group">
           <img
-            src="/assets/logo/LOGO.png"
-            alt="PoultryFarm"
-            className="h-10 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            src="/assets/logo/LOGO%20navibar.png"
+            alt="PoultryFarm PPF"
+            className="h-11 sm:h-14 md:h-16 lg:h-[68px] w-auto max-w-[220px] sm:max-w-[280px] lg:max-w-[320px] object-contain transition-transform duration-200 group-hover:scale-105"
           />
         </Link>
 

@@ -98,8 +98,7 @@ export function HeroCategoryCarousel({
   const sequenceBRef = useRef<HTMLDivElement>(null);
   const sequenceCRef = useRef<HTMLDivElement>(null);
 
-  const [categoriesList, setCategoriesList] =
-    useState<HeroCategory[]>(HERO_12_CATEGORIES);
+  const [categoriesList] = useState<HeroCategory[]>(HERO_12_CATEGORIES);
 
   const currentXRef = useRef<number>(0);
   const isPausedRef = useRef<boolean>(false);
@@ -121,79 +120,6 @@ export function HeroCategoryCarousel({
       }
     }
   }, []);
-
-  // Fetch live categories from database/admin API to reflect any admin edits
-  useEffect(() => {
-    fetch("/api/categories")
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        if (
-          data &&
-          data.success &&
-          Array.isArray(data.data) &&
-          data.data.length > 0
-        ) {
-          const dbCategories: any[] = data.data;
-
-          // Preserve canonical sequence order, updated with live admin names & images
-          const ordered = HERO_12_CATEGORIES.map((canonical) => {
-            const matched = dbCategories.find(
-              (c) =>
-                c.slug === canonical.slug ||
-                c.name.toLowerCase() === canonical.name.toLowerCase()
-            );
-            if (matched) {
-              return {
-                id: matched._id || matched.id || canonical.id,
-                name: matched.name || canonical.name,
-                slug: matched.slug || canonical.slug,
-                image: matched.image || canonical.image,
-              };
-            }
-            return canonical;
-          });
-
-          // Append any newly created categories added by admin
-          const additional = dbCategories
-            .filter(
-              (c) =>
-                !HERO_12_CATEGORIES.some(
-                  (canon) =>
-                    canon.slug === c.slug ||
-                    canon.name.toLowerCase() === c.name.toLowerCase()
-                )
-            )
-            .map((c) => ({
-              id: c._id || c.id || c.slug,
-              name: c.name,
-              slug: c.slug,
-              image:
-                c.image ||
-                "/assets/catgories/Chicks%20%26%20Young%20Birds.png",
-            }));
-
-          const finalList = [...ordered, ...additional];
-          if (finalList.length > 0) {
-            setCategoriesList(finalList);
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(
-          "Using default hero categories fallback:",
-          err?.message || err
-        );
-      });
-  }, []);
-
-  useEffect(() => {
-    updateSequenceWidth();
-    const t = setTimeout(updateSequenceWidth, 100);
-    return () => clearTimeout(t);
-  }, [categoriesList, updateSequenceWidth]);
 
   const pauseAutoScroll = useCallback((durationMs?: number) => {
     isPausedRef.current = true;
@@ -222,7 +148,7 @@ export function HeroCategoryCarousel({
   // Arrow button navigation
   const handleArrowNavigation = (direction: "left" | "right") => {
     pauseAutoScroll(2500);
-    const cardStep = 185; // Step by approx 1 card width + gap
+    const cardStep = 175; // Step by approx 1 card width + gap
     const shift = direction === "left" ? cardStep : -cardStep;
 
     const targetX = currentXRef.current + shift;
@@ -297,20 +223,20 @@ export function HeroCategoryCarousel({
     resumeAutoScroll();
   };
 
-  // Smooth continuous requestAnimationFrame loop
+  // Smooth continuous requestAnimationFrame loop (Safe from ResizeObserver loop errors)
   useEffect(() => {
     updateSequenceWidth();
 
+    const handleResize = () => {
+      requestAnimationFrame(() => {
+        updateSequenceWidth();
+      });
+    };
+
+    window.addEventListener("resize", handleResize, { passive: true });
     const t1 = setTimeout(updateSequenceWidth, 50);
-    const t2 = setTimeout(updateSequenceWidth, 200);
+    const t2 = setTimeout(updateSequenceWidth, 250);
     const t3 = setTimeout(updateSequenceWidth, 800);
-
-    const resizeObserver = new ResizeObserver(() => {
-      updateSequenceWidth();
-    });
-
-    if (sequenceARef.current) resizeObserver.observe(sequenceARef.current);
-    if (viewportRef.current) resizeObserver.observe(viewportRef.current);
 
     // Pause when tab is hidden
     const handleVisibilityChange = () => {
@@ -330,7 +256,7 @@ export function HeroCategoryCarousel({
         clearTimeout(t1);
         clearTimeout(t2);
         clearTimeout(t3);
-        resizeObserver.disconnect();
+        window.removeEventListener("resize", handleResize);
         document.removeEventListener("visibilitychange", handleVisibilityChange);
       };
     }
@@ -375,7 +301,7 @@ export function HeroCategoryCarousel({
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
-      resizeObserver.disconnect();
+      window.removeEventListener("resize", handleResize);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -411,7 +337,7 @@ export function HeroCategoryCarousel({
       <div
         key={`${cat.id}-${seqKey}-${idx}`}
         onClick={() => handleCardClick(cat)}
-        className="group flex-shrink-0 flex flex-col rounded-xl sm:rounded-2xl overflow-hidden border border-[#D4AF37] bg-white shadow-[0_6px_18px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_12px_28px_rgba(0,0,0,0.45)] hover:border-amber-300 cursor-pointer select-none w-[130px] sm:w-[145px] md:w-[155px] lg:w-[165px]"
+        className="group flex-shrink-0 flex flex-col rounded-xl sm:rounded-2xl overflow-hidden border border-[#D4AF37]/80 bg-gradient-to-b from-[#0B3D24] to-[#041E10] shadow-[0_6px_18px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-[0_12px_28px_rgba(0,0,0,0.5)] hover:border-[#FFE082] cursor-pointer select-none w-[128px] sm:w-[138px] md:w-[148px] lg:w-[158px]"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
@@ -422,21 +348,21 @@ export function HeroCategoryCarousel({
         }}
         aria-label={`Explore ${cat.name}`}
       >
-        {/* Category Image Area */}
-        <div className="relative w-full aspect-[4/3] bg-white flex items-center justify-center p-1 overflow-hidden">
+        {/* Category Image Area at Top */}
+        <div className="relative w-full aspect-[4/3] bg-white/95 overflow-hidden flex items-center justify-center p-1 sm:p-1.5 border-b border-[#D4AF37]/35">
           <img
             src={cat.image}
             alt={cat.name}
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+            className="w-full h-full object-cover rounded-md sm:rounded-lg transition-transform duration-500 ease-out group-hover:scale-110"
             loading="eager"
             decoding="async"
             draggable={false}
           />
         </div>
 
-        {/* Dark Forest-Green Caption Area */}
-        <div className="bg-[#062916] border-t border-[#D4AF37]/50 py-1.5 sm:py-2 px-1 sm:px-2 text-center flex flex-col items-center justify-center min-h-[40px] sm:min-h-[46px]">
-          <span className="text-white font-black uppercase text-[10px] sm:text-[11px] md:text-[11.5px] leading-snug tracking-tight drop-shadow-sm group-hover:text-amber-200 transition-colors line-clamp-2 text-center">
+        {/* Clear Uppercase White Text on Dark Forest-Green Card Background */}
+        <div className="py-2 sm:py-2.5 px-1.5 sm:px-2 text-center flex items-center justify-center min-h-[40px] sm:min-h-[44px] bg-[#062413]">
+          <span className="text-white font-extrabold uppercase text-[10px] sm:text-[11px] md:text-xs leading-snug tracking-wider drop-shadow-sm group-hover:text-[#FFE58F] transition-colors line-clamp-2 text-center">
             {cat.name}
           </span>
         </div>
@@ -455,7 +381,7 @@ export function HeroCategoryCarousel({
         {/* Left Arrow Button - Outside Viewport, Never Covering Cards */}
         <button
           onClick={() => handleArrowNavigation("left")}
-          className="flex-shrink-0 z-30 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-white/95 hover:bg-white text-[#0A3D24] shadow-[0_4px_14px_rgba(0,0,0,0.35)] flex items-center justify-center border border-[#D4AF37] transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-amber-400 opacity-80 group-hover/carousel:opacity-100"
+          className="flex-shrink-0 z-30 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-[#072F1B] hover:bg-[#0B3D23] text-[#F4C542] shadow-[0_4px_14px_rgba(0,0,0,0.4)] flex items-center justify-center border border-[#D4AF37] transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-amber-400 opacity-90 group-hover/carousel:opacity-100 cursor-pointer"
           aria-label="Previous Categories"
         >
           <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
@@ -510,7 +436,7 @@ export function HeroCategoryCarousel({
         {/* Right Arrow Button - Outside Viewport, Never Covering Cards */}
         <button
           onClick={() => handleArrowNavigation("right")}
-          className="flex-shrink-0 z-30 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-white/95 hover:bg-white text-[#0A3D24] shadow-[0_4px_14px_rgba(0,0,0,0.35)] flex items-center justify-center border border-[#D4AF37] transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-amber-400 opacity-80 group-hover/carousel:opacity-100"
+          className="flex-shrink-0 z-30 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-[#072F1B] hover:bg-[#0B3D23] text-[#F4C542] shadow-[0_4px_14px_rgba(0,0,0,0.4)] flex items-center justify-center border border-[#D4AF37] transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-amber-400 opacity-90 group-hover/carousel:opacity-100 cursor-pointer"
           aria-label="Next Categories"
         >
           <ChevronRight className="w-5 h-5 stroke-[2.5]" />

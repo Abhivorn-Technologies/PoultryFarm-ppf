@@ -80,6 +80,17 @@ export default function RootLayout({
             __html: `
               (function() {
                 if (typeof window !== 'undefined') {
+                  // Suppress benign resize observer or empty event errors that trigger [object Event] in Next.js dev overlay
+                  window.addEventListener('error', function(e) {
+                    if (!e || !e.message || e.message.indexOf('ResizeObserver') !== -1) {
+                      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+                    }
+                  });
+                  window.addEventListener('unhandledrejection', function(e) {
+                    if (!e || !e.reason || typeof e.reason !== 'object' || e.reason instanceof Event) {
+                      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+                    }
+                  });
                   var _err = console.error;
                   console.error = function() {
                     var msg = arguments[0];
