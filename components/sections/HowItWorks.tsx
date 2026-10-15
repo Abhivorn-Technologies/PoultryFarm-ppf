@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
 export function HowItWorks() {
   const steps = [
@@ -66,11 +67,11 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="py-16 bg-[#9DCD5A] border-t border-brand-darkGreen/15" id="why-choose-us">
+    <section className="py-16 bg-[#9DCD5A] border-t border-brand-darkGreen/15 scroll-mt-20 sm:scroll-mt-24" id="why-choose-us">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left: How Catalogue Discovery Works (7 Cols) */}
-          <div className="lg:col-span-7" id="how-it-works">
+          <div className="lg:col-span-7 scroll-mt-24" id="how-it-works">
             <div className="inline-block text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-white/70 backdrop-blur-xs px-3.5 py-1 rounded-full border border-brand-darkGreen/15 mb-3">
               Simple 4-Step Process
             </div>
@@ -98,26 +99,47 @@ export function HowItWorks() {
 
           {/* Right: Why Choose Us (5 Cols) */}
           <div
-            className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-brand-darkGreen/15 shadow-sm"
+            id="why-choose-us-section"
+            className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-brand-darkGreen/15 shadow-sm scroll-mt-24 flex flex-col justify-between"
           >
-            <div className="inline-block text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full mb-1">
-              Farm Excellence
-            </div>
-            <h2 className="text-2xl font-black text-brand-darkGray mb-4">Why Choose Us?</h2>
-            <div className="space-y-4">
-              {whyUs.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <div
-                    className={`w-7 h-7 rounded-lg ${item.bg} flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5`}
-                  >
-                    {item.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-bold text-brand-darkGray">{item.title}</h3>
-                    <p className="text-[11px] text-brand-gray leading-snug">{item.desc}</p>
-                  </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <div className="inline-block text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full">
+                  Farm Excellence
                 </div>
-              ))}
+                <Link
+                  href="/why-choose-us"
+                  className="text-xs font-bold text-brand-darkGreen hover:text-brand-darkGray transition flex items-center gap-1"
+                >
+                  View Full Details →
+                </Link>
+              </div>
+              <h2 className="text-2xl font-black text-brand-darkGray mb-4">Why Choose Us?</h2>
+              <div className="space-y-4">
+                {whyUs.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <div
+                      className={`w-7 h-7 rounded-lg ${item.bg} flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5`}
+                    >
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h3 className="text-xs font-bold text-brand-darkGray">{item.title}</h3>
+                      <p className="text-[11px] text-brand-gray leading-snug">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-brand-darkGreen/10">
+              <Link
+                href="/why-choose-us"
+                className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-brand-darkGreen text-white text-xs font-black hover:bg-brand-darkGreen/90 transition shadow-xs"
+              >
+                <span>Read Verified Quality & Lineage Standards</span>
+                <span>→</span>
+              </Link>
             </div>
           </div>
         </div>

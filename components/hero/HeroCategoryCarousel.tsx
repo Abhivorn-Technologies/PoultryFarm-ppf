@@ -15,82 +15,84 @@ export const HERO_12_CATEGORIES: HeroCategory[] = [
     id: "cat-chicks-young-birds",
     name: "Chicks & Young Birds",
     slug: "chicks-young-birds",
-    image: "/assets/catgories/Chicks%20%26%20Young%20Birds.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/chicks-young-birds.png",
   },
   {
     id: "cat-live-birds",
     name: "Live Birds",
     slug: "live-birds",
-    image: "/assets/catgories/Live%20Birds.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/live-birds.png",
   },
   {
     id: "cat-ducks-waterfowl",
     name: "Ducks & Waterfowl",
     slug: "ducks-waterfowl",
-    image: "/assets/catgories/Ducks%20%26%20Waterfowl.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/ducks-waterfowl.png",
   },
   {
     id: "cat-hatching-eggs",
     name: "Hatching Eggs",
     slug: "hatching-eggs",
-    image: "/assets/catgories/Hatching%20Eggs.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/hatching-eggs.png",
   },
   {
     id: "cat-eating-eggs",
     name: "Eating Eggs",
     slug: "eating-eggs",
-    image: "/assets/catgories/Eating%20Eggs.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/eating-eggs.png",
   },
   {
     id: "cat-poultry-equipment",
     name: "Poultry Equipment",
     slug: "poultry-equipment",
-    image: "/assets/catgories/Poultry%20Equipment.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/poultry-equipment.png",
   },
   {
     id: "cat-hatchery-incubation",
     name: "Hatchery & Incubation",
     slug: "hatchery-incubation",
-    image: "/assets/catgories/Hatchery%20%26%20Incubation.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/hatchery-incubation.png",
   },
   {
     id: "cat-medicines-vaccines",
     name: "Medicines & Vaccines",
     slug: "medicines-vaccines",
-    image: "/assets/catgories/Medicines%20%26%20Vaccines.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/medicines-vaccines.png",
   },
   {
     id: "cat-poultry-cages",
     name: "Poultry Cages",
     slug: "poultry-cages",
-    image: "/assets/catgories/Poultry%20Cages.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/poultry-cages.png",
   },
   {
     id: "cat-poultry-feed-ingredients",
     name: "Feed & Ingredients",
     slug: "poultry-feed-ingredients",
-    image: "/assets/catgories/Feed%20%26%20Ingredients.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/feed-ingredients.png",
   },
   {
     id: "cat-poultry-meat",
     name: "Poultry Meat",
     slug: "poultry-meat",
-    image: "/assets/catgories/Poultry%20Meat.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/poultry-meat.png",
   },
   {
     id: "cat-brooding-systems",
     name: "Brooding Systems",
     slug: "brooding-systems",
-    image: "/assets/catgories/Brooding%20Systems.png",
+    image: "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/categories/brooding-systems.png",
   },
 ];
 
-interface HeroCategoryCarouselProps {
+export interface HeroCategoryCarouselProps {
   onSelectCategory?: (slug: string) => void;
+  categories?: any[];
 }
 
 export function HeroCategoryCarousel({
   onSelectCategory,
+  categories: propCategories,
 }: HeroCategoryCarouselProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -98,7 +100,90 @@ export function HeroCategoryCarousel({
   const sequenceBRef = useRef<HTMLDivElement>(null);
   const sequenceCRef = useRef<HTMLDivElement>(null);
 
-  const [categoriesList] = useState<HeroCategory[]>(HERO_12_CATEGORIES);
+  const [categoriesList, setCategoriesList] = useState<HeroCategory[]>(HERO_12_CATEGORIES);
+
+  // Sync helper that respects the canonical 12-category order while resolving live images from database
+  const syncWithDatabaseCategories = useCallback((dbList: any[]) => {
+    if (!Array.isArray(dbList) || dbList.length === 0) return;
+
+    const updated12 = HERO_12_CATEGORIES.map((baseCat) => {
+      const match = dbList.find(
+        (c) =>
+          c.slug === baseCat.slug ||
+          c.name?.toLowerCase().trim() === baseCat.name.toLowerCase().trim()
+      );
+      if (match) {
+        return {
+          id: match._id || match.id || baseCat.id,
+          name: match.name || baseCat.name,
+          slug: match.slug || baseCat.slug,
+          image: match.image || baseCat.image,
+        };
+      }
+      return baseCat;
+    });
+
+    // Append any newly added categories from DB not in the canonical 12
+    const extras = dbList
+      .filter(
+        (c) =>
+          !HERO_12_CATEGORIES.some(
+            (b) =>
+              b.slug === c.slug ||
+              b.name.toLowerCase().trim() === c.name?.toLowerCase().trim()
+          )
+      )
+      .map((extra) => ({
+        id: extra._id || extra.id || `cat-${extra.slug}`,
+        name: extra.name,
+        slug: extra.slug,
+        image: extra.image || "/assets/catgories/Chicks & Young Birds.png",
+      }));
+
+    setCategoriesList([...updated12, ...extras]);
+  }, []);
+
+  // 1. Sync from prop if provided
+  useEffect(() => {
+    if (propCategories && Array.isArray(propCategories) && propCategories.length > 0) {
+      syncWithDatabaseCategories(propCategories);
+    }
+  }, [propCategories, syncWithDatabaseCategories]);
+
+  // 2. Fetch live categories from API on mount & on window focus (for instant sync after admin edit)
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchLiveCategories = () => {
+      fetch("/api/categories")
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then((data) => {
+          if (!isMounted) return;
+          if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+            syncWithDatabaseCategories(data.data);
+          }
+        })
+        .catch((err) => {
+          console.log("Using default category imagery for hero carousel:", err?.message || err);
+        });
+    };
+
+    fetchLiveCategories();
+
+    // Re-check when window gains focus (e.g. returning from Admin tab)
+    const handleFocus = () => {
+      fetchLiveCategories();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [syncWithDatabaseCategories]);
 
   const currentXRef = useRef<number>(0);
   const isPausedRef = useRef<boolean>(false);
@@ -312,6 +397,14 @@ export function HeroCategoryCarousel({
     };
   }, [updateSequenceWidth]);
 
+  // Remeasure track sequence width whenever categories list updates
+  useEffect(() => {
+    const t = setTimeout(() => {
+      updateSequenceWidth();
+    }, 60);
+    return () => clearTimeout(t);
+  }, [categoriesList, updateSequenceWidth]);
+
   // Click card handler: smoothly scroll to catalogue section
   const handleCardClick = (cat: HeroCategory) => {
     if (hasDraggedRef.current) return;
@@ -357,6 +450,10 @@ export function HeroCategoryCarousel({
             loading="eager"
             decoding="async"
             draggable={false}
+            onError={(e) => {
+              // Resilient fallback to avoid broken image icons
+              e.currentTarget.src = "/assets/catgories/Chicks & Young Birds.png";
+            }}
           />
         </div>
 

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Glimpse from "@/models/Glimpse";
 import { apiCache } from "@/lib/cache";
+import { verifyAdminRequest } from "@/lib/auth";
 
 const DEFAULT_GLIMPSES = [
   {
@@ -77,6 +78,11 @@ export async function GET() {
 // POST: Admin create new glimpse
 export async function POST(request: Request) {
   try {
+    const isAdmin = await verifyAdminRequest(request);
+    if (!isAdmin) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
     const { title, image, tag, order } = body;
 
@@ -122,6 +128,11 @@ export async function POST(request: Request) {
 // DELETE: Admin remove a glimpse
 export async function DELETE(request: Request) {
   try {
+    const isAdmin = await verifyAdminRequest(request);
+    if (!isAdmin) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
@@ -160,6 +171,11 @@ export async function DELETE(request: Request) {
 // PUT: Admin update an existing glimpse
 export async function PUT(request: Request) {
   try {
+    const isAdmin = await verifyAdminRequest(request);
+    if (!isAdmin) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
     const { id, title, image, tag, order } = body;
 

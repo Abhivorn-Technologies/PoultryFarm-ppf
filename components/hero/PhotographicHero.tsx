@@ -7,9 +7,10 @@ import { HeroCategoryCarousel } from "./HeroCategoryCarousel";
 
 interface PhotographicHeroProps {
   onSelectCategory?: (slug: string) => void;
+  categories?: any[];
 }
 
-export function PhotographicHero({ onSelectCategory }: PhotographicHeroProps) {
+export function PhotographicHero({ onSelectCategory, categories }: PhotographicHeroProps) {
   return (
     <section
       id="hero-section"
@@ -167,7 +168,7 @@ export function PhotographicHero({ onSelectCategory }: PhotographicHeroProps) {
 
       {/* 3. Dark-Green Category Carousel — Begins Directly Below the Hero Background's Bottom Edge */}
       <div className="relative w-full z-20 bg-gradient-to-b from-[#062F1B] via-[#052615] to-[#041E11] py-2 sm:py-2.5">
-        <HeroCategoryCarousel onSelectCategory={onSelectCategory} />
+        <HeroCategoryCarousel onSelectCategory={onSelectCategory} categories={categories} />
       </div>
     </section>
   );

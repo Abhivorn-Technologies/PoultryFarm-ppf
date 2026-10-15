@@ -3,13 +3,18 @@ import connectToDatabase from "@/lib/mongodb";
 import Category from "@/models/Category";
 import { CATEGORIES } from "@/data/categories";
 import { apiCache } from "@/lib/cache";
+import { verifyAdminRequest } from "@/lib/auth";
+
+import { revalidatePath } from "next/cache";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
     const cached = apiCache.getCategories();
     if (cached) {
       return NextResponse.json(cached, {
-        headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" },
+        headers: { "Cache-Control": "no-cache, must-revalidate" },
       });
     }
 
@@ -36,7 +41,7 @@ export async function GET() {
     apiCache.setCategories(payload);
 
     return NextResponse.json(payload, {
-      headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" },
+      headers: { "Cache-Control": "no-cache, must-revalidate" },
     });
   } catch (error: any) {
     console.error("Failed to fetch categories:", error);
@@ -49,6 +54,13 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     await connectToDatabase();
     const body = await request.json();
 
@@ -85,6 +97,12 @@ export async function POST(request: Request) {
     });
 
     apiCache.invalidateCategories();
+    try {
+      revalidatePath("/");
+      revalidatePath("/categories");
+    } catch {
+      // safe fallback
+    }
 
     return NextResponse.json(
       { success: true, message: "Category created successfully", data: newCategory },

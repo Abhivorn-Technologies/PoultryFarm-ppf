@@ -48,8 +48,8 @@ export function HomeContactSection() {
     {
       id: "email",
       label: "Email Us",
-      info: "enquiry@poultryfarm.com",
-      href: "mailto:enquiry@poultryfarm.com?subject=Enquiry%20-%20PPF%20Group%20of%20Companies",
+      info: "ppfgroupofcompanies@gmail.com",
+      href: "mailto:ppfgroupofcompanies@gmail.com?subject=Enquiry%20-%20PPF%20Group%20of%20Companies",
       target: undefined,
       rel: undefined,
       iconType: "email",
@@ -59,8 +59,8 @@ export function HomeContactSection() {
     {
       id: "office",
       label: "Visit Our Office",
-      info: "Hyderabad, Telangana",
-      href: "https://maps.google.com/?q=Hyderabad,+Telangana",
+      info: "Sharada nagar, Ramanthapur, Hyderabad, Telangana, 500013",
+      href: "https://maps.google.com/?q=Sharada+nagar,+Ramanthapur,+Hyderabad,+Telangana+500013",
       target: "_blank",
       rel: "noreferrer",
       iconType: "office",

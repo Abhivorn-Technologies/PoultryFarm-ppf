@@ -6,11 +6,20 @@ import { CATEGORIES } from "@/data/categories";
 
 interface ProductRangeProps {
   onSelectCategory?: (key: string) => void;
+  categories?: any[];
 }
 
-export function ProductRange({ onSelectCategory }: ProductRangeProps) {
-  const [categoriesList, setCategoriesList] = React.useState<any[]>(CATEGORIES);
+export function ProductRange({ onSelectCategory, categories: propCategories }: ProductRangeProps) {
+  const [categoriesList, setCategoriesList] = React.useState<any[]>(
+    propCategories && propCategories.length > 0 ? propCategories : CATEGORIES
+  );
   const [productsList, setProductsList] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (propCategories && propCategories.length > 0) {
+      setCategoriesList(propCategories);
+    }
+  }, [propCategories]);
 
   React.useEffect(() => {
     fetch("/api/categories")

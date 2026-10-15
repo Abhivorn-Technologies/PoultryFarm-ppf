@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 
 export function ScrollToTop() {
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    if (pathname?.startsWith("/admin")) return;
     const handleScroll = () => {
       // Show button after scrolling down 350px
       if (window.scrollY > 350) {
@@ -28,6 +31,8 @@ export function ScrollToTop() {
       behavior: "smooth",
     });
   };
+
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <div

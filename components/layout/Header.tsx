@@ -114,8 +114,12 @@ export function Header({ variant: _variant = "auto" }: HeaderProps) {
             Categories
           </Link>
           <Link
-            className="hover:text-brand-darkGreen transition-colors whitespace-nowrap text-brand-darkGray"
-            href="/#why-choose-us"
+            className={`transition-colors whitespace-nowrap hover:text-brand-darkGreen ${
+              pathname === "/why-choose-us"
+                ? "text-brand-darkGreen font-black border-b-2 border-brand-darkGreen pb-0.5"
+                : "text-brand-darkGray"
+            }`}
+            href="/why-choose-us"
           >
             Why Choose Us
           </Link>
@@ -257,7 +261,13 @@ export function Header({ variant: _variant = "auto" }: HeaderProps) {
             <Link onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/categories">
               Categories (12 Sectors)
             </Link>
-            <Link onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-brand-cardCream" href="/#why-choose-us">
+            <Link
+              onClick={() => setMobileMenuOpen(false)}
+              className={`px-3 py-2 rounded-lg hover:bg-brand-cardCream ${
+                pathname === "/why-choose-us" ? "text-brand-darkGreen font-black" : ""
+              }`}
+              href="/why-choose-us"
+            >
               Why Choose Us
             </Link>
             <Link

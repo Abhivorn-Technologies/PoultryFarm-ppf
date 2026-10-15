@@ -3,6 +3,7 @@ import connectToDatabase from "@/lib/mongodb";
 import Product from "@/models/Product";
 import mongoose from "mongoose";
 import { apiCache } from "@/lib/cache";
+import { verifyAdminRequest } from "@/lib/auth";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -10,6 +11,13 @@ interface Params {
 
 export async function PUT(request: Request, { params }: Params) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     await connectToDatabase();
     const body = await request.json();
@@ -48,6 +56,13 @@ export async function PUT(request: Request, { params }: Params) {
 
 export async function DELETE(request: Request, { params }: Params) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     await connectToDatabase();
 

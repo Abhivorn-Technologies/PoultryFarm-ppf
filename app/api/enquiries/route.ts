@@ -2,9 +2,17 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Enquiry from "@/models/Enquiry";
 import { PRODUCTS } from "@/data/products";
+import { verifyAdminRequest } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     await connectToDatabase();
     const rawEnquiries = await Enquiry.find({}).sort({ createdAt: -1 }).lean();
 
@@ -145,6 +153,13 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     await connectToDatabase();
     const { id, status } = await request.json();
 
@@ -175,6 +190,13 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");

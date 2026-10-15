@@ -162,10 +162,14 @@ export const PRODUCTS: Product[] = [
     "slug": "sonali-chicks",
     "category": "Chicks & Young Birds",
     "categorySlug": "chicks-young-birds",
-    "shortDescription": "For Sonali chickens raised for meat, the growth period is generally longer than commercial broilers:",
-    "description": "For Sonali chickens raised for meat, the growth period is generally longer than commercial broilers:",
+    "shortDescription": "Resilient dual-purpose chicks well suited for meat and egg production in backyard and small farms.",
+    "description": "Sonali chicks are a popular dual-purpose crossbreed well suited for both meat and egg production in backyard and semi-intensive farms. Known for their active foraging ability and resilience, they develop firm meat and steady weight under good poultry management.",
     "details": [
-      "For Sonali chickens raised for meat, the growth period is generally longer than commercial broilers:"
+      "Popular dual-purpose chicken breed suitable for meat and egg production.",
+      "Well adapted for backyard, free-range, and semi-intensive farming systems.",
+      "Grows steadily with good feed conversion, developing firm and tasty meat.",
+      "Active foragers with good resilience to local climatic conditions.",
+      "Growth period is generally 10 to 16 weeks depending on target market weight."
     ],
     "subTypes": [
       {
@@ -1396,9 +1400,15 @@ export const PRODUCTS: Product[] = [
     "slug": "poultry-plastic-chick-boxes",
     "category": "Poultry Equipment",
     "categorySlug": "poultry-equipment",
-    "shortDescription": "Poultry Plastic Chick Boxes",
-    "description": "",
-    "details": [],
+    "shortDescription": "Durable ventilated plastic boxes designed for the safe handling and transport of young chicks.",
+    "description": "Reusable plastic transport boxes designed for handling and moving young chicks safely between hatcheries and farms. Their ventilated construction promotes continuous airflow while the sturdy, stackable design allows easy cleaning and repeated use.",
+    "details": [
+      "Designed for the safe and secure transport of day-old and young chicks.",
+      "Perforated sides and ventilated lids help maintain fresh airflow during transit.",
+      "Molded from heavy-duty, impact-resistant plastic suitable for repeated use.",
+      "Smooth surface allows thorough washing and disinfection between batches.",
+      "Stackable design saves space and provides stability during transport operations."
+    ],
     "subTypes": [
       {
         "title": "Safe Chick Transport",
@@ -1442,9 +1452,15 @@ export const PRODUCTS: Product[] = [
     "slug": "poultry-shed-paradas",
     "category": "Poultry Equipment",
     "categorySlug": "poultry-equipment",
-    "shortDescription": "Poultry Shed Paradas",
-    "description": "",
-    "details": [],
+    "shortDescription": "Adjustable shed curtains designed to regulate airflow, light, and weather exposure in poultry houses.",
+    "description": "Protective poultry-shed curtain materials used to help manage airflow, light, and temperature inside poultry housing. Proper installation and adjustment help shield flocks from adverse weather like heavy rain, harsh sunlight, and direct drafts.",
+    "details": [
+      "Helps manage natural ventilation and internal temperatures in open-sided poultry sheds.",
+      "Provides reliable protection against driving rain, direct sunlight, and strong drafts.",
+      "Made from durable, weather-resistant fabric suitable for long-term farm use.",
+      "Simple to raise or lower depending on daily weather conditions and flock needs.",
+      "Supports a comfortable, controlled housing environment for broilers, layers, and country birds."
+    ],
     "subTypes": [
       {
         "title": "Good Airflow",
@@ -1487,9 +1503,15 @@ export const PRODUCTS: Product[] = [
     "slug": "poultry-shed-mesh",
     "category": "Poultry Equipment",
     "categorySlug": "poultry-equipment",
-    "shortDescription": "Poultry Shed Mesh",
-    "description": "",
-    "details": [],
+    "shortDescription": "Durable protective wire mesh used for poultry shed side enclosures and natural ventilation.",
+    "description": "Protective wire mesh used for poultry-shed side enclosures, window openings, and outer fencing. It establishes a secure physical barrier against predators and wild birds while maintaining continuous natural airflow throughout the shed.",
+    "details": [
+      "Creates a protective barrier to deter predators, rodents, and wild birds from entering sheds.",
+      "Ensures open, unrestricted natural airflow and daylight throughout the poultry house.",
+      "Manufactured with durable wire construction suited for long-term exterior use.",
+      "Can be easily fitted to timber, steel, or masonry frame poultry housing.",
+      "Suitable for broiler houses, layer sheds, duck shelters, and open-range runs."
+    ],
     "subTypes": [
       {
         "title": "Strong Protection",
@@ -1532,9 +1554,15 @@ export const PRODUCTS: Product[] = [
     "slug": "incubator-egg-trays",
     "category": "Hatchery & Incubation",
     "categorySlug": "hatchery-incubation",
-    "shortDescription": "Incubator Egg Trays",
-    "description": "",
-    "details": [],
+    "shortDescription": "Specialized setter trays designed to hold eggs securely with uniform airflow inside incubators.",
+    "description": "Specialized setter trays designed to hold eggs securely in an upright position inside poultry incubators. The open lattice design facilitates uniform air circulation and heat distribution while supporting smooth turning cycles during incubation.",
+    "details": [
+      "Holds hatching eggs securely in the proper upright position during incubation.",
+      "Open grid pattern promotes even temperature distribution and airflow across all eggs.",
+      "Compatible with manual and automatic turning systems in standard incubators.",
+      "Made from durable, easy-to-clean plastic that can be sanitized between incubation cycles.",
+      "Available in configurations suitable for chicken, duck, quail, and other poultry eggs."
+    ],
     "subTypes": [
       {
         "title": "Safe Egg Holding",
@@ -1577,9 +1605,15 @@ export const PRODUCTS: Product[] = [
     "slug": "hatchery-chick-trays",
     "category": "Hatchery & Incubation",
     "categorySlug": "hatchery-incubation",
-    "shortDescription": "Hatchery Chick Trays",
-    "description": "",
-    "details": [],
+    "shortDescription": "Ventilated holding and sorting trays designed for safe handling of newly hatched chicks.",
+    "description": "Lightweight holding and sorting trays designed for newly hatched chicks inside hatchery facilities. Featuring perforated bottoms for secure footing and ventilation, they allow farm staff to comfortably transfer and organize chicks post-hatching.",
+    "details": [
+      "Provides safe, stable holding space for chicks immediately following hatching.",
+      "Textured perforated flooring gives young birds secure footing and prevents slips.",
+      "High airflow design keeps chicks comfortable during post-hatch processing and sorting.",
+      "Lightweight and nestable construction simplifies handling and storage within the hatchery.",
+      "Washable, non-porous material enables rapid cleaning and sanitary maintenance."
+    ],
     "subTypes": [
       {
         "title": "Safe Chick Handling",
@@ -1622,9 +1656,15 @@ export const PRODUCTS: Product[] = [
     "slug": "hatchery-equipment",
     "category": "Hatchery & Incubation",
     "categorySlug": "hatchery-incubation",
-    "shortDescription": "Hatchery Equipment",
-    "description": "",
-    "details": [],
+    "shortDescription": "Essential accessories and tools designed to support efficient egg incubation and hatchery management.",
+    "description": "Essential utility equipment and accessories supporting commercial and farm-level chick incubation and hatching operations. This includes candling lights, setters, trays, and handling tools that help monitor egg development and maintain efficient hatchery workflow.",
+    "details": [
+      "Provides practical tools and accessories for everyday hatchery operations.",
+      "Supports organized egg sorting, candling, incubation, and post-hatch chick handling.",
+      "Helps farm operators maintain orderly workflow and consistent incubation routines.",
+      "Durable construction designed to endure repeated use and routine sanitizing in hatcheries.",
+      "Suitable for chicken, duck, turkey, and quail breeding installations."
+    ],
     "subTypes": [
       {
         "title": "Complete Hatchery Setup",
@@ -1666,9 +1706,15 @@ export const PRODUCTS: Product[] = [
     "slug": "poultry-bird-transport-boxes",
     "category": "Poultry Equipment",
     "categorySlug": "poultry-equipment",
-    "shortDescription": "Poultry Bird Transport Boxes",
-    "description": "",
-    "details": [],
+    "shortDescription": "Ventilated heavy-duty transport crates designed for moving mature poultry safely.",
+    "description": "Heavy-duty transport crates designed for moving grower and adult poultry safely between farms, processing units, and markets. Built with generous ventilation slots and secure access doors, they help minimize handling stress during transit.",
+    "details": [
+      "Designed for the safe relocation of live broilers, layers, country birds, and waterfowl.",
+      "Generous ventilation grid ensures adequate air exchange during vehicle transportation.",
+      "Fitted with smooth top or side access sliding doors for easy loading and unloading.",
+      "Manufactured from rigid, impact-resistant plastic that withstands rigorous farm transport.",
+      "Smooth interior and drainage openings allow straightforward washing and sanitization."
+    ],
     "subTypes": [
       {
         "title": "Safe Bird Transport",
@@ -1712,9 +1758,15 @@ export const PRODUCTS: Product[] = [
     "slug": "poultry-debeaker-machine",
     "category": "Poultry Equipment",
     "categorySlug": "poultry-equipment",
-    "shortDescription": "Poultry Debeaker Machine",
-    "description": "",
-    "details": [],
+    "shortDescription": "Electric beak trimming machine designed for layer and breeder farm management.",
+    "description": "Specialized beak trimming equipment used in commercial layer and breeder management to help control feather pecking and feed wastage. The electrically heated blade provides consistent, rapid trimming when operated by trained farm personnel.",
+    "details": [
+      "Designed for controlled beak trimming in commercial layer and breeder operations.",
+      "Helps reduce feather pecking, cannibalism, and feed spillage in flock environments.",
+      "Features an adjustable temperature heating blade for swift and consistent trimming.",
+      "Compact tabletop design suitable for farm-level or hatchery processing.",
+      "Intended for use by trained farm workers adhering to standard flock management protocols."
+    ],
     "subTypes": [
       {
         "title": "Beak Trimming",
@@ -1757,9 +1809,15 @@ export const PRODUCTS: Product[] = [
     "slug": "poultry-vaccination-guns",
     "category": "Poultry Equipment",
     "categorySlug": "poultry-equipment",
-    "shortDescription": "Poultry Vaccination Guns",
-    "description": "",
-    "details": [],
+    "shortDescription": "Adjustable automatic syringe applicators designed for accurate flock vaccination.",
+    "description": "Precision automatic syringes designed for administering injectable vaccines and routine health solutions across poultry flocks. The ergonomic grip and adjustable dosage settings enable efficient, uniform administration during mass flock vaccinations.",
+    "details": [
+      "Enables rapid, uniform administration of injectable health solutions across large flocks.",
+      "Features calibrated dose adjustment settings for accurate volume delivery.",
+      "Ergonomic, lightweight handle helps reduce operator fatigue during mass vaccinations.",
+      "Constructed with corrosion-resistant fittings for durability and repeated sterilization.",
+      "Compatible with standard veterinary needles and vaccine supply bottle attachments."
+    ],
     "subTypes": [
       {
         "title": "Fast Vaccination",
@@ -3008,9 +3066,15 @@ export const PRODUCTS: Product[] = [
     "slug": "poultry-digestive-support-medicines",
     "category": "Medicines & Vaccines",
     "categorySlug": "medicines-vaccines",
-    "shortDescription": "Poultry Digestive Support Medicines",
-    "description": "",
-    "details": [],
+    "shortDescription": "Formulated supplements supporting normal digestive balance and nutrient absorption in poultry.",
+    "description": "Formulated nutritional and gut-health support products designed to aid normal digestion and nutrient absorption in poultry. Commonly containing probiotics, prebiotics, enzymes, and electrolytes, they help maintain balanced intestinal flora during feed changes or environmental stress.",
+    "details": [
+      "Supports healthy intestinal balance and normal nutrient absorption across flock life stages.",
+      "Helps maintain feed intake and digestive comfort during routine diet transitions.",
+      "Formulations typically include beneficial probiotics, digestive enzymes, and essential electrolytes.",
+      "Provides supplemental support during periods of weather fluctuations or production stress.",
+      "Suitable for water or feed administration according to product-specific label directions."
+    ],
     "subTypes": [
       {
         "title": "Probiotics",
@@ -3066,9 +3130,15 @@ export const PRODUCTS: Product[] = [
     "slug": "poultry-respiratory-support-medicines",
     "category": "Medicines & Vaccines",
     "categorySlug": "medicines-vaccines",
-    "shortDescription": "Poultry Respiratory Support Medicines",
-    "description": "",
-    "details": [],
+    "shortDescription": "Supportive formulations designed to promote clear airways and respiratory comfort in poultry.",
+    "description": "Veterinary supportive formulations designed to help maintain clear airways and normal respiratory comfort in poultry birds. Often enriched with essential oils, herbal extracts, and key vitamins, they provide gentle flock support during seasonal weather changes or dusty shed conditions.",
+    "details": [
+      "Supports clear airways and normal respiratory function in broilers, layers, and backyard birds.",
+      "Helpful during seasonal climate transitions, high humidity, or dusty shed conditions.",
+      "Often blends soothing essential oils, botanical extracts, and supportive vitamins.",
+      "Assists in maintaining bird comfort and normal activity levels during stress periods.",
+      "Easily administered via drinking water in accordance with manufacturer package guidelines."
+    ],
     "subTypes": [
       {
         "title": "Respiratory",

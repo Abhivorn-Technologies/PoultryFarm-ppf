@@ -92,3 +92,33 @@ export async function verifySessionToken(token?: string | null): Promise<{
 
   return { valid: false, reason: "invalid" };
 }
+
+/**
+ * Verifies that an incoming API Request originates from an authenticated admin session.
+ * Checks cookie headers, Authorization Bearer header, and cookies() store.
+ */
+export async function verifyAdminRequest(request?: Request): Promise<boolean> {
+  let token: string | null = null;
+
+  if (request) {
+    const cookieHeader = request.headers.get("cookie");
+    if (cookieHeader) {
+      const match = cookieHeader.match(/(?:^|;\s*)admin_session=([^;]+)/);
+      if (match) {
+        token = decodeURIComponent(match[1]);
+      }
+    }
+
+    if (!token) {
+      const authHeader = request.headers.get("authorization");
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.slice(7).trim();
+      }
+    }
+  }
+
+  if (!token) return false;
+
+  const result = await verifySessionToken(token);
+  return result.valid;
+}

@@ -85,7 +85,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link className="hover:text-white transition" href="/#why-choose-us">
+                <Link className="hover:text-white transition" href="/why-choose-us">
                   Why Choose Us
                 </Link>
               </li>
@@ -120,7 +120,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-xs text-brand-softGreen">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-brand-yellow shrink-0 mt-0.5" />
-                <span className="leading-snug">Hyderabad, Telangana, India</span>
+                <span className="leading-snug">Sharada nagar, Ramanthapur, Hyderabad, Telangana, 500013</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-brand-yellow shrink-0" />
@@ -130,8 +130,8 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-brand-yellow shrink-0" />
-                <a className="hover:text-white transition" href="mailto:enquiry@poultryfarm.com">
-                  enquiry@poultryfarm.com
+                <a className="hover:text-white transition" href="mailto:ppfgroupofcompanies@gmail.com">
+                  ppfgroupofcompanies@gmail.com
                 </a>
               </li>
             </ul>

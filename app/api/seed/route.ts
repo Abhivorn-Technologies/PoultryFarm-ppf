@@ -2,9 +2,17 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { PRODUCTS } from "@/data/products";
+import { verifyAdminRequest } from "@/lib/auth";
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     await connectToDatabase();
 
     // Check existing count

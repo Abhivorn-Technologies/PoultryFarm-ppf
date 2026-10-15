@@ -23,7 +23,7 @@ export function AboutFarm() {
       value: "Hyderabad, Telangana",
       label: "Location",
       icon: MapPin,
-      detail: "India",
+      detail: "Sharada Nagar, Ramanthapur, 500013",
     },
     {
       value: "Poultry Solutions",
@@ -80,7 +80,7 @@ export function AboutFarm() {
             {/* Main Content Paragraph with Accent Bar */}
             <motion.div variants={itemVariants} className="relative pl-0 sm:pl-4 sm:border-l-4 sm:border-brand-freshGreen mb-8 sm:mb-10">
               <p className="text-base sm:text-xl lg:text-2xl font-black text-brand-darkGray leading-relaxed sm:leading-snug">
-                Established in 2008 at Hyderabad, Telangana, PPF Group of Companies is a manufacturer and trader of poultry farm chicks, hatching eggs, poultry ducks, egg incubators and other poultry products.
+                Established in 2008 at Sharada nagar, Ramanthapur, Hyderabad, Telangana, 500013, PPF Group of Companies is a manufacturer and trader of poultry farm chicks, hatching eggs, poultry ducks, egg incubators and other poultry products.
               </p>
             </motion.div>
 

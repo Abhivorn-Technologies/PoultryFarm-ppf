@@ -3,6 +3,7 @@ import connectToDatabase from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { PRODUCTS } from "@/data/products";
 import { apiCache } from "@/lib/cache";
+import { verifyAdminRequest } from "@/lib/auth";
 
 export async function GET() {
   try {
@@ -73,6 +74,13 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     await connectToDatabase();
     const body = await request.json();
 

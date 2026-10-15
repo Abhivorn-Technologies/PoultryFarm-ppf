@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import "@/app/globals.css";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -25,13 +24,15 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isVerifyingWindow, setIsVerifyingWindow] = useState(pathname !== "/admin/login");
+
+  const isLoginPage = pathname === "/admin/login" || pathname?.startsWith("/admin/login");
+  const [isVerifyingWindow, setIsVerifyingWindow] = useState(!isLoginPage);
 
   // Window-based session enforcement:
   // sessionStorage is strictly scoped to the current browser window/tab.
   // When the window/tab is closed, the session terminates immediately.
   React.useEffect(() => {
-    if (pathname === "/admin/login") {
+    if (isLoginPage) {
       setIsVerifyingWindow(false);
       return;
     }
@@ -50,10 +51,10 @@ export default function AdminLayout({
     }
 
     setIsVerifyingWindow(false);
-  }, [pathname, router]);
+  }, [pathname, isLoginPage, router]);
 
   // If on the login page, render full screen without the admin sidebar
-  if (pathname === "/admin/login") {
+  if (isLoginPage) {
     return <>{children}</>;
   }
 

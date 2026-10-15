@@ -165,7 +165,7 @@ export default function AboutPage() {
 
               <div className="space-y-4 text-sm sm:text-base lg:text-lg text-brand-darkGray/90 leading-relaxed font-medium">
                 <p>
-                  Established in 2008 at Hyderabad, Telangana, India, PPF Group of Companies is a manufacturer and trader of poultry farm chicks, hatching eggs, poultry ducks, egg incubators and other poultry products.
+                  Established in 2008 at Sharada nagar, Ramanthapur, Hyderabad, Telangana, 500013, PPF Group of Companies is a manufacturer and trader of poultry farm chicks, hatching eggs, poultry ducks, egg incubators and other poultry products.
                 </p>
                 <p className="text-sm sm:text-base text-brand-gray">
                   The company benefits from its strategic highway location to provide fast delivery service and has received appreciation from clients for providing quality products.
@@ -179,7 +179,7 @@ export default function AboutPage() {
               >
                 {[
                   { label: "Established", value: "2008", icon: Calendar, note: "16+ Years Experience" },
-                  { label: "Headquarters", value: "Hyderabad", icon: MapPin, note: "Telangana, India" },
+                  { label: "Headquarters", value: "Hyderabad", icon: MapPin, note: "Sharada Nagar, Ramanthapur, 500013" },
                   { label: "Role", value: "Manufacturer", icon: Building2, note: "Direct Farm Producer" },
                   { label: "Logistics", value: "Highway Link", icon: Truck, note: "Rapid Dispatch" },
                 ].map((item, idx) => (
@@ -244,12 +244,12 @@ export default function AboutPage() {
                     Founded in 2008
                   </h3>
                   <p className="text-xs sm:text-sm text-brand-gray leading-relaxed mt-2.5">
-                    PPF Group of Companies was established in 2008 at Hyderabad, Telangana, India, beginning its committed journey in the poultry industry.
+                    PPF Group of Companies was established in 2008 at Sharada nagar, Ramanthapur, Hyderabad, Telangana, 500013, beginning its committed journey in the poultry industry.
                   </p>
                 </div>
                 <div className="pt-4 mt-4 border-t border-brand-softGreen/60 flex items-center gap-2 text-[11px] font-bold text-brand-darkGreen">
                   <div className="w-2 h-2 rounded-full bg-brand-freshGreen" />
-                  <span>Hyderabad, Telangana, India</span>
+                  <span>Sharada nagar, Ramanthapur, Hyderabad, 500013</span>
                 </div>
               </motion.div>
 
@@ -454,11 +454,12 @@ export default function AboutPage() {
               SECTION 04 — WHY CHOOSE US
               ================================================== */}
           <motion.section
+            id="why-choose-us"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.15 }}
             variants={sectionVariants}
-            className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-10 border border-brand-darkGreen/15 shadow-xl"
+            className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-10 border border-brand-darkGreen/15 shadow-xl scroll-mt-24"
           >
             <div className="max-w-3xl mb-8 space-y-3">
               <div className="inline-block text-xs font-black uppercase tracking-wider text-brand-darkGreen bg-brand-softGreen px-3 py-1 rounded-full">

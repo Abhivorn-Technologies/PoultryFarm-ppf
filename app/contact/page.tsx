@@ -395,8 +395,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <span className="text-[10px] uppercase font-bold text-brand-softGreen">Official Email</span>
-                      <a href="mailto:enquiry@poultryfarm.com" className="block text-sm font-bold text-white hover:text-brand-yellow transition">
-                        enquiry@poultryfarm.com
+                      <a href="mailto:ppfgroupofcompanies@gmail.com" className="block text-sm font-bold text-white hover:text-brand-yellow transition">
+                        ppfgroupofcompanies@gmail.com
                       </a>
                     </div>
                   </div>
@@ -408,7 +408,7 @@ export default function ContactPage() {
                     <div>
                       <span className="text-[10px] uppercase font-bold text-brand-softGreen">Farm Headquarters</span>
                       <p className="text-xs text-white leading-relaxed">
-                        Hyderabad, Telangana, India
+                        Sharada nagar, Ramanthapur, Hyderabad, Telangana, 500013
                       </p>
                     </div>
                   </div>

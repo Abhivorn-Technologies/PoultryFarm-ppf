@@ -3,12 +3,21 @@ import connectToDatabase from "@/lib/mongodb";
 import Category from "@/models/Category";
 import Product from "@/models/Product";
 import { apiCache } from "@/lib/cache";
+import { verifyAdminRequest } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     await connectToDatabase();
     const { id } = await params;
     const body = await request.json();
@@ -37,6 +46,15 @@ export async function PUT(
     }
 
     apiCache.invalidateCategories();
+    try {
+      revalidatePath("/");
+      revalidatePath("/categories");
+      if (updated.slug) {
+        revalidatePath(`/category/${updated.slug}`);
+      }
+    } catch {
+      // safe fallback
+    }
 
     return NextResponse.json({
       success: true,
@@ -53,10 +71,17 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     await connectToDatabase();
     const { id } = await params;
 
@@ -80,6 +105,15 @@ export async function DELETE(
 
     apiCache.invalidateCategories();
     apiCache.invalidateProducts();
+    try {
+      revalidatePath("/");
+      revalidatePath("/categories");
+      if (deleted.slug) {
+        revalidatePath(`/category/${deleted.slug}`);
+      }
+    } catch {
+      // safe fallback
+    }
 
     return NextResponse.json({
       success: true,

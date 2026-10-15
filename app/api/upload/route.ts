@@ -2,9 +2,17 @@ import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { put } from "@vercel/blob";
+import { verifyAdminRequest } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
+    if (!(await verifyAdminRequest(request))) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     const data = await request.formData();
     const file: File | null = data.get("file") as unknown as File;
 

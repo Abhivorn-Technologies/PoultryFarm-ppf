@@ -1,10 +1,19 @@
 "use client";
 
 import React, { useState, Suspense } from "react";
-import "@/app/globals.css";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Lock, Mail, Eye, EyeOff, ShieldCheck, AlertCircle, Clock } from "lucide-react";
+import {
+  Lock,
+  Mail,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  AlertCircle,
+  Clock,
+  Loader2,
+  ArrowLeft,
+} from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
@@ -42,8 +51,8 @@ function LoginForm() {
         setError(data.error || "Invalid email or password");
       }
     } catch (err: unknown) {
-      console.error(err);
-      setError("Failed to connect to the authentication server");
+      console.error("Login request error:", err);
+      setError("Failed to connect to the authentication server. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -56,22 +65,39 @@ function LoginForm() {
 
       {/* Logo & Portal Title */}
       <div className="text-center mb-6">
-        <Link href="/" className="inline-block group mb-3">
+        <Link
+          href="/"
+          className="inline-flex items-center justify-center gap-3 group mb-3 p-2 rounded-2xl hover:bg-brand-softGreen/20 transition-all"
+          title="Return to PoultryFarm Store"
+        >
           <img
             src="/assets/logo/LOGO.png"
-            alt="PoultryFarm Logo"
-            style={{ height: "64px", maxWidth: "220px", objectFit: "contain" }}
-            className="mx-auto transition-transform group-hover:scale-105"
+            alt="PoultryFarm PPF"
+            width={64}
+            height={64}
+            className="w-14 h-14 sm:w-16 sm:h-16 aspect-square object-contain filter drop-shadow-xs transition-transform duration-300 group-hover:scale-105"
           />
+          <div className="text-left">
+            <span className="font-extrabold text-lg sm:text-xl tracking-tight text-brand-darkGreen block leading-tight">
+              POULTRY<span className="text-brand-yellow">FARM</span>
+            </span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-brand-gray tracking-wider uppercase block">
+              PPF Agro Control Room
+            </span>
+          </div>
         </Link>
-        <div className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-darkGreen bg-brand-softGreen/50 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-          <ShieldCheck className="w-3 h-3 text-brand-freshGreen" />
-          <span>Admin Management Portal</span>
+
+        <div>
+          <div className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-darkGreen bg-brand-softGreen/60 px-3 py-0.5 rounded-full uppercase tracking-wider border border-brand-softGreen/70">
+            <ShieldCheck className="w-3.5 h-3.5 text-brand-freshGreen shrink-0" />
+            <span>Admin Management Portal</span>
+          </div>
         </div>
-        <h2 className="text-2xl font-black text-brand-darkGray tracking-tight mt-2">
+
+        <h1 className="text-2xl font-black text-brand-darkGray tracking-tight mt-2.5">
           Sign In to Farm Manager
-        </h2>
-        <p className="text-xs text-brand-gray mt-1">
+        </h1>
+        <p className="text-xs text-brand-gray mt-1 max-w-sm mx-auto">
           Enter your authorized credentials to access the control room.
         </p>
       </div>
@@ -95,41 +121,43 @@ function LoginForm() {
       {/* Login Form */}
       <form className="space-y-4" onSubmit={handleLogin}>
         <div>
-          <label className="block text-xs font-bold text-brand-darkGray mb-1">
+          <label className="block text-xs font-bold text-brand-darkGray mb-1.5">
             Admin Email Address
           </label>
-          <div className="relative rounded-2xl">
+          <div className="relative">
             <input
               type="email"
               required
+              autoComplete="username"
               placeholder="admin@poultryfarm.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen focus:border-brand-freshGreen outline-none text-brand-darkGray placeholder:text-gray-400 bg-brand-cardCream/40"
+              className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-brand-softGreen text-xs sm:text-sm focus:ring-2 focus:ring-brand-freshGreen focus:border-brand-freshGreen outline-none text-brand-darkGray placeholder:text-gray-400 bg-brand-cardCream/60 transition shadow-2xs"
             />
-            <Mail className="w-4 h-4 text-brand-gray absolute left-3.5 top-3 pointer-events-none" />
+            <Mail className="w-4 h-4 text-brand-gray absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-brand-darkGray mb-1">
+          <label className="block text-xs font-bold text-brand-darkGray mb-1.5">
             Password
           </label>
-          <div className="relative rounded-2xl">
+          <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               required
+              autoComplete="current-password"
               placeholder="••••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen focus:border-brand-freshGreen outline-none text-brand-darkGray placeholder:text-gray-400 bg-brand-cardCream/40"
+              className="w-full pl-10 pr-11 py-2.5 sm:py-3 rounded-xl border border-brand-softGreen text-xs sm:text-sm focus:ring-2 focus:ring-brand-freshGreen focus:border-brand-freshGreen outline-none text-brand-darkGray placeholder:text-gray-400 bg-brand-cardCream/60 transition shadow-2xs"
             />
-            <Lock className="w-4 h-4 text-brand-gray absolute left-3.5 top-3 pointer-events-none" />
+            <Lock className="w-4 h-4 text-brand-gray absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-3 text-brand-gray hover:text-brand-darkGray transition cursor-pointer"
-              aria-label="Toggle password visibility"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-brand-gray hover:text-brand-darkGray hover:bg-brand-softGreen/40 transition-colors cursor-pointer"
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -142,19 +170,33 @@ function LoginForm() {
           className="w-full mt-2 py-3 px-4 rounded-xl bg-brand-darkGreen hover:bg-brand-green text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-brand-darkGreen/20 hover:shadow-lg active:scale-98 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
         >
           {loading ? (
-            <span>Verifying Credentials...</span>
+            <>
+              <Loader2 className="w-4 h-4 animate-spin text-white" />
+              <span>Verifying Credentials...</span>
+            </>
           ) : (
             <span>Log In to Dashboard →</span>
           )}
         </button>
       </form>
+
+      {/* Return to website link */}
+      <div className="mt-6 pt-5 border-t border-brand-softGreen/50 text-center">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-darkGreen hover:text-brand-green transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Return to PoultryFarm Store</span>
+        </Link>
+      </div>
     </div>
   );
 }
 
 export default function AdminLoginPage() {
   return (
-    <div className="min-h-screen bg-[#F5F8F5] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 selection:bg-brand-freshGreen selection:text-white">
+    <div className="min-h-screen bg-[#F5F8F5] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 selection:bg-brand-freshGreen selection:text-white relative">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Suspense fallback={<div className="text-center p-8 text-xs text-brand-gray">Loading portal...</div>}>
           <LoginForm />

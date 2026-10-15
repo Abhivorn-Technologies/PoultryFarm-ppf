@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/hero/Hero";
@@ -16,6 +16,21 @@ import { HomeContactSection } from "@/components/sections/HomeContactSection";
 
 export default function Home() {
   const [_activeCategoryFilter, setActiveCategoryFilter] = useState("all");
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setCategories(data.data);
+        }
+      })
+      .catch((err) => console.log("Category sync fallback:", err?.message || err));
+  }, []);
 
   const handleSelectCategory = (catKey: string) => {
     setActiveCategoryFilter(catKey);
@@ -28,7 +43,7 @@ export default function Home() {
 
       <main id="home" className="flex-grow bg-[#9DCD5A]">
         {/* 2. Hero Section */}
-        <Hero onSelectCategory={handleSelectCategory} />
+        <Hero onSelectCategory={handleSelectCategory} categories={categories} />
 
         {/* Categories Anchor Target for smooth navigation */}
         <div id="categories" className="scroll-mt-24" />
@@ -45,7 +60,7 @@ export default function Home() {
         <PromotionalBanners onSelectCategory={handleSelectCategory} />
 
         {/* 9. Complete Product Range (12 Categories Grid) */}
-        <ProductRange onSelectCategory={handleSelectCategory} />
+        <ProductRange onSelectCategory={handleSelectCategory} categories={categories} />
 
         {/* 10. How It Works & Why Choose Us */}
         <HowItWorks />
