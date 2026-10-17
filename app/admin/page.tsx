@@ -42,16 +42,16 @@ export default function AdminDashboardPage() {
     try {
       setLoading(true);
       const prodRes = await fetch("/api/products");
-      const prodData = await prodRes.json();
+      const prodData = prodRes.ok ? await prodRes.json().catch(() => null) : null;
 
       const enqRes = await fetch("/api/enquiries");
-      const enqData = await enqRes.json();
+      const enqData = enqRes.ok ? await enqRes.json().catch(() => null) : null;
 
-      const enqList: EnquiryItem[] = enqData.data || [];
+      const enqList: EnquiryItem[] = enqData?.data || [];
       const newCount = enqList.filter((e) => e.status === "new").length;
 
       setStats({
-        totalProducts: prodData.count || (prodData.data ? prodData.data.length : 89),
+        totalProducts: prodData?.count || (prodData?.data ? prodData.data.length : 89),
         totalEnquiries: enqList.length,
         newEnquiries: newCount,
         categories: 12,

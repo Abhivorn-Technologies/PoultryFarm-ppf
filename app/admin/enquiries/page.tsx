@@ -48,8 +48,8 @@ export default function AdminEnquiriesPage() {
     try {
       setLoading(true);
       const res = await fetch("/api/enquiries");
-      const data = await res.json();
-      if (data.data) {
+      const data = res.ok ? await res.json().catch(() => null) : null;
+      if (data && data.data) {
         setEnquiries(data.data);
       }
     } catch (err) {

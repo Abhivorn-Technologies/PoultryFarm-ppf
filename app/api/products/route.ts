@@ -5,30 +5,47 @@ import { PRODUCTS } from "@/data/products";
 import { apiCache } from "@/lib/cache";
 import { verifyAdminRequest } from "@/lib/auth";
 
-export async function GET() {
+import { searchProducts } from "@/lib/search";
+
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const searchQuery = searchParams.get("q") || searchParams.get("search") || "";
+
     if (!process.env.MONGODB_URI) {
+      if (searchQuery) {
+        const result = searchProducts(PRODUCTS as any, searchQuery);
+        return NextResponse.json({
+          success: true,
+          count: result.matches.length,
+          data: result.matches,
+          related: result.related,
+        });
+      }
       return NextResponse.json(
         { success: true, count: PRODUCTS.length, data: PRODUCTS },
         { headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" } }
       );
     }
 
-    // Serve from cache if fresh
-    const cached = apiCache.getProducts();
-    if (cached) {
-      return NextResponse.json(cached, {
-        headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" },
-      });
+    // Serve from cache if fresh and no search query
+    if (!searchQuery) {
+      const cached = apiCache.getProducts();
+      if (cached) {
+        return NextResponse.json(cached, {
+          headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" },
+        });
+      }
     }
 
     await connectToDatabase();
-    let products = await Product.find({}).sort({ itemNumber: 1 }).lean();
+    let products = await Product.find({}).sort({ sortOrder: 1, itemNumber: 1 }).lean();
 
     // Auto-seed: If the database is completely empty on first run, seed with our initial products
     if (!products || products.length === 0) {
       const initialBatch = PRODUCTS.map((p) => ({
         itemNumber: p.itemNumber,
+        sortOrder: p.sortOrder || p.itemNumber,
         name: p.name,
         slug: p.slug,
         category: p.category,
@@ -46,13 +63,23 @@ export async function GET() {
         tags: p.tags || [],
       }));
       await Product.insertMany(initialBatch);
-      products = await Product.find({}).sort({ itemNumber: 1 }).lean();
+      products = await Product.find({}).sort({ sortOrder: 1, itemNumber: 1 }).lean();
     }
 
     const transformed = (products || []).map((p: any) => ({
       ...p,
       id: p._id ? p._id.toString() : p.slug,
     }));
+
+    if (searchQuery) {
+      const result = searchProducts(transformed, searchQuery);
+      return NextResponse.json({
+        success: true,
+        count: result.matches.length,
+        data: result.matches,
+        related: result.related,
+      });
+    }
 
     const responsePayload = { success: true, count: transformed.length, data: transformed };
     apiCache.setProducts(responsePayload);
@@ -62,7 +89,18 @@ export async function GET() {
     });
   } catch (error: any) {
     console.warn("MongoDB products fetch fallback to static data:", error?.message || error);
-    // Gracefully return local static products so the client never crashes with a 500 error
+    const { searchParams } = new URL(request.url);
+    const searchQuery = searchParams.get("q") || searchParams.get("search") || "";
+    if (searchQuery) {
+      const result = searchProducts(PRODUCTS as any, searchQuery);
+      return NextResponse.json({
+        success: true,
+        fallback: true,
+        count: result.matches.length,
+        data: result.matches,
+        related: result.related,
+      });
+    }
     return NextResponse.json({
       success: true,
       fallback: true,
@@ -100,9 +138,12 @@ export async function POST(request: Request) {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)+/g, "");
 
+    const sortOrder = body.sortOrder || itemNumber;
+
     const newProduct = await Product.create({
       ...body,
       itemNumber,
+      sortOrder,
       slug,
       available: body.available ?? true,
     });

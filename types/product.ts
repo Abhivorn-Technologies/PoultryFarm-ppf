@@ -6,6 +6,7 @@ export interface ProductSubType {
 export interface Product {
   id: number;
   itemNumber: number; // Official numbered client entry (1 -> 90)
+  sortOrder?: number;
   name: string;
   slug: string;
   category: string;

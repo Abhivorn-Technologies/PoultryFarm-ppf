@@ -1,5 +1,5 @@
 // Centralized product catalog generated strictly from the client document: public/product and breed details.docx
-// Contains all 89 unique numbered entries from 1 to 89.
+// Contains all 89 unique numbered entries, sorted according to canonical client sequence (sortOrder 1 to 89).
 
 export interface ProductSubType {
   title: string;
@@ -9,6 +9,7 @@ export interface ProductSubType {
 export interface Product {
   id: number;
   itemNumber: number;
+  sortOrder?: number;
   name: string;
   slug: string;
   category: string;
@@ -59,7 +60,8 @@ export const PRODUCTS: Product[] = [
       "Chicks & Young Birds",
       "Broiler",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 1
   },
   {
     "id": 2,
@@ -91,38 +93,8 @@ export const PRODUCTS: Product[] = [
       "for",
       "Meat",
       "Purpose"
-    ]
-  },
-  {
-    "id": 3,
-    "itemNumber": 3,
-    "name": "Pure Aseel Chicks – Meat Purpose",
-    "slug": "pure-aseel-chicks---meat-purpose",
-    "category": "Chicks & Young Birds",
-    "categorySlug": "chicks-young-birds",
-    "shortDescription": "Pure Aseel chicks are a strong and hardy choice for meat production.",
-    "description": "Pure Aseel chicks are a strong and hardy choice for meat production. They develop a powerful body structure and good muscle formation. Their active nature and natural hardiness make them suitable for backyard and farm rearing. Pure Aseel meat is valued for its traditional taste and firm texture. A good choice for farmers looking for quality, traditional Aseel birds for meat purpose.",
-    "details": [
-      "Pure Aseel chicks are a strong and hardy choice for meat production.",
-      "They develop a powerful body structure and good muscle formation.",
-      "Their active nature and natural hardiness make them suitable for backyard and farm rearing.",
-      "Pure Aseel meat is valued for its traditional taste and firm texture.",
-      "A good choice for farmers looking for quality, traditional Aseel birds for meat purpose."
     ],
-    "image": "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/pure-aseel-chicks-meat-purpose.jpg",
-    "price": null,
-    "priceDisplay": "Price on Request",
-    "available": true,
-    "isPopular": true,
-    "featured": true,
-    "tags": [
-      "Chicks & Young Birds",
-      "Pure",
-      "Aseel",
-      "Chicks",
-      "Meat",
-      "Purpose"
-    ]
+    "sortOrder": 2
   },
   {
     "id": 4,
@@ -153,7 +125,113 @@ export const PRODUCTS: Product[] = [
       "Chicks",
       "Meat",
       "Purpose"
-    ]
+    ],
+    "sortOrder": 3
+  },
+  {
+    "id": 3,
+    "itemNumber": 3,
+    "name": "Pure Aseel Chicks – Meat Purpose",
+    "slug": "pure-aseel-chicks---meat-purpose",
+    "category": "Chicks & Young Birds",
+    "categorySlug": "chicks-young-birds",
+    "shortDescription": "Pure Aseel chicks are a strong and hardy choice for meat production.",
+    "description": "Pure Aseel chicks are a strong and hardy choice for meat production. They develop a powerful body structure and good muscle formation. Their active nature and natural hardiness make them suitable for backyard and farm rearing. Pure Aseel meat is valued for its traditional taste and firm texture. A good choice for farmers looking for quality, traditional Aseel birds for meat purpose.",
+    "details": [
+      "Pure Aseel chicks are a strong and hardy choice for meat production.",
+      "They develop a powerful body structure and good muscle formation.",
+      "Their active nature and natural hardiness make them suitable for backyard and farm rearing.",
+      "Pure Aseel meat is valued for its traditional taste and firm texture.",
+      "A good choice for farmers looking for quality, traditional Aseel birds for meat purpose."
+    ],
+    "image": "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/pure-aseel-chicks-meat-purpose.jpg",
+    "price": null,
+    "priceDisplay": "Price on Request",
+    "available": true,
+    "isPopular": true,
+    "featured": true,
+    "tags": [
+      "Chicks & Young Birds",
+      "Pure",
+      "Aseel",
+      "Chicks",
+      "Meat",
+      "Purpose"
+    ],
+    "sortOrder": 4
+  },
+  {
+    "id": 7,
+    "itemNumber": 7,
+    "name": "Pure Desi Chicks",
+    "slug": "pure-desi-chicks",
+    "category": "Chicks & Young Birds",
+    "categorySlug": "chicks-young-birds",
+    "shortDescription": "Pure Desi chicks grow slowly compared to commercial broiler chicks.",
+    "description": "Pure Desi chicks grow slowly compared to commercial broiler chicks. In the first month, they need good feed, clean water, and proper care.",
+    "details": [
+      "Pure Desi chicks grow slowly compared to commercial broiler chicks.",
+      "In the first month, they need good feed, clean water, and proper care."
+    ],
+    "subTypes": [
+      {
+        "title": "By 2",
+        "description": "3 months, the chicks become active and develop a stronger body."
+      },
+      {
+        "title": "At around 4",
+        "description": "5 months, they reach a good size for meat purposes."
+      },
+      {
+        "title": "Full growth usually takes around 5",
+        "description": "6 months, depending on feed, breed, and care."
+      }
+    ],
+    "image": "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/desi-chicks-images.webp",
+    "price": null,
+    "priceDisplay": "Price on Request",
+    "available": true,
+    "isPopular": true,
+    "featured": false,
+    "tags": [
+      "Chicks & Young Birds",
+      "Pure",
+      "Desi",
+      "Chicks"
+    ],
+    "sortOrder": 5
+  },
+  {
+    "id": 8,
+    "itemNumber": 8,
+    "name": "Kaveri Chicks",
+    "slug": "kaveri-chicks",
+    "category": "Chicks & Young Birds",
+    "categorySlug": "chicks-young-birds",
+    "shortDescription": "Kaveri chicks are a hardy improved chicken variety suitable for backyard and small-scale farming.",
+    "description": "Kaveri chicks are a hardy improved chicken variety suitable for backyard and small-scale farming. They grow faster than many traditional Desi chickens and can adapt well to local conditions. They are mainly raised for meat and egg production. With good feed and care, they can reach a good market size in about 12–16 weeks for meat purposes. Kaveri birds are a good choice for farmers looking for easy-to-maintain birds with both meat and egg value.",
+    "details": [
+      "Kaveri chicks are a hardy improved chicken variety suitable for backyard and small-scale farming.",
+      "They grow faster than many traditional Desi chickens and can adapt well to local conditions.",
+      "They are mainly raised for meat and egg production.",
+      "With good feed and care, they can reach a good market size in about 12–16 weeks for meat purposes.",
+      "Kaveri birds are a good choice for farmers looking for easy-to-maintain birds with both meat and egg value."
+    ],
+    "specifications": {
+      "Growth Period": "With good feed and care, they can reach a good market size in about 12–16 weeks for meat purposes."
+    },
+    "image": "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/kaveri-chicks.jpg",
+    "price": null,
+    "priceDisplay": "Price on Request",
+    "available": true,
+    "isPopular": false,
+    "featured": false,
+    "tags": [
+      "Chicks & Young Birds",
+      "Kaveri",
+      "Chicks"
+    ],
+    "sortOrder": 6
   },
   {
     "id": 5,
@@ -203,7 +281,8 @@ export const PRODUCTS: Product[] = [
       "Chicks & Young Birds",
       "Sonali",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 7
   },
   {
     "id": 6,
@@ -246,78 +325,8 @@ export const PRODUCTS: Product[] = [
       "Chicks & Young Birds",
       "Peruvadai",
       "Chicks"
-    ]
-  },
-  {
-    "id": 7,
-    "itemNumber": 7,
-    "name": "Pure Desi Chicks",
-    "slug": "pure-desi-chicks",
-    "category": "Chicks & Young Birds",
-    "categorySlug": "chicks-young-birds",
-    "shortDescription": "Pure Desi chicks grow slowly compared to commercial broiler chicks.",
-    "description": "Pure Desi chicks grow slowly compared to commercial broiler chicks. In the first month, they need good feed, clean water, and proper care.",
-    "details": [
-      "Pure Desi chicks grow slowly compared to commercial broiler chicks.",
-      "In the first month, they need good feed, clean water, and proper care."
     ],
-    "subTypes": [
-      {
-        "title": "By 2",
-        "description": "3 months, the chicks become active and develop a stronger body."
-      },
-      {
-        "title": "At around 4",
-        "description": "5 months, they reach a good size for meat purposes."
-      },
-      {
-        "title": "Full growth usually takes around 5",
-        "description": "6 months, depending on feed, breed, and care."
-      }
-    ],
-    "image": "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/desi-chicks-images.webp",
-    "price": null,
-    "priceDisplay": "Price on Request",
-    "available": true,
-    "isPopular": true,
-    "featured": false,
-    "tags": [
-      "Chicks & Young Birds",
-      "Pure",
-      "Desi",
-      "Chicks"
-    ]
-  },
-  {
-    "id": 8,
-    "itemNumber": 8,
-    "name": "Kaveri Chicks",
-    "slug": "kaveri-chicks",
-    "category": "Chicks & Young Birds",
-    "categorySlug": "chicks-young-birds",
-    "shortDescription": "Kaveri chicks are a hardy improved chicken variety suitable for backyard and small-scale farming.",
-    "description": "Kaveri chicks are a hardy improved chicken variety suitable for backyard and small-scale farming. They grow faster than many traditional Desi chickens and can adapt well to local conditions. They are mainly raised for meat and egg production. With good feed and care, they can reach a good market size in about 12–16 weeks for meat purposes. Kaveri birds are a good choice for farmers looking for easy-to-maintain birds with both meat and egg value.",
-    "details": [
-      "Kaveri chicks are a hardy improved chicken variety suitable for backyard and small-scale farming.",
-      "They grow faster than many traditional Desi chickens and can adapt well to local conditions.",
-      "They are mainly raised for meat and egg production.",
-      "With good feed and care, they can reach a good market size in about 12–16 weeks for meat purposes.",
-      "Kaveri birds are a good choice for farmers looking for easy-to-maintain birds with both meat and egg value."
-    ],
-    "specifications": {
-      "Growth Period": "With good feed and care, they can reach a good market size in about 12–16 weeks for meat purposes."
-    },
-    "image": "https://gbfjqv77hjpiae8j.public.blob.vercel-storage.com/site-assets/products/kaveri-chicks.jpg",
-    "price": null,
-    "priceDisplay": "Price on Request",
-    "available": true,
-    "isPopular": false,
-    "featured": false,
-    "tags": [
-      "Chicks & Young Birds",
-      "Kaveri",
-      "Chicks"
-    ]
+    "sortOrder": 8
   },
   {
     "id": 9,
@@ -351,7 +360,8 @@ export const PRODUCTS: Product[] = [
       "Aseel",
       "Fighter",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 9
   },
   {
     "id": 10,
@@ -382,7 +392,8 @@ export const PRODUCTS: Product[] = [
       "Breed",
       "Parent",
       "Birds"
-    ]
+    ],
+    "sortOrder": 10
   },
   {
     "id": 11,
@@ -415,7 +426,8 @@ export const PRODUCTS: Product[] = [
       "Multi",
       "Color",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 11
   },
   {
     "id": 12,
@@ -448,7 +460,8 @@ export const PRODUCTS: Product[] = [
       "Single",
       "Color",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 12
   },
   {
     "id": 13,
@@ -478,7 +491,8 @@ export const PRODUCTS: Product[] = [
       "Multi",
       "Color",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 13
   },
   {
     "id": 14,
@@ -507,7 +521,8 @@ export const PRODUCTS: Product[] = [
       "Guinea",
       "Fowl",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 14
   },
   {
     "id": 15,
@@ -536,7 +551,8 @@ export const PRODUCTS: Product[] = [
       "Brown",
       "Layer",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 15
   },
   {
     "id": 16,
@@ -565,7 +581,8 @@ export const PRODUCTS: Product[] = [
       "White",
       "Layer",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 16
   },
   {
     "id": 17,
@@ -596,7 +613,8 @@ export const PRODUCTS: Product[] = [
       "Chicks & Young Birds",
       "Quail",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 17
   },
   {
     "id": 18,
@@ -628,7 +646,8 @@ export const PRODUCTS: Product[] = [
       "Quail",
       "Live",
       "Birds"
-    ]
+    ],
+    "sortOrder": 18
   },
   {
     "id": 19,
@@ -658,7 +677,8 @@ export const PRODUCTS: Product[] = [
       "Layer",
       "Male",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 19
   },
   {
     "id": 20,
@@ -688,7 +708,8 @@ export const PRODUCTS: Product[] = [
       "Layer",
       "Male",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 20
   },
   {
     "id": 21,
@@ -716,7 +737,8 @@ export const PRODUCTS: Product[] = [
       "Chicks & Young Birds",
       "Turkey",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 21
   },
   {
     "id": 22,
@@ -750,7 +772,8 @@ export const PRODUCTS: Product[] = [
       "Birds",
       "Meat",
       "Purpose"
-    ]
+    ],
+    "sortOrder": 22
   },
   {
     "id": 23,
@@ -780,7 +803,8 @@ export const PRODUCTS: Product[] = [
       "Month",
       "Old",
       "Birds"
-    ]
+    ],
+    "sortOrder": 23
   },
   {
     "id": 24,
@@ -813,7 +837,8 @@ export const PRODUCTS: Product[] = [
       "Month",
       "Old",
       "Birds"
-    ]
+    ],
+    "sortOrder": 24
   },
   {
     "id": 25,
@@ -843,7 +868,8 @@ export const PRODUCTS: Product[] = [
       "Month",
       "Old",
       "Birds"
-    ]
+    ],
+    "sortOrder": 25
   },
   {
     "id": 26,
@@ -874,7 +900,8 @@ export const PRODUCTS: Product[] = [
       "Month",
       "Old",
       "Birds"
-    ]
+    ],
+    "sortOrder": 26
   },
   {
     "id": 27,
@@ -904,7 +931,8 @@ export const PRODUCTS: Product[] = [
       "Runner",
       "Duckling",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 27
   },
   {
     "id": 28,
@@ -937,7 +965,8 @@ export const PRODUCTS: Product[] = [
       "Meat",
       "Egg",
       "Purpose"
-    ]
+    ],
+    "sortOrder": 28
   },
   {
     "id": 29,
@@ -972,7 +1001,8 @@ export const PRODUCTS: Product[] = [
       "Campbell",
       "Duckling",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 29
   },
   {
     "id": 30,
@@ -1002,7 +1032,8 @@ export const PRODUCTS: Product[] = [
       "Campbell",
       "Live",
       "Birds"
-    ]
+    ],
+    "sortOrder": 30
   },
   {
     "id": 31,
@@ -1035,7 +1066,8 @@ export const PRODUCTS: Product[] = [
       "Pekin",
       "Duckling",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 31
   },
   {
     "id": 32,
@@ -1070,7 +1102,8 @@ export const PRODUCTS: Product[] = [
       "Birds",
       "Meat",
       "Purpose"
-    ]
+    ],
+    "sortOrder": 32
   },
   {
     "id": 33,
@@ -1100,7 +1133,8 @@ export const PRODUCTS: Product[] = [
       "White",
       "Layer",
       "Birds"
-    ]
+    ],
+    "sortOrder": 33
   },
   {
     "id": 34,
@@ -1129,7 +1163,8 @@ export const PRODUCTS: Product[] = [
       "Brown",
       "Layer",
       "Birds"
-    ]
+    ],
+    "sortOrder": 34
   },
   {
     "id": 35,
@@ -1158,7 +1193,8 @@ export const PRODUCTS: Product[] = [
       "Sasso",
       "Breed",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 35
   },
   {
     "id": 36,
@@ -1186,7 +1222,8 @@ export const PRODUCTS: Product[] = [
       "Chicks & Young Birds",
       "FFG",
       "Chicks"
-    ]
+    ],
+    "sortOrder": 36
   },
   {
     "id": 37,
@@ -1215,7 +1252,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Chick",
       "Drinkers"
-    ]
+    ],
+    "sortOrder": 37
   },
   {
     "id": 38,
@@ -1244,7 +1282,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Chick",
       "Feeders"
-    ]
+    ],
+    "sortOrder": 38
   },
   {
     "id": 39,
@@ -1273,7 +1312,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Jumbo",
       "Drinkers"
-    ]
+    ],
+    "sortOrder": 39
   },
   {
     "id": 40,
@@ -1302,7 +1342,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Jumbo",
       "Feeder"
-    ]
+    ],
+    "sortOrder": 40
   },
   {
     "id": 41,
@@ -1332,7 +1373,8 @@ export const PRODUCTS: Product[] = [
       "Jumbo",
       "Manual",
       "Drinkers"
-    ]
+    ],
+    "sortOrder": 41
   },
   {
     "id": 42,
@@ -1361,7 +1403,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Bell",
       "Drinkers"
-    ]
+    ],
+    "sortOrder": 42
   },
   {
     "id": 43,
@@ -1391,7 +1434,8 @@ export const PRODUCTS: Product[] = [
       "Chick",
       "Paper",
       "Boxes"
-    ]
+    ],
+    "sortOrder": 43
   },
   {
     "id": 44,
@@ -1443,7 +1487,8 @@ export const PRODUCTS: Product[] = [
       "Plastic",
       "Chick",
       "Boxes"
-    ]
+    ],
+    "sortOrder": 44
   },
   {
     "id": 45,
@@ -1494,7 +1539,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Shed",
       "Paradas"
-    ]
+    ],
+    "sortOrder": 45
   },
   {
     "id": 46,
@@ -1545,7 +1591,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Shed",
       "Mesh"
-    ]
+    ],
+    "sortOrder": 46
   },
   {
     "id": 47,
@@ -1596,7 +1643,8 @@ export const PRODUCTS: Product[] = [
       "Incubator",
       "Egg",
       "Trays"
-    ]
+    ],
+    "sortOrder": 47
   },
   {
     "id": 48,
@@ -1647,7 +1695,8 @@ export const PRODUCTS: Product[] = [
       "Hatchery",
       "Chick",
       "Trays"
-    ]
+    ],
+    "sortOrder": 48
   },
   {
     "id": 49,
@@ -1697,7 +1746,8 @@ export const PRODUCTS: Product[] = [
       "Hatchery & Incubation",
       "Hatchery",
       "Equipment"
-    ]
+    ],
+    "sortOrder": 49
   },
   {
     "id": 50,
@@ -1749,7 +1799,8 @@ export const PRODUCTS: Product[] = [
       "Bird",
       "Transport",
       "Boxes"
-    ]
+    ],
+    "sortOrder": 50
   },
   {
     "id": 51,
@@ -1800,7 +1851,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Debeaker",
       "Machine"
-    ]
+    ],
+    "sortOrder": 51
   },
   {
     "id": 52,
@@ -1851,7 +1903,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Vaccination",
       "Guns"
-    ]
+    ],
+    "sortOrder": 52
   },
   {
     "id": 53,
@@ -1917,7 +1970,8 @@ export const PRODUCTS: Product[] = [
       "Medicines & Vaccines",
       "Poultry",
       "Medicines"
-    ]
+    ],
+    "sortOrder": 53
   },
   {
     "id": 54,
@@ -1968,7 +2022,8 @@ export const PRODUCTS: Product[] = [
       "Medicines & Vaccines",
       "Poultry",
       "Vaccines"
-    ]
+    ],
+    "sortOrder": 54
   },
   {
     "id": 55,
@@ -2000,7 +2055,8 @@ export const PRODUCTS: Product[] = [
       "Cages",
       "Small",
       "Units"
-    ]
+    ],
+    "sortOrder": 55
   },
   {
     "id": 56,
@@ -2033,7 +2089,8 @@ export const PRODUCTS: Product[] = [
       "Big",
       "Size",
       "Units"
-    ]
+    ],
+    "sortOrder": 56
   },
   {
     "id": 57,
@@ -2064,7 +2121,8 @@ export const PRODUCTS: Product[] = [
       "Mini",
       "Egg",
       "Incubators"
-    ]
+    ],
+    "sortOrder": 57
   },
   {
     "id": 58,
@@ -2096,7 +2154,8 @@ export const PRODUCTS: Product[] = [
       "Size",
       "Egg",
       "Incubators"
-    ]
+    ],
+    "sortOrder": 58
   },
   {
     "id": 59,
@@ -2135,7 +2194,8 @@ export const PRODUCTS: Product[] = [
       "Breed",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 59
   },
   {
     "id": 60,
@@ -2174,7 +2234,8 @@ export const PRODUCTS: Product[] = [
       "Breed",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 60
   },
   {
     "id": 61,
@@ -2213,7 +2274,8 @@ export const PRODUCTS: Product[] = [
       "Breed",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 61
   },
   {
     "id": 62,
@@ -2251,7 +2313,8 @@ export const PRODUCTS: Product[] = [
       "Desi",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 62
   },
   {
     "id": 63,
@@ -2290,7 +2353,8 @@ export const PRODUCTS: Product[] = [
       "Layer",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 63
   },
   {
     "id": 64,
@@ -2328,7 +2392,8 @@ export const PRODUCTS: Product[] = [
       "Vanaraja",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 64
   },
   {
     "id": 65,
@@ -2367,7 +2432,8 @@ export const PRODUCTS: Product[] = [
       "Layer",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 65
   },
   {
     "id": 66,
@@ -2405,7 +2471,8 @@ export const PRODUCTS: Product[] = [
       "Quail",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 66
   },
   {
     "id": 67,
@@ -2445,7 +2512,8 @@ export const PRODUCTS: Product[] = [
       "Duck",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 67
   },
   {
     "id": 68,
@@ -2485,7 +2553,8 @@ export const PRODUCTS: Product[] = [
       "Duck",
       "Hatching",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 68
   },
   {
     "id": 69,
@@ -2515,7 +2584,8 @@ export const PRODUCTS: Product[] = [
       "Duck",
       "Eating",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 69
   },
   {
     "id": 70,
@@ -2545,7 +2615,8 @@ export const PRODUCTS: Product[] = [
       "Brown",
       "Eating",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 70
   },
   {
     "id": 71,
@@ -2575,7 +2646,8 @@ export const PRODUCTS: Product[] = [
       "Sonali",
       "Eating",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 71
   },
   {
     "id": 72,
@@ -2605,7 +2677,8 @@ export const PRODUCTS: Product[] = [
       "Desi",
       "Eating",
       "Eggs"
-    ]
+    ],
+    "sortOrder": 72
   },
   {
     "id": 73,
@@ -2647,7 +2720,8 @@ export const PRODUCTS: Product[] = [
       "Broiler",
       "Poultry",
       "Feed"
-    ]
+    ],
+    "sortOrder": 73
   },
   {
     "id": 74,
@@ -2696,7 +2770,8 @@ export const PRODUCTS: Product[] = [
       "Layer",
       "Poultry",
       "Feed"
-    ]
+    ],
+    "sortOrder": 74
   },
   {
     "id": 75,
@@ -2725,7 +2800,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Dry",
       "Fish"
-    ]
+    ],
+    "sortOrder": 75
   },
   {
     "id": 76,
@@ -2755,7 +2831,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Fish",
       "Feed"
-    ]
+    ],
+    "sortOrder": 76
   },
   {
     "id": 77,
@@ -2785,7 +2862,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Soya",
       "DOC"
-    ]
+    ],
+    "sortOrder": 77
   },
   {
     "id": 78,
@@ -2814,7 +2892,8 @@ export const PRODUCTS: Product[] = [
       "Feed & Ingredients",
       "Poultry",
       "Maize"
-    ]
+    ],
+    "sortOrder": 78
   },
   {
     "id": 79,
@@ -2844,7 +2923,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Soya",
       "Oil"
-    ]
+    ],
+    "sortOrder": 79
   },
   {
     "id": 80,
@@ -2874,7 +2954,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Stone",
       "Grade"
-    ]
+    ],
+    "sortOrder": 80
   },
   {
     "id": 81,
@@ -2904,7 +2985,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Country",
       "Birds"
-    ]
+    ],
+    "sortOrder": 81
   },
   {
     "id": 82,
@@ -2934,7 +3016,8 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Frozen",
       "Meat"
-    ]
+    ],
+    "sortOrder": 82
   },
   {
     "id": 83,
@@ -2964,7 +3047,8 @@ export const PRODUCTS: Product[] = [
       "Peking",
       "Duck",
       "Meat"
-    ]
+    ],
+    "sortOrder": 83
   },
   {
     "id": 84,
@@ -2994,7 +3078,8 @@ export const PRODUCTS: Product[] = [
       "Runner",
       "Duck",
       "Meat"
-    ]
+    ],
+    "sortOrder": 84
   },
   {
     "id": 85,
@@ -3024,7 +3109,8 @@ export const PRODUCTS: Product[] = [
       "Quail",
       "Birds",
       "Meat"
-    ]
+    ],
+    "sortOrder": 85
   },
   {
     "id": 86,
@@ -3057,7 +3143,8 @@ export const PRODUCTS: Product[] = [
       "Electric",
       "Brooding",
       "System"
-    ]
+    ],
+    "sortOrder": 86
   },
   {
     "id": 87,
@@ -3121,7 +3208,8 @@ export const PRODUCTS: Product[] = [
       "Digestive",
       "Support",
       "Medicines"
-    ]
+    ],
+    "sortOrder": 87
   },
   {
     "id": 88,
@@ -3181,7 +3269,8 @@ export const PRODUCTS: Product[] = [
       "Respiratory",
       "Support",
       "Medicines"
-    ]
+    ],
+    "sortOrder": 88
   },
   {
     "id": 89,
@@ -3211,6 +3300,7 @@ export const PRODUCTS: Product[] = [
       "Poultry",
       "Mineral",
       "Mixture"
-    ]
+    ],
+    "sortOrder": 89
   }
 ];

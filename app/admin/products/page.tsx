@@ -25,6 +25,9 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  ArrowUp,
+  ArrowDown,
+  ListOrdered,
 } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
 import ImageUploadField from "@/components/admin/ImageUploadField";
@@ -35,6 +38,7 @@ interface ProductItem {
   _id?: string;
   id?: number;
   itemNumber: number;
+  sortOrder?: number;
   name: string;
   slug: string;
   category: string;
@@ -69,19 +73,20 @@ export default function AdminProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
-  // Simplified product form fields matching website UI: Title, Category, Image, Description
+  // Simplified product form fields matching website UI: Title, Category, Image, Description, Display Order
   const [newProduct, setNewProduct] = useState({
     name: "",
     category: CATEGORIES[0].name,
     categorySlug: CATEGORIES[0].slug,
     image: "/assets/products/chicks/broiler-chicks.jpg",
     description: "",
+    sortOrder: 1,
   });
 
   const fetchCategories = async () => {
     try {
       const res = await fetch("/api/categories");
-      const data = await res.json();
+      const data = res.ok ? await res.json().catch(() => null) : null;
       if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
         setCategoriesList(data.data);
       }
@@ -94,9 +99,13 @@ export default function AdminProductsPage() {
     try {
       setLoading(true);
       const res = await fetch("/api/products");
-      const data = await res.json();
-      if (data.data) {
+      const data = res.ok ? await res.json().catch(() => null) : null;
+      if (data && data.data) {
         setProducts(data.data);
+        setNewProduct((prev) => ({
+          ...prev,
+          sortOrder: data.data.length + 1,
+        }));
       }
     } catch (err) {
       console.error("Failed to load products:", err);
@@ -162,12 +171,13 @@ export default function AdminProductsPage() {
           image: newProduct.image.trim(),
           description: desc,
           shortDescription: desc,
+          sortOrder: Number(newProduct.sortOrder) || (products.length + 1),
           available: true,
         }),
       });
 
-      const resData = await res.json();
-      if (resData.success) {
+      const resData = await res.json().catch(() => null);
+      if (res.ok && resData?.success) {
         setIsModalOpen(false);
         const firstCat = categoriesList[0] || CATEGORIES[0];
         setNewProduct({
@@ -176,11 +186,12 @@ export default function AdminProductsPage() {
           categorySlug: firstCat.slug,
           image: "/assets/products/chicks/broiler-chicks.jpg",
           description: "",
+          sortOrder: products.length + 2,
         });
         showToast("Product created successfully", "success");
         fetchProducts();
       } else {
-        showToast(resData.error || "Failed to create product", "error");
+        showToast(resData?.error || "Failed to create product", "error");
       }
     } catch (err) {
       console.error(err);
@@ -193,6 +204,7 @@ export default function AdminProductsPage() {
   const handleOpenEdit = (product: ProductItem) => {
     setEditingProduct({
       ...product,
+      sortOrder: product.sortOrder ?? product.itemNumber ?? 1,
       description: product.description || product.shortDescription || "",
     });
     setIsEditModalOpen(true);
@@ -212,6 +224,7 @@ export default function AdminProductsPage() {
     try {
       setSubmitting(true);
       const desc = (editingProduct.description || "").trim();
+      const sortOrder = Number(editingProduct.sortOrder ?? editingProduct.itemNumber ?? 1);
       const res = await fetch(`/api/products/${targetId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -222,31 +235,121 @@ export default function AdminProductsPage() {
           image: editingProduct.image.trim(),
           description: desc,
           shortDescription: desc,
+          sortOrder,
         }),
       });
 
-      const resData = await res.json();
-      if (resData.success) {
+      const resData = await res.json().catch(() => null);
+      if (res.ok && resData?.success) {
         setProducts((prev) =>
-          prev.map((p) => {
-            const isMatch =
-              (p._id && p._id === targetId) ||
-              (p.slug && p.slug === targetId) ||
-              p.itemNumber === editingProduct.itemNumber;
-            return isMatch ? { ...p, ...resData.data } : p;
-          })
+          prev
+            .map((p) => {
+              const isMatch =
+                (p._id && p._id === targetId) ||
+                (p.slug && p.slug === targetId) ||
+                p.itemNumber === editingProduct.itemNumber;
+              return isMatch ? { ...p, ...resData.data, sortOrder } : p;
+            })
+            .sort((a, b) => (a.sortOrder ?? a.itemNumber ?? 0) - (b.sortOrder ?? b.itemNumber ?? 0))
         );
         setIsEditModalOpen(false);
         setEditingProduct(null);
-        showToast("Product updated successfully", "success");
+        showToast(`Product updated! Display order set to #${sortOrder}. Public website updated.`, "success");
       } else {
-        showToast(resData.error || "Failed to update product", "error");
+        showToast(resData?.error || "Failed to update product", "error");
       }
     } catch (err) {
       console.error(err);
       showToast("Error updating product in database", "error");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Instant inline display order update
+  const handleQuickOrderChange = async (product: ProductItem, newOrder: number) => {
+    if (isNaN(newOrder) || newOrder < 1) return;
+    const targetId = product._id || product.slug || String(product.itemNumber);
+    if (!targetId) return;
+
+    try {
+      const res = await fetch(`/api/products/${targetId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sortOrder: newOrder }),
+      });
+      const resData = await res.json().catch(() => null);
+      if (res.ok && resData?.success) {
+        setProducts((prev) =>
+          prev
+            .map((p) => {
+              const isMatch = (p._id && p._id === targetId) || p.slug === targetId || p.itemNumber === product.itemNumber;
+              return isMatch ? { ...p, sortOrder: newOrder } : p;
+            })
+            .sort((a, b) => (a.sortOrder ?? a.itemNumber ?? 0) - (b.sortOrder ?? b.itemNumber ?? 0))
+        );
+        showToast(`Display order for ${product.name} updated to #${newOrder}. Public website updated!`, "success");
+      } else {
+        showToast(resData?.error || "Failed to update display order", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Error updating display order in database", "error");
+    }
+  };
+
+  // Move product up or down by swapping sortOrder with neighbor
+  const handleSwapOrder = async (productA: ProductItem, productB: ProductItem) => {
+    const idA = productA._id || productA.slug || String(productA.itemNumber);
+    const idB = productB._id || productB.slug || String(productB.itemNumber);
+    let orderA = productA.sortOrder ?? productA.itemNumber ?? 1;
+    let orderB = productB.sortOrder ?? productB.itemNumber ?? 1;
+
+    // In case both have same sortOrder or unspecified, derive explicit sequential orders
+    if (orderA === orderB) {
+      const idxA = filteredProducts.findIndex(
+        (p) => (p._id && p._id === idA) || p.slug === idA || p.itemNumber === productA.itemNumber
+      );
+      const idxB = filteredProducts.findIndex(
+        (p) => (p._id && p._id === idB) || p.slug === idB || p.itemNumber === productB.itemNumber
+      );
+      orderA = idxA + 1;
+      orderB = idxB + 1;
+    }
+
+    try {
+      const res = await fetch("/api/products/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: [
+            { id: idA, sortOrder: orderB },
+            { id: idB, sortOrder: orderA },
+          ],
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.success) {
+        setProducts((prev) =>
+          prev
+            .map((p) => {
+              if ((p._id && p._id === idA) || p.slug === idA || p.itemNumber === productA.itemNumber) {
+                return { ...p, sortOrder: orderB };
+              }
+              if ((p._id && p._id === idB) || p.slug === idB || p.itemNumber === productB.itemNumber) {
+                return { ...p, sortOrder: orderA };
+              }
+              return p;
+            })
+            .sort((a, b) => (a.sortOrder ?? a.itemNumber ?? 0) - (b.sortOrder ?? b.itemNumber ?? 0))
+        );
+        showToast(`Swapped: "${productA.name}" (#${orderB}) & "${productB.name}" (#${orderA})`, "success");
+      } else {
+        showToast(data?.error || "Failed to swap order", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to swap order in database", "error");
     }
   };
 
@@ -265,8 +368,8 @@ export default function AdminProductsPage() {
     try {
       setIsDeleting(true);
       const res = await fetch(`/api/products/${targetId}`, { method: "DELETE" });
-      const data = await res.json();
-      if (data.success) {
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.success) {
         setProducts((prev) =>
           prev.filter(
             (p) =>
@@ -278,7 +381,7 @@ export default function AdminProductsPage() {
         showToast("Product deleted successfully", "success");
         setProductToDelete(null);
       } else {
-        showToast(data.error || "Failed to delete product", "error");
+        showToast(data?.error || "Failed to delete product", "error");
       }
     } catch (err) {
       console.error(err);
@@ -288,15 +391,17 @@ export default function AdminProductsPage() {
     }
   };
 
-  const filteredProducts = products.filter((p) => {
-    const matchesSearch =
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.category.toLowerCase().includes(search.toLowerCase()) ||
-      (p.tags && p.tags.some((t) => t.toLowerCase().includes(search.toLowerCase())));
-    const matchesCat =
-      selectedCategory === "all" || p.categorySlug === selectedCategory;
-    return matchesSearch && matchesCat;
-  });
+  const filteredProducts = products
+    .filter((p) => {
+      const matchesSearch =
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.category.toLowerCase().includes(search.toLowerCase()) ||
+        (p.tags && p.tags.some((t) => t.toLowerCase().includes(search.toLowerCase())));
+      const matchesCat =
+        selectedCategory === "all" || p.categorySlug === selectedCategory;
+      return matchesSearch && matchesCat;
+    })
+    .sort((a, b) => (a.sortOrder ?? a.itemNumber ?? 0) - (b.sortOrder ?? b.itemNumber ?? 0));
 
   // Reset pagination on search, category or itemsPerPage change
   useEffect(() => {
@@ -400,6 +505,19 @@ export default function AdminProductsPage() {
             </select>
           </div>
         </div>
+
+        {/* Live Display Order Guide Bar */}
+        <div className="bg-[#FAFBF9] border border-brand-softGreen/80 rounded-2xl px-3.5 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-2xs">
+          <div className="flex items-center gap-2">
+            <span className="flex h-2 w-2 rounded-full bg-brand-freshGreen animate-pulse shrink-0" />
+            <span className="text-brand-darkGray text-[11.5px]">
+              <strong className="text-brand-darkGreen font-extrabold">Public Website Display Order:</strong> Use <strong className="text-brand-darkGreen">▲</strong> / <strong className="text-brand-darkGreen">▼</strong> or type any order number to update the sequence live on the public storefront.
+            </span>
+          </div>
+          <span className="text-[10px] font-mono font-bold text-brand-darkGreen bg-brand-lightGreen/70 px-2 py-0.5 rounded-full shrink-0 self-start sm:self-auto">
+            Instant Database Sync
+          </span>
+        </div>
       </div>
 
       {/* Content Area */}
@@ -417,83 +535,118 @@ export default function AdminProductsPage() {
       ) : viewMode === "cards" ? (
         /* ================= CARDS VIEW (Neat UI with internal scrolling fields) ================= */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {paginatedProducts.map((p) => (
-            <div
-              key={p._id || p.itemNumber}
-              className="bg-white rounded-3xl border border-brand-softGreen/70 shadow-xs hover:border-brand-freshGreen hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
-            >
-              {/* Product Card Top: Image + Badges */}
-              <div className="relative h-44 w-full bg-brand-cardCream overflow-hidden">
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  onError={(e) => {
-                    const target = e.currentTarget as HTMLImageElement;
-                    target.onerror = null;
-                    target.src =
-                      "/assets/products/chicks/broiler-chicks.jpg";
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+          {paginatedProducts.map((p, idx) => {
+            const globalIndex = startIndex + idx;
+            const currentOrder = p.sortOrder ?? p.itemNumber ?? (globalIndex + 1);
 
-                {/* Top Badges */}
-                <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/95 text-brand-darkGray shadow-xs backdrop-blur-xs">
-                    #{p.itemNumber}
-                  </span>
+            return (
+              <div
+                key={p._id || p.itemNumber}
+                className="bg-white rounded-3xl border border-brand-softGreen/70 shadow-xs hover:border-brand-freshGreen hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
+              >
+                {/* Product Card Top: Image + Badges */}
+                <div className="relative h-44 w-full bg-brand-cardCream overflow-hidden">
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement;
+                      target.onerror = null;
+                      target.src =
+                        "/assets/products/chicks/broiler-chicks.jpg";
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+
+                  {/* Top Badges */}
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-extrabold bg-brand-darkGreen text-white shadow-xs backdrop-blur-xs flex items-center gap-1">
+                      <ListOrdered className="w-3 h-3 text-brand-yellow" />
+                      <span>Order #{currentOrder}</span>
+                    </span>
+                    <div className="flex items-center gap-1 bg-white/95 rounded-full px-1.5 py-0.5 shadow-xs backdrop-blur-xs">
+                      <span className="text-[9.5px] font-mono font-bold text-brand-gray mr-0.5">#{p.itemNumber}</span>
+                      <button
+                        type="button"
+                        disabled={globalIndex === 0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const prevProduct = filteredProducts[globalIndex - 1];
+                          if (prevProduct) handleSwapOrder(p, prevProduct);
+                        }}
+                        className="p-0.5 hover:bg-brand-softGreen/50 rounded text-brand-darkGray disabled:opacity-20 transition cursor-pointer"
+                        title="Move Up in Display Order"
+                      >
+                        <ArrowUp className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={globalIndex === filteredProducts.length - 1}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const nextProduct = filteredProducts[globalIndex + 1];
+                          if (nextProduct) handleSwapOrder(p, nextProduct);
+                        }}
+                        className="p-0.5 hover:bg-brand-softGreen/50 rounded text-brand-darkGray disabled:opacity-20 transition cursor-pointer"
+                        title="Move Down in Display Order"
+                      >
+                        <ArrowDown className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Category Overlay at bottom of image */}
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-white">
+                    <span className="text-[10px] font-bold bg-black/60 px-2.5 py-0.5 rounded-md backdrop-blur-xs line-clamp-1">
+                      {p.category}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Category Overlay at bottom of image */}
-                <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-white">
-                  <span className="text-[10px] font-bold bg-black/60 px-2.5 py-0.5 rounded-md backdrop-blur-xs line-clamp-1">
-                    {p.category}
-                  </span>
+                {/* Card Middle: Content */}
+                <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                  <div className="space-y-1.5">
+                    <h3 className="font-extrabold text-sm sm:text-base text-brand-darkGray leading-tight line-clamp-1">
+                      {p.name}
+                    </h3>
+                    <p className="text-xs text-brand-gray leading-relaxed line-clamp-3">
+                      {p.description || p.shortDescription || "No description provided."}
+                    </p>
+                  </div>
+
+                  {/* Card Actions Footer */}
+                  <div className="pt-3 border-t border-brand-softGreen/40 flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => handleOpenEdit(p)}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-brand-lightGreen hover:bg-brand-softGreen text-brand-darkGreen font-bold text-xs transition cursor-pointer"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                      <span>Edit Product</span>
+                    </button>
+
+                    <a
+                      href={`/product/${p.slug}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-2 rounded-xl text-brand-gray hover:text-brand-darkGreen hover:bg-brand-cardCream border border-transparent hover:border-brand-softGreen transition"
+                      title="View Live Store Page"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+
+                    <button
+                      onClick={() => setProductToDelete({ id: p._id, slug: p.slug, itemNum: p.itemNumber, name: p.name })}
+                      className="p-2 rounded-xl text-red-500 hover:text-red-700 hover:bg-red-50 border border-transparent hover:border-red-100 transition cursor-pointer"
+                      title="Delete Product"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              {/* Card Middle: Content */}
-              <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                <div className="space-y-1.5">
-                  <h3 className="font-extrabold text-sm sm:text-base text-brand-darkGray leading-tight line-clamp-1">
-                    {p.name}
-                  </h3>
-                  <p className="text-xs text-brand-gray leading-relaxed line-clamp-3">
-                    {p.description || p.shortDescription || "No description provided."}
-                  </p>
-                </div>
-
-                {/* Card Actions Footer */}
-                <div className="pt-3 border-t border-brand-softGreen/40 flex items-center justify-between gap-2">
-                  <button
-                    onClick={() => handleOpenEdit(p)}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-brand-lightGreen hover:bg-brand-softGreen text-brand-darkGreen font-bold text-xs transition cursor-pointer"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" />
-                    <span>Edit Product</span>
-                  </button>
-
-                  <a
-                    href={`/product/${p.slug}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-2 rounded-xl text-brand-gray hover:text-brand-darkGreen hover:bg-brand-cardCream border border-transparent hover:border-brand-softGreen transition"
-                    title="View Live Store Page"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-
-                  <button
-                    onClick={() => setProductToDelete({ id: p._id, slug: p.slug, itemNum: p.itemNumber, name: p.name })}
-                    className="p-2 rounded-xl text-red-500 hover:text-red-700 hover:bg-red-50 border border-transparent hover:border-red-100 transition cursor-pointer"
-                    title="Delete Product"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         /* ================= TABLE VIEW ================= */
@@ -502,7 +655,8 @@ export default function AdminProductsPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-[#FAFBF9] text-brand-gray font-bold border-b border-brand-softGreen/30 uppercase tracking-wider text-[10px]">
                 <tr>
-                  <th className="py-3 px-4">#</th>
+                  <th className="py-3 px-3 w-32">Display Order</th>
+                  <th className="py-3 px-4">Item #</th>
                   <th className="py-3 px-4">Product Info</th>
                   <th className="py-3 px-4">Category</th>
                   <th className="py-3 px-4">Description</th>
@@ -510,68 +664,126 @@ export default function AdminProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-softGreen/20">
-                {paginatedProducts.map((p) => (
-                  <tr key={p._id || p.itemNumber} className="hover:bg-[#FAFBF9] transition">
-                    <td className="py-3.5 px-4 font-mono font-bold text-brand-gray">
-                      #{p.itemNumber}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={p.image}
-                          alt={p.name}
-                          className="w-11 h-11 rounded-xl object-cover border border-brand-softGreen shrink-0"
-                          onError={(e) => {
-                            const target = e.currentTarget as HTMLImageElement;
-                            target.onerror = null;
-                            target.src =
-                              "/assets/products/chicks/broiler-chicks.jpg";
-                          }}
-                        />
-                        <div className="font-bold text-brand-darkGray text-xs sm:text-sm">
-                          {p.name}
+                {paginatedProducts.map((p, idx) => {
+                  const globalIndex = startIndex + idx;
+                  const currentOrder = p.sortOrder ?? p.itemNumber ?? (globalIndex + 1);
+
+                  return (
+                    <tr key={p._id || p.itemNumber} className="hover:bg-[#FAFBF9] transition">
+                      <td className="py-3 px-3">
+                        <div className="flex items-center gap-1.5">
+                          <input
+                            type="number"
+                            min={1}
+                            max={999}
+                            key={`order-${p._id || p.itemNumber}-${currentOrder}`}
+                            defaultValue={currentOrder}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                const val = parseInt((e.target as HTMLInputElement).value);
+                                if (!isNaN(val) && val > 0) {
+                                  handleQuickOrderChange(p, val);
+                                }
+                              }
+                            }}
+                            onBlur={(e) => {
+                              const val = parseInt(e.target.value);
+                              if (!isNaN(val) && val > 0 && val !== currentOrder) {
+                                handleQuickOrderChange(p, val);
+                              }
+                            }}
+                            className="w-16 px-2 py-1 rounded-lg border border-brand-softGreen text-xs font-mono font-bold text-center focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white shadow-2xs"
+                            title="Edit position number and press Enter to update public website"
+                          />
+                          <div className="flex flex-col gap-0.5">
+                            <button
+                              type="button"
+                              disabled={globalIndex === 0}
+                              onClick={() => {
+                                const prevProduct = filteredProducts[globalIndex - 1];
+                                if (prevProduct) handleSwapOrder(p, prevProduct);
+                              }}
+                              className="p-1 rounded hover:bg-brand-softGreen/50 text-brand-darkGray disabled:opacity-20 cursor-pointer disabled:pointer-events-none transition"
+                              title="Move Up in Display Order"
+                            >
+                              <ArrowUp className="w-3 h-3" />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={globalIndex === filteredProducts.length - 1}
+                              onClick={() => {
+                                const nextProduct = filteredProducts[globalIndex + 1];
+                                if (nextProduct) handleSwapOrder(p, nextProduct);
+                              }}
+                              className="p-1 rounded hover:bg-brand-softGreen/50 text-brand-darkGray disabled:opacity-20 cursor-pointer disabled:pointer-events-none transition"
+                              title="Move Down in Display Order"
+                            >
+                              <ArrowDown className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-softGreen/60 text-brand-darkGreen">
-                        {p.category}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 max-w-md">
-                      <p className="text-xs text-brand-gray line-clamp-2">
-                        {p.description || p.shortDescription || "—"}
-                      </p>
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleOpenEdit(p)}
-                          className="p-1.5 rounded-lg text-brand-darkGreen hover:bg-brand-softGreen/50 transition cursor-pointer"
-                          title="Edit Product"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <a
-                          href={`/product/${p.slug}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-1.5 rounded-lg text-brand-gray hover:text-brand-darkGreen hover:bg-brand-cardCream transition"
-                          title="View on site"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                        <button
-                          onClick={() => setProductToDelete({ id: p._id, slug: p.slug, itemNum: p.itemNumber, name: p.name })}
-                          className="p-1.5 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition cursor-pointer"
-                          title="Delete Product"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono font-bold text-brand-gray">
+                        #{p.itemNumber}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={p.image}
+                            alt={p.name}
+                            className="w-11 h-11 rounded-xl object-cover border border-brand-softGreen shrink-0"
+                            onError={(e) => {
+                              const target = e.currentTarget as HTMLImageElement;
+                              target.onerror = null;
+                              target.src =
+                                "/assets/products/chicks/broiler-chicks.jpg";
+                            }}
+                          />
+                          <div className="font-bold text-brand-darkGray text-xs sm:text-sm">
+                            {p.name}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-softGreen/60 text-brand-darkGreen">
+                          {p.category}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 max-w-md">
+                        <p className="text-xs text-brand-gray line-clamp-2">
+                          {p.description || p.shortDescription || "—"}
+                        </p>
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleOpenEdit(p)}
+                            className="p-1.5 rounded-lg text-brand-darkGreen hover:bg-brand-softGreen/50 transition cursor-pointer"
+                            title="Edit Product"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <a
+                            href={`/product/${p.slug}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-1.5 rounded-lg text-brand-gray hover:text-brand-darkGreen hover:bg-brand-cardCream transition"
+                            title="View on site"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                          <button
+                            onClick={() => setProductToDelete({ id: p._id, slug: p.slug, itemNum: p.itemNumber, name: p.name })}
+                            className="p-1.5 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition cursor-pointer"
+                            title="Delete Product"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -704,22 +916,41 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* 2. Category */}
-              <div>
-                <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                  Category *
-                </label>
-                <select
-                  value={newProduct.category}
-                  onChange={(e) => handleCategorySelect(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
-                >
-                  {categoriesList.map((c) => (
-                    <option key={c.id || c._id || c.slug} value={c.name}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+              {/* 2. Category & Display Order Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
+                    Category *
+                  </label>
+                  <select
+                    value={newProduct.category}
+                    onChange={(e) => handleCategorySelect(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
+                  >
+                    {categoriesList.map((c) => (
+                      <option key={c.id || c._id || c.slug} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-brand-darkGray mb-1 flex items-center justify-between">
+                    <span>Display Order *</span>
+                    <span className="text-[10px] font-normal text-brand-gray">Position on website</span>
+                  </label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={999}
+                    required
+                    value={newProduct.sortOrder}
+                    onChange={(e) => setNewProduct({ ...newProduct, sortOrder: parseInt(e.target.value) || 1 })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs font-mono font-bold focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
+                    placeholder="e.g. 1"
+                  />
+                </div>
               </div>
 
               {/* 3. Image Upload Field */}
@@ -813,30 +1044,54 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* 2. Category */}
-              <div>
-                <label className="block text-xs font-bold text-brand-darkGray mb-1">
-                  Category *
-                </label>
-                <select
-                  value={editingProduct.category}
-                  onChange={(e) => {
-                    const found = categoriesList.find((c) => c.name === e.target.value);
-                    const slug = found ? found.slug : e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-                    setEditingProduct({
-                      ...editingProduct,
-                      category: e.target.value,
-                      categorySlug: slug,
-                    });
-                  }}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
-                >
-                  {categoriesList.map((c) => (
-                    <option key={c.id || c._id || c.slug} value={c.name}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+              {/* 2. Category & Display Order Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-xs font-bold text-brand-darkGray mb-1">
+                    Category *
+                  </label>
+                  <select
+                    value={editingProduct.category}
+                    onChange={(e) => {
+                      const found = categoriesList.find((c) => c.name === e.target.value);
+                      const slug = found ? found.slug : e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+                      setEditingProduct({
+                        ...editingProduct,
+                        category: e.target.value,
+                        categorySlug: slug,
+                      });
+                    }}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white cursor-pointer"
+                  >
+                    {categoriesList.map((c) => (
+                      <option key={c.id || c._id || c.slug} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-brand-darkGray mb-1 flex items-center justify-between">
+                    <span>Display Order *</span>
+                    <span className="text-[10px] font-normal text-brand-gray">Position on website</span>
+                  </label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={999}
+                    required
+                    value={editingProduct.sortOrder ?? editingProduct.itemNumber ?? 1}
+                    onChange={(e) =>
+                      setEditingProduct({
+                        ...editingProduct,
+                        sortOrder: parseInt(e.target.value) || 1,
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-brand-softGreen text-xs font-mono font-bold focus:ring-2 focus:ring-brand-freshGreen outline-none bg-white"
+                    placeholder="e.g. 1"
+                  />
+                </div>
               </div>
 
               {/* 3. Image Upload Field */}

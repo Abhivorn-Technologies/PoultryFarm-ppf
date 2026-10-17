@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Menu, X, Send } from "lucide-react";
+import { Search, Menu, X, Send, Sparkles } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { PRODUCTS } from "@/data/products";
+import { searchProducts } from "@/lib/search";
 
 interface HeaderProps {
   variant?: "hero" | "default" | "auto";
@@ -14,6 +15,7 @@ interface HeaderProps {
 export function Header({ variant: _variant = "auto" }: HeaderProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [productsList, setProductsList] = useState<typeof PRODUCTS>(PRODUCTS);
 
   useEffect(() => {
     fetch("/api/products")
@@ -30,28 +32,25 @@ export function Header({ variant: _variant = "auto" }: HeaderProps) {
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [productsList, setProductsList] = useState<typeof PRODUCTS>(PRODUCTS);
-  const [searchResults, setSearchResults] = useState<typeof PRODUCTS>([]);
+  const [searchResults, setSearchResults] = useState<{ matches: any[]; related: any[] }>({
+    matches: [],
+    related: [],
+  });
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const { openEnquiryModal } = useCart();
 
-  // Live search filtering across official catalogue products
+  // Smart search filtering across official catalogue products
   useEffect(() => {
     if (searchQuery.trim().length > 1) {
-      const q = searchQuery.toLowerCase();
-      const matched = productsList.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          (p.shortDescription && p.shortDescription.toLowerCase().includes(q)) ||
-          (p.description && p.description.toLowerCase().includes(q)) ||
-          p.tags.some((t) => t.toLowerCase().includes(q))
-      );
-      setSearchResults(matched.slice(0, 6));
+      const result = searchProducts(productsList as any, searchQuery);
+      setSearchResults({
+        matches: result.matches.slice(0, 5),
+        related: result.related.slice(0, 3),
+      });
       setIsSearchOpen(true);
     } else {
-      setSearchResults([]);
+      setSearchResults({ matches: [], related: [] });
       setIsSearchOpen(false);
     }
   }, [searchQuery, productsList]);
@@ -140,7 +139,34 @@ export function Header({ variant: _variant = "auto" }: HeaderProps) {
         {/* RIGHT: Search Bar & Enquire Now Action CTA */}
         <div className="flex items-center gap-3 md:gap-4 shrink-0">
           {/* Search Input Form */}
-          <div className="hidden md:flex relative items-center">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!searchQuery.trim()) return;
+              setIsSearchOpen(false);
+              if (typeof window !== "undefined") {
+                const isCataloguePage = pathname === "/" || pathname === "/products";
+                if (isCataloguePage) {
+                  const input = document.getElementById("catalogue-search-input") as HTMLInputElement;
+                  if (input) {
+                    input.value = searchQuery;
+                    input.dispatchEvent(new Event("input", { bubbles: true }));
+                    input.focus();
+                    const navOffset = window.innerWidth < 640 ? 130 : 150;
+                    const el = document.getElementById("products");
+                    if (el) {
+                      const elementPosition = el.getBoundingClientRect().top;
+                      const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+                      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                    }
+                    return;
+                  }
+                }
+                window.location.href = `/products?search=${encodeURIComponent(searchQuery)}#products`;
+              }
+            }}
+            className="hidden md:flex relative items-center"
+          >
             <input
               className="w-44 lg:w-52 xl:w-60 pl-9 pr-4 py-2 text-xs rounded-full border border-brand-softGreen/80 bg-brand-cardCream transition-all placeholder:text-gray-500 text-brand-darkGray focus:outline-none focus:ring-2 focus:ring-brand-freshGreen/50"
               placeholder="Search chicks, feeds..."
@@ -156,10 +182,10 @@ export function Header({ variant: _variant = "auto" }: HeaderProps) {
             <Search className="w-4 h-4 text-brand-darkGray/60 absolute left-3 pointer-events-none" />
 
             {/* Search Dropdown Overlay */}
-            {isSearchOpen && searchResults.length > 0 && (
-              <div className="absolute top-12 left-0 right-0 bg-white rounded-2xl shadow-elevated border border-brand-softGreen p-2 z-50 animate-in fade-in slide-in-from-top-2">
+            {isSearchOpen && (searchResults.matches.length > 0 || searchResults.related.length > 0) && (
+              <div className="absolute top-12 left-0 right-0 bg-white rounded-2xl shadow-elevated border border-brand-softGreen p-2 z-50 animate-in fade-in slide-in-from-top-2 w-72 lg:w-80">
                 <div className="text-[10px] uppercase font-bold text-brand-gray px-3 py-1 border-b border-brand-softGreen/40 flex justify-between items-center">
-                  <span>Found {searchResults.length} Products</span>
+                  <span>Found {searchResults.matches.length + searchResults.related.length} Products</span>
                   <button
                     type="button"
                     suppressHydrationWarning
@@ -169,36 +195,110 @@ export function Header({ variant: _variant = "auto" }: HeaderProps) {
                     ✕
                   </button>
                 </div>
-                <div className="divide-y divide-brand-softGreen/30 max-h-72 overflow-y-auto">
-                  {searchResults.map((prod) => (
-                    <Link
-                      key={prod.id}
-                      href={`/product/${prod.slug}`}
-                      onClick={() => setIsSearchOpen(false)}
-                      className="p-2 hover:bg-brand-cardCream rounded-xl cursor-pointer flex items-center justify-between gap-3 transition-colors block"
+                <div className="divide-y divide-brand-softGreen/30 max-h-80 overflow-y-auto">
+                  {/* Direct Matches */}
+                  {searchResults.matches.map((prod) => (
+                    <button
+                      key={prod.id || prod.slug}
+                      type="button"
+                      onClick={() => {
+                        setIsSearchOpen(false);
+                        setSearchQuery("");
+                        if (typeof window !== "undefined") {
+                          const isCataloguePage = pathname === "/" || pathname === "/products";
+                          if (isCataloguePage) {
+                            const el = document.getElementById(`product-${prod.slug}`);
+                            if (el) {
+                              const navOffset = window.innerWidth < 640 ? 130 : 150;
+                              const elementPosition = el.getBoundingClientRect().top;
+                              const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+                              window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                              el.classList.add("ring-4", "ring-brand-darkGreen", "rounded-3xl", "transition-all", "duration-500");
+                              setTimeout(() => el.classList.remove("ring-4", "ring-brand-darkGreen"), 2500);
+                              return;
+                            }
+                          }
+                          window.location.href = `/products?focus=${prod.slug}#product-${prod.slug}`;
+                        }
+                      }}
+                      className="w-full text-left p-2 hover:bg-brand-cardCream rounded-xl cursor-pointer flex items-center justify-between gap-3 transition-colors"
                     >
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-2.5 overflow-hidden">
                         <img
                           src={prod.image}
                           alt={prod.name}
-                          className="w-8 h-8 rounded-lg object-cover bg-brand-softGreen/20"
+                          className="w-8 h-8 rounded-lg object-cover bg-brand-softGreen/20 shrink-0"
                         />
-                        <div>
-                          <h5 className="text-xs font-bold text-brand-darkGray leading-snug">
+                        <div className="overflow-hidden">
+                          <h5 className="text-xs font-bold text-brand-darkGray leading-snug truncate">
                             {prod.name}
                           </h5>
-                          <p className="text-[10px] text-brand-freshGreen">{prod.category}</p>
+                          <p className="text-[10px] text-brand-freshGreen truncate">{prod.category}</p>
                         </div>
                       </div>
-                      <span className="text-[11px] font-bold text-brand-darkGreen hover:underline whitespace-nowrap">
-                        View Details →
+                      <span className="text-[11px] font-bold text-brand-darkGreen shrink-0 whitespace-nowrap">
+                        View →
                       </span>
-                    </Link>
+                    </button>
                   ))}
+
+                  {/* Related Products Section in Dropdown */}
+                  {searchResults.related.length > 0 && (
+                    <div className="pt-2">
+                      <div className="px-3 py-1 text-[9.5px] font-extrabold uppercase text-brand-darkGreen/80 flex items-center gap-1 bg-brand-softGreen/20 rounded-md mb-1">
+                        <Sparkles className="w-2.5 h-2.5 text-brand-yellow" />
+                        <span>Related Products</span>
+                      </div>
+                      {searchResults.related.map((prod) => (
+                        <button
+                          key={`rel-header-${prod.id || prod.slug}`}
+                          type="button"
+                          onClick={() => {
+                            setIsSearchOpen(false);
+                            setSearchQuery("");
+                            if (typeof window !== "undefined") {
+                              const isCataloguePage = pathname === "/" || pathname === "/products";
+                              if (isCataloguePage) {
+                                const el = document.getElementById(`product-${prod.slug}`);
+                                if (el) {
+                                  const navOffset = window.innerWidth < 640 ? 130 : 150;
+                                  const elementPosition = el.getBoundingClientRect().top;
+                                  const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+                                  window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                                  el.classList.add("ring-4", "ring-brand-darkGreen", "rounded-3xl", "transition-all", "duration-500");
+                                  setTimeout(() => el.classList.remove("ring-4", "ring-brand-darkGreen"), 2500);
+                                  return;
+                                }
+                              }
+                              window.location.href = `/products?focus=${prod.slug}#product-${prod.slug}`;
+                            }
+                          }}
+                          className="w-full text-left p-2 hover:bg-brand-cardCream rounded-xl cursor-pointer flex items-center justify-between gap-3 transition-colors opacity-95"
+                        >
+                          <div className="flex items-center gap-2.5 overflow-hidden">
+                            <img
+                              src={prod.image}
+                              alt={prod.name}
+                              className="w-8 h-8 rounded-lg object-cover bg-brand-softGreen/20 shrink-0"
+                            />
+                            <div className="overflow-hidden">
+                              <h5 className="text-xs font-semibold text-brand-darkGray leading-snug truncate">
+                                {prod.name}
+                              </h5>
+                              <p className="text-[10px] text-brand-gray truncate">{prod.category}</p>
+                            </div>
+                          </div>
+                          <span className="text-[10px] font-bold text-brand-darkGreen shrink-0 whitespace-nowrap">
+                            View →
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
-          </div>
+          </form>
 
           {/* Enquire Now Action CTA */}
           <button
