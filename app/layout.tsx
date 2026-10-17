@@ -20,11 +20,26 @@ const outfit = Outfit({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
+import {
+  getBaseUrl,
+  BUSINESS_INFO,
+  getOrganizationSchema,
+  getLocalBusinessSchema,
+  getWebsiteSchema,
+} from "@/lib/seo";
+
+const baseUrl = getBaseUrl();
+
 export const metadata: Metadata = {
-  title: "PoultryFarm | Certified High-Yield Breeding, Live Birds & Product Catalogue",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: "PPF Group of Companies | Certified Poultry Farming, Hatchery & Products",
+    template: "%s | PPF Group of Companies",
+  },
   description:
-    "Explore our comprehensive poultry catalogue: day-old chicks, heritage & commercial breeds, high-fertility hatching eggs, smart solar incubators, battery cages, and organic feeds with direct farm enquiry.",
+    "Explore our comprehensive poultry catalogue: certified day-old chicks, heritage breeds, high-fertility hatching eggs, commercial incubators, cages, and organic feeds with direct farm enquiry.",
   keywords: [
+    "PPF Group of Companies",
     "Poultry Farm India",
     "Kadaknath Day-Old Chicks",
     "Hatching Eggs",
@@ -33,25 +48,38 @@ export const metadata: Metadata = {
     "Poultry Cages",
     "Poultry Product Catalogue",
     "Organic Poultry Feeds",
-    "Khaki Campbell Ducks"
+    "Commercial Hatchery Hyderabad",
+    "9100578889",
   ],
-  authors: [{ name: "PoultryFarm Agro Ltd" }],
+  authors: [{ name: "PPF Group of Companies" }],
+  creator: "PPF Group of Companies",
+  publisher: "PPF Group of Companies",
+  alternates: {
+    canonical: "./",
+  },
   openGraph: {
-    title: "PoultryFarm | Certified High-Yield Breeding, Live Birds & Product Catalogue",
+    title: "PPF Group of Companies | Certified Poultry Farming, Hatchery & Products",
     description:
-      "Explore poultry chicks, breeds, hatching eggs, equipment, feeds and more — all in one convenient catalogue.",
-    url: "https://poultryfarm.com",
-    siteName: "PoultryFarm Agro",
+      "Explore poultry chicks, breeds, hatching eggs, equipment, feeds and more — certified bio-secure stock from PPF Group.",
+    url: baseUrl,
+    siteName: "PPF Group of Companies",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1200&q=80",
+        url: "/assets/hero/main%20hero.png",
         width: 1200,
         height: 630,
-        alt: "PoultryFarm Modern Hatchery & Birds",
+        alt: "PPF Group of Companies - Poultry Farms & Hatcheries",
       },
     ],
     locale: "en_IN",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PPF Group of Companies | Certified Poultry Farming & Products",
+    description:
+      "Explore certified day-old chicks, pure breeds, commercial incubators, cages, and high-performance feeds.",
+    images: ["/assets/hero/main%20hero.png"],
   },
   icons: {
     icon: "/assets/logo/FAVICON.png",
@@ -106,6 +134,28 @@ export default function RootLayout({
                 }
               })();
             `,
+          }}
+        />
+        {/* Schema.org Structured Data (JSON-LD) */}
+        <script
+          type="application/ld+json"
+          id="schema-organization"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getOrganizationSchema(baseUrl)),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          id="schema-local-business"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getLocalBusinessSchema(baseUrl)),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          id="schema-website"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getWebsiteSchema(baseUrl)),
           }}
         />
       </head>

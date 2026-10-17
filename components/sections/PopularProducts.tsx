@@ -350,9 +350,8 @@ export function PopularProducts() {
         <div className="mb-6 sm:mb-8 space-y-3">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-brand-darkGreen bg-white/70 backdrop-blur-xs px-3.5 py-1 rounded-full border border-brand-darkGreen/15 mb-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-brand-darkGreen" />
-                <span>Complete Product Catalogue</span>
+              <div className="text-[24px] sm:text-[28px] md:text-[32px] lg:text-[36px] font-extrabold uppercase tracking-normal [word-spacing:0.3em] sm:[word-spacing:0.35em] text-brand-darkGreen leading-tight mb-1 sm:mb-1.5">
+                COMPLETE PRODUCT CATALOGUE
               </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-brand-darkGray tracking-tight">
                 Products
